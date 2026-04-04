@@ -24,11 +24,19 @@ class NotificationService {
     );
   }
 
+  static Future<void> cancelAll() async {
+    await _plugin.cancelAll();
+  }
+
   static Future<void> schedulePrayerNotifications({
     required double latitude,
     required double longitude,
+    bool fajrEnabled    = true,
+    bool dhuhrEnabled   = true,
+    bool asrEnabled     = true,
+    bool maghribEnabled = true,
+    bool ishaEnabled    = true,
   }) async {
-    // Cancel all existing notifications first
     await _plugin.cancelAll();
 
     final coords  = Coordinates(latitude, longitude);
@@ -37,22 +45,23 @@ class NotificationService {
     final times   = PrayerTimes(coords, date, params);
 
     final prayers = [
-      times.fajr,
-      times.dhuhr,
-      times.asr,
-      times.maghrib,
-      times.isha,
+      {'time': times.fajr,    'enabled': fajrEnabled,    'name': 'Fajr'},
+      {'time': times.dhuhr,   'enabled': dhuhrEnabled,   'name': 'Dhuhr'},
+      {'time': times.asr,     'enabled': asrEnabled,     'name': 'Asr'},
+      {'time': times.maghrib, 'enabled': maghribEnabled, 'name': 'Maghrib'},
+      {'time': times.isha,    'enabled': ishaEnabled,    'name': 'Isha'},
     ];
 
     for (int i = 0; i < prayers.length; i++) {
-      final prayerTime = prayers[i];
-      // 10 minutes before prayer
+      if (prayers[i]['enabled'] == false) continue;
+
+      final prayerTime = prayers[i]['time'] as DateTime;
       final notifTime  = prayerTime.subtract(const Duration(minutes: 10));
 
       if (notifTime.isAfter(DateTime.now())) {
         await _plugin.zonedSchedule(
           i,
-          'Time to prepare for prayer 🕌',
+          'Time to prepare for ${prayers[i]['name']} 🕌',
           quotes[i % quotes.length],
           tz.TZDateTime.from(notifTime, tz.local),
           const NotificationDetails(

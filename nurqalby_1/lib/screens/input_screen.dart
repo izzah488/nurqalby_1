@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'result_screen.dart';
+import 'notification_settings_screen.dart'; // Ensure you have this file created
 
 class InputScreen extends StatefulWidget {
   const InputScreen({super.key});
@@ -74,15 +75,35 @@ class _InputScreenState extends State<InputScreen> {
                 width: double.infinity,
                 color: const Color(0xFF1a3a2a),
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('السلام عليكم',
-                        style: TextStyle(color: Color(0xFF9fd4b0), fontSize: 13)),
-                    SizedBox(height: 4),
-                    Text('How are you feeling?',
-                        style: TextStyle(color: Colors.white,
-                            fontSize: 22, fontWeight: FontWeight.w600)),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('السلام عليكم',
+                            style: TextStyle(color: Color(0xFF9fd4b0), fontSize: 13)),
+                        SizedBox(height: 4),
+                        Text('How are you feeling?',
+                            style: TextStyle(color: Colors.white,
+                                fontSize: 22, fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                    // Inside the header Container, add this at the end of the Row
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const NotificationSettingsScreen(),
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.notifications_outlined,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
                   ],
                 ),
               ),
