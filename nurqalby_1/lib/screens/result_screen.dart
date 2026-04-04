@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/verse_cubit.dart';
 import '../cubit/verse_state.dart';
+import 'share_screen.dart';
 import 'audio_screen.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -91,8 +92,8 @@ class ResultScreen extends StatelessWidget {
                               const SizedBox(height: 12),
                               Text(state.message,
                                   textAlign: TextAlign.center,
-                                  style:
-                                      const TextStyle(color: Colors.grey)),
+                                  style: const TextStyle(
+                                      color: Colors.grey)),
                               const SizedBox(height: 16),
                               ElevatedButton(
                                 onPressed: () =>
@@ -105,8 +106,8 @@ class ResultScreen extends StatelessWidget {
                                     backgroundColor:
                                         const Color(0xFF1a3a2a)),
                                 child: const Text('Retry',
-                                    style:
-                                        TextStyle(color: Colors.white)),
+                                    style: TextStyle(
+                                        color: Colors.white)),
                               ),
                             ],
                           ),
@@ -122,15 +123,22 @@ class ResultScreen extends StatelessWidget {
                           final verse = state.verses[index];
                           final isTop = index == 0;
                           return _VerseCard(
-                            verse: verse,
-                            isTop: isTop,
+                            verse:  verse,
+                            isTop:  isTop,
                             onPlay: () => Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => AudioScreen(
-                                  verses: state.verses,
+                                  verses:       state.verses,
                                   initialIndex: index,
                                 ),
+                              ),
+                            ),
+                            onShare: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ShareScreen(verse: verse),
                               ),
                             ),
                           );
@@ -155,13 +163,15 @@ class ResultScreen extends StatelessWidget {
 // ─────────────────────────────────────────
 class _VerseCard extends StatelessWidget {
   final Map<String, dynamic> verse;
-  final bool isTop;
+  final bool         isTop;
   final VoidCallback onPlay;
+  final VoidCallback onShare;
 
   const _VerseCard({
     required this.verse,
     required this.isTop,
     required this.onPlay,
+    required this.onShare,
   });
 
   @override
@@ -172,8 +182,9 @@ class _VerseCard extends StatelessWidget {
         color: isTop ? const Color(0xFFf0f7f3) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color:
-              isTop ? const Color(0xFFc8e6d4) : const Color(0xFFE0E0E0),
+          color: isTop
+              ? const Color(0xFFc8e6d4)
+              : const Color(0xFFE0E0E0),
         ),
       ),
       child: Padding(
@@ -198,8 +209,8 @@ class _VerseCard extends StatelessWidget {
                   child: Text(
                     'Rank ${verse['rank']}',
                     style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 11,
+                        color:      Colors.white,
+                        fontSize:   11,
                         fontWeight: FontWeight.w500),
                   ),
                 ),
@@ -222,7 +233,7 @@ class _VerseCard extends StatelessWidget {
               child: Text(
                 verse['arabic_text'] ?? '',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize:   18,
                   fontWeight: FontWeight.w600,
                   color: isTop
                       ? const Color(0xFF1a3a2a)
@@ -237,7 +248,7 @@ class _VerseCard extends StatelessWidget {
             Text(
               verse['verse_text'] ?? '',
               style: TextStyle(
-                fontSize: 15,
+                fontSize:   15,
                 fontWeight: FontWeight.w600,
                 color: isTop
                     ? const Color(0xFF1a3a2a)
@@ -265,38 +276,69 @@ class _VerseCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            // Play button
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: onPlay,
-                icon: Icon(
-                  Icons.play_circle_outline,
-                  size: 18,
-                  color: isTop
-                      ? const Color(0xFF1a3a2a)
-                      : Colors.grey.shade700,
-                ),
-                label: Text(
-                  'Play Audio',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: isTop
-                        ? const Color(0xFF1a3a2a)
-                        : Colors.grey.shade700,
+            // Play + Share buttons row
+            Row(
+              children: [
+                // Play button
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: onPlay,
+                    icon: Icon(
+                      Icons.play_circle_outline,
+                      size:  18,
+                      color: isTop
+                          ? const Color(0xFF1a3a2a)
+                          : Colors.grey.shade700,
+                    ),
+                    label: Text(
+                      'Play Audio',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: isTop
+                            ? const Color(0xFF1a3a2a)
+                            : Colors.grey.shade700,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(
+                        color: isTop
+                            ? const Color(0xFF1a3a2a)
+                            : Colors.grey.shade400,
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 8),
+                    ),
                   ),
                 ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(
-                    color: isTop
-                        ? const Color(0xFF1a3a2a)
-                        : Colors.grey.shade400,
+                const SizedBox(width: 8),
+
+                // Share button
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: onShare,
+                    icon: Icon(
+                      Icons.share_rounded,
+                      size:  18,
+                      color: Colors.grey.shade700,
+                    ),
+                    label: Text(
+                      'Share',
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey.shade700),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.grey.shade400),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      padding:
+                          const EdgeInsets.symmetric(vertical: 8),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                  padding: const EdgeInsets.symmetric(vertical: 8),
                 ),
-              ),
+              ],
             ),
           ],
         ),

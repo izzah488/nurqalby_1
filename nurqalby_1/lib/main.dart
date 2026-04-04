@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'services/notification_service.dart'; 
-import 'screens/input_screen.dart';
+import 'services/notification_service.dart';
+import 'screens/welcome_screen.dart';
 
 void main() async  {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,8 @@ class MyApp extends StatelessWidget {
         fontFamily: 'sans-serif',
         scaffoldBackgroundColor: const Color(0xFFF5F5F0),
       ),
-      home: const InputScreen(),
+      home: const WelcomeScreen(),
+      
     );
   }
 }

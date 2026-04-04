@@ -25,6 +25,21 @@ class NotificationService {
   }
 
   static Future<void> cancelAll() async {
+     {
+  await _plugin.show(
+    99,
+    'Test Notification 🕌',
+    'Indeed with hardship comes ease (94:6)',
+    const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'prayer_channel',
+        'Prayer Reminders',
+        importance: Importance.high,
+        priority:   Priority.high,
+      ),
+    ),
+  );
+}
     await _plugin.cancelAll();
   }
 
