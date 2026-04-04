@@ -5,10 +5,10 @@ import pandas as pd
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+import os
 
 app = FastAPI(title="Quran Verse Recommender API")
 
-# Allow Flutter to call this API
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,10 +16,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load once at startup
+# Fix path — works both locally and on Render
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CSV_PATH = os.path.join(BASE_DIR, "dataset", "verses.csv")
+
 print("Loading model...")
 model = SentenceTransformer("all-MiniLM-L6-v2")
-df    = pd.read_csv("../dataset/verses.csv")
+df    = pd.read_csv(CSV_PATH)
 print(f"Ready. {len(df)} verses loaded.")
 
 
@@ -41,7 +44,6 @@ def root():
 
 @app.post("/recommend")
 def recommend(data: UserInput):
-    # Filter by emotion + cause
     filtered = df[
         (df["emotion"].str.lower() == data.emotion.lower()) &
         (df["cause"].str.lower()   == data.cause.lower())
@@ -52,12 +54,10 @@ def recommend(data: UserInput):
         filtered    = df.reset_index(drop=True)
         used_filter = False
 
-    # Encode
     verse_texts      = filtered["verse_text"].tolist()
     verse_embeddings = model.encode(verse_texts)
     user_embedding   = model.encode([data.text])
 
-    # Similarity
     similarities = cosine_similarity(user_embedding, verse_embeddings)[0]
     top_k        = min(data.top_k, len(filtered))
     top_indices  = np.argsort(similarities)[-top_k:][::-1]
@@ -66,14 +66,15 @@ def recommend(data: UserInput):
     for rank, idx in enumerate(top_indices, start=1):
         row = filtered.iloc[idx]
         results.append({
-            "rank"       : rank,
-            "surah"      : int(row["surah"]),
-            "ayah"       : int(row["ayah"]),
-            "verse_text" : row["verse_text"],
-            "emotion"    : row["emotion"],
-            "cause"      : row["cause"],
-            "score"      : round(float(similarities[idx]), 4),
-            "audio_url"  : generate_audio_url(row["surah"], row["ayah"])
+            "rank"        : rank,
+            "surah"       : int(row["surah"]),
+            "ayah"        : int(row["ayah"]),
+            "arabic_text" : row["arabic_text"],
+            "verse_text"  : row["verse_text"],
+            "emotion"     : row["emotion"],
+            "cause"       : row["cause"],
+            "score"       : round(float(similarities[idx]), 4),
+            "audio_url"   : generate_audio_url(row["surah"], row["ayah"])
         })
 
     return {
@@ -81,3 +82,8 @@ def recommend(data: UserInput):
         "total_results"  : len(results),
         "results"        : results
     }
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
