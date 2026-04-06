@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'cause_screen.dart';
+import 'notification_settings_screen.dart';
 
 class EmotionScreen extends StatefulWidget {
   final String userText;
@@ -13,17 +14,17 @@ class _EmotionScreenState extends State<EmotionScreen> {
   String? selectedEmotion;
 
   final List<Map<String, dynamic>> emotions = [
-    {'label': 'Sadness',  'icon': '😔', 'value': 'sadness'},
-    {'label': 'Fear',     'icon': '😨', 'value': 'fear'},
-    {'label': 'Anger',    'icon': '😠', 'value': 'anger'},
-    {'label': 'Joy',      'icon': '😊', 'value': 'joy'},
+    {'label': 'Sadness', 'icon': '😔', 'value': 'sadness'},
+    {'label': 'Fear',    'icon': '😨', 'value': 'fear'},
+    {'label': 'Anger',   'icon': '😠', 'value': 'anger'},
+    {'label': 'Joy',     'icon': '😊', 'value': 'joy'},
   ];
 
   void _next() {
     if (selectedEmotion == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select an emotion.'),
+          content:         Text('Please select an emotion.'),
           backgroundColor: Color(0xFF1a3a2a),
         ),
       );
@@ -49,33 +50,67 @@ class _EmotionScreenState extends State<EmotionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // Header
+            // --- Header ---
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back,
-                        color: Colors.white, size: 24),
+
+                  // Back + notification row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(Icons.arrow_back,
+                            color: Colors.white, size: 24),
+                      ),
+
+                      // Notification button
+                      GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const NotificationSettingsScreen(),
+                          ),
+                        ),
+                        child: Container(
+                          width:  42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color:        const Color(0xFF1a3a2a),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color: const Color(0xFF2d5a3d)),
+                          ),
+                          child: const Icon(
+                            Icons.notifications_outlined,
+                            color: Color(0xFF4CAF50),
+                            size:  22,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+
                   const SizedBox(height: 20),
                   const Text('Select Emotion',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
+                          color:      Colors.white,
+                          fontSize:   22,
                           fontWeight: FontWeight.w700)),
                   const SizedBox(height: 4),
                   Text('Select one emotion to find guidance.',
                       style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
+                          color:    Colors.white.withOpacity(0.6),
                           fontSize: 13)),
                 ],
               ),
             ),
 
-            // Emotion grid
+            // --- Emotion grid ---
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -119,13 +154,13 @@ class _EmotionScreenState extends State<EmotionScreen> {
                                     color: isSelected
                                         ? Colors.white
                                         : Colors.white.withOpacity(0.8),
-                                    fontSize: 14,
+                                    fontSize:   14,
                                     fontWeight: FontWeight.w500)),
                             if (isSelected) ...[
                               const SizedBox(height: 4),
                               const Text('Selected',
                                   style: TextStyle(
-                                      color: Color(0xFF4CAF50),
+                                      color:    Color(0xFF4CAF50),
                                       fontSize: 11)),
                             ],
                           ],
@@ -137,7 +172,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
               ),
             ),
 
-            // Next button
+            // --- Next button ---
             Padding(
               padding: const EdgeInsets.all(20),
               child: SizedBox(
@@ -152,8 +187,8 @@ class _EmotionScreenState extends State<EmotionScreen> {
                   ),
                   child: const Text('Select Cause →',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+                          color:      Colors.white,
+                          fontSize:   16,
                           fontWeight: FontWeight.w600)),
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'emotion_screen.dart';
+import 'notification_settings_screen.dart';
 
 class InputScreen extends StatefulWidget {
   const InputScreen({super.key});
@@ -16,7 +17,7 @@ class _InputScreenState extends State<InputScreen> {
     if (text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please describe how you feel.'),
+          content:         Text('Please describe how you feel.'),
           backgroundColor: Color(0xFF1a3a2a),
         ),
       );
@@ -41,44 +42,102 @@ class _InputScreenState extends State<InputScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              const SizedBox(height: 20),
+              // --- Top bar with notification button ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // App name badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color:        const Color(0xFF1a3a2a),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: const Color(0xFF2d5a3d)),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.menu_book_rounded,
+                            color: Color(0xFF4CAF50), size: 14),
+                        SizedBox(width: 6),
+                        Text('NurQalby',
+                            style: TextStyle(
+                                color:      Color(0xFF9fd4b0),
+                                fontSize:   12,
+                                fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
+
+                  // Notification settings button
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            const NotificationSettingsScreen(),
+                      ),
+                    ),
+                    child: Container(
+                      width:  42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color:        const Color(0xFF1a3a2a),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: const Color(0xFF2d5a3d)),
+                      ),
+                      child: const Icon(
+                        Icons.notifications_outlined,
+                        color: Color(0xFF4CAF50),
+                        size:  22,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 32),
               const Text('How is your',
                   style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
+                      color:      Colors.white,
+                      fontSize:   32,
                       fontWeight: FontWeight.w700)),
               const Text('heart feeling?',
                   style: TextStyle(
-                      color: Color(0xFF4CAF50),
-                      fontSize: 32,
+                      color:      Color(0xFF4CAF50),
+                      fontSize:   32,
                       fontWeight: FontWeight.w700)),
               const SizedBox(height: 8),
-              Text('Tell us what is on your mind to find guidance.',
-                  style: TextStyle(
-                      color: Colors.white.withOpacity(0.6),
-                      fontSize: 14)),
+              Text(
+                'Tell us what is on your mind to find guidance.',
+                style: TextStyle(
+                    color:    Colors.white.withOpacity(0.6),
+                    fontSize: 14),
+              ),
               const SizedBox(height: 32),
 
-              // Search / text field
+              // Text field
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1a3a2a),
+                  color:        const Color(0xFF1a3a2a),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: const Color(0xFF2d5a3d)),
+                  border: Border.all(color: const Color(0xFF2d5a3d)),
                 ),
                 child: TextField(
                   controller: _controller,
-                  maxLines: 4,
+                  maxLines:   4,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     hintText: 'e.g. I feel anxious about my future...',
                     hintStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.4),
+                        color:    Colors.white.withOpacity(0.4),
                         fontSize: 14),
                     prefixIcon: const Icon(Icons.search,
                         color: Color(0xFF4CAF50)),
-                    border: InputBorder.none,
+                    border:         InputBorder.none,
                     contentPadding: const EdgeInsets.all(16),
                   ),
                 ),
@@ -96,11 +155,13 @@ class _InputScreenState extends State<InputScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                   ),
-                  child: const Text('Select Emotion →',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600)),
+                  child: const Text(
+                    'Select Emotion →',
+                    style: TextStyle(
+                        color:      Colors.white,
+                        fontSize:   16,
+                        fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
             ],

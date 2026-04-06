@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'result_screen.dart';
+import 'notification_settings_screen.dart';
 
 class CauseScreen extends StatefulWidget {
   final String userText;
@@ -43,7 +44,7 @@ class _CauseScreenState extends State<CauseScreen> {
     if (selectedCause == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select a cause.'),
+          content:         Text('Please select a cause.'),
           backgroundColor: Color(0xFF1a3a2a),
         ),
       );
@@ -70,28 +71,62 @@ class _CauseScreenState extends State<CauseScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // Header
+            // --- Header ---
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back,
-                        color: Colors.white, size: 24),
+
+                  // Back + notification row
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(Icons.arrow_back,
+                            color: Colors.white, size: 24),
+                      ),
+
+                      // Notification button
+                      GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const NotificationSettingsScreen(),
+                          ),
+                        ),
+                        child: Container(
+                          width:  42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color:        const Color(0xFF1a3a2a),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color: const Color(0xFF2d5a3d)),
+                          ),
+                          child: const Icon(
+                            Icons.notifications_outlined,
+                            color: Color(0xFF4CAF50),
+                            size:  22,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
+
                   const SizedBox(height: 20),
                   const Text('Cause Selection',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
+                          color:      Colors.white,
+                          fontSize:   22,
                           fontWeight: FontWeight.w700)),
                   const SizedBox(height: 4),
                   Text(
                     'What is causing this feeling?',
                     style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
+                        color:    Colors.white.withOpacity(0.6),
                         fontSize: 13),
                   ),
                   const SizedBox(height: 4),
@@ -101,15 +136,15 @@ class _CauseScreenState extends State<CauseScreen> {
                         TextSpan(
                           text: 'Refining results for ',
                           style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
+                              color:    Colors.white.withOpacity(0.5),
                               fontSize: 12),
                         ),
                         TextSpan(
                           text: widget.emotion[0].toUpperCase() +
                               widget.emotion.substring(1),
                           style: const TextStyle(
-                              color: Color(0xFF4CAF50),
-                              fontSize: 12,
+                              color:      Color(0xFF4CAF50),
+                              fontSize:   12,
                               fontWeight: FontWeight.w600),
                         ),
                       ],
@@ -119,7 +154,7 @@ class _CauseScreenState extends State<CauseScreen> {
               ),
             ),
 
-            // Cause list
+            // --- Cause list ---
             Expanded(
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -132,8 +167,8 @@ class _CauseScreenState extends State<CauseScreen> {
                         setState(() => selectedCause = c['value']),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
-                      margin: const EdgeInsets.only(bottom: 12),
-                      padding: const EdgeInsets.all(16),
+                      margin:   const EdgeInsets.only(bottom: 12),
+                      padding:  const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? const Color(0xFF1a3a2a)
@@ -169,7 +204,8 @@ class _CauseScreenState extends State<CauseScreen> {
                           const SizedBox(width: 14),
                           Expanded(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start,
                               children: [
                                 Text(c['label'],
                                     style: TextStyle(
@@ -177,20 +213,21 @@ class _CauseScreenState extends State<CauseScreen> {
                                             ? Colors.white
                                             : Colors.white
                                                 .withOpacity(0.85),
-                                        fontSize: 14,
+                                        fontSize:   14,
                                         fontWeight: FontWeight.w600)),
                                 const SizedBox(height: 2),
                                 Text(c['subtitle'],
                                     style: TextStyle(
-                                        color: Colors.white.withOpacity(0.4),
+                                        color: Colors.white
+                                            .withOpacity(0.4),
                                         fontSize: 12)),
                               ],
                             ),
                           ),
                           Radio(
-                            value:          c['value'],
-                            groupValue:     selectedCause,
-                            onChanged: (val) =>
+                            value:      c['value'],
+                            groupValue: selectedCause,
+                            onChanged:  (val) =>
                                 setState(() => selectedCause = val),
                             activeColor: const Color(0xFF4CAF50),
                             fillColor: WidgetStateProperty.resolveWith(
@@ -208,7 +245,7 @@ class _CauseScreenState extends State<CauseScreen> {
               ),
             ),
 
-            // Find Verses button
+            // --- Find Verses button ---
             Padding(
               padding: const EdgeInsets.all(20),
               child: SizedBox(
@@ -223,8 +260,8 @@ class _CauseScreenState extends State<CauseScreen> {
                   ),
                   child: const Text('Find Verses →',
                       style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
+                          color:      Colors.white,
+                          fontSize:   16,
                           fontWeight: FontWeight.w600)),
                 ),
               ),

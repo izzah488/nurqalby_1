@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:adhan/adhan.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+
 
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
@@ -36,6 +38,8 @@ class NotificationService {
         'Prayer Reminders',
         importance: Importance.high,
         priority:   Priority.high,
+         icon:               '@mipmap/ic_launcher',
+        color:              Color(0xFF1a3a2a),
       ),
     ),
   );
@@ -79,12 +83,14 @@ class NotificationService {
           'Time to prepare for ${prayers[i]['name']} 🕌',
           quotes[i % quotes.length],
           tz.TZDateTime.from(notifTime, tz.local),
-          const NotificationDetails(
+           NotificationDetails(
             android: AndroidNotificationDetails(
               'prayer_channel',
               'Prayer Reminders',
               importance: Importance.high,
               priority:   Priority.high,
+              icon:               '@mipmap/ic_launcher',  // ← add this line
+              color:              Color(0xFF1a3a2a),
             ),
             iOS: DarwinNotificationDetails(),
           ),
