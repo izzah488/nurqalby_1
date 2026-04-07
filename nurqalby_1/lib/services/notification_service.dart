@@ -3,7 +3,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:adhan/adhan.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-
+import '../screens/notification_detail_screen.dart';
+import '../main.dart'; // Make sure navigatorKey is exported from here
 
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
@@ -23,27 +24,50 @@ class NotificationService {
     const ios     = DarwinInitializationSettings();
     await _plugin.initialize(
       const InitializationSettings(android: android, iOS: ios),
+      onDidReceiveNotificationResponse: _onNotificationTap, // Wired up the tap handler
+    );
+  }
+
+  static void _onNotificationTap(NotificationResponse response) {
+    final payload = response.payload;
+    if (payload == null) return;
+
+    final parts = payload.split('||');
+    if (parts.length < 5) return;
+
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (_) => NotificationDetailScreen(
+          arabic:    parts[0],
+          english:   parts[1],
+          title:     parts[2],
+          reference: parts[3],
+          type:      parts[4],
+        ),
+      ),
+    );
+  }
+
+  // Extracted the test notification into its own properly formed method
+  static Future<void> showTestNotification() async {
+    await _plugin.show(
+      99,
+      'Test Notification 🕌',
+      'Indeed with hardship comes ease (94:6)',
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'prayer_channel',
+          'Prayer Reminders',
+          importance: Importance.high,
+          priority:   Priority.high,
+          icon:       '@mipmap/ic_launcher',
+          color:      Color(0xFF1a3a2a),
+        ),
+      ),
     );
   }
 
   static Future<void> cancelAll() async {
-     {
-  await _plugin.show(
-    99,
-    'Test Notification 🕌',
-    'Indeed with hardship comes ease (94:6)',
-    const NotificationDetails(
-      android: AndroidNotificationDetails(
-        'prayer_channel',
-        'Prayer Reminders',
-        importance: Importance.high,
-        priority:   Priority.high,
-         icon:               '@mipmap/ic_launcher',
-        color:              Color(0xFF1a3a2a),
-      ),
-    ),
-  );
-}
     await _plugin.cancelAll();
   }
 
@@ -71,6 +95,13 @@ class NotificationService {
       {'time': times.isha,    'enabled': ishaEnabled,    'name': 'Isha'},
     ];
 
+    // Added a sample 'doa' map so your payload compiles. 
+    // You can replace this with a dynamic dua fetcher if you prefer!
+    final doa = {
+      'arabic': 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ، وَشُكْرِكَ، وَحُسْنِ عِبَادَتِكَ',
+      'translation': 'O Allah, help me remember You, to be grateful to You, and to worship You in an excellent manner.'
+    };
+
     for (int i = 0; i < prayers.length; i++) {
       if (prayers[i]['enabled'] == false) continue;
 
@@ -83,22 +114,22 @@ class NotificationService {
           'Time to prepare for ${prayers[i]['name']} 🕌',
           quotes[i % quotes.length],
           tz.TZDateTime.from(notifTime, tz.local),
-           NotificationDetails(
+          const NotificationDetails(
             android: AndroidNotificationDetails(
               'prayer_channel',
               'Prayer Reminders',
               importance: Importance.high,
               priority:   Priority.high,
-              icon:               '@mipmap/ic_launcher',  // ← add this line
-              color:              Color(0xFF1a3a2a),
+              icon:       '@mipmap/ic_launcher', 
+              color:      Color(0xFF1a3a2a),
             ),
             iOS: DarwinNotificationDetails(),
           ),
-          androidScheduleMode:
-              AndroidScheduleMode.exactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
-              matchDateTimeComponents: DateTimeComponents.time,
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.time,
+          // Moved the payload here where it belongs!
+          payload: '${doa['arabic']}||${doa['translation']}||${prayers[i]['name']} Dua||Hisnul Muslim||dua',
         );
       }
     }

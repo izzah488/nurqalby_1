@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'input_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'home_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -41,12 +42,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     }
   }
 
-  void _goToApp() {
+  void _goToApp() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool('seen_welcome', true);
+  if (mounted) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (_) => const InputScreen()),
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
     );
   }
+}
 
   @override
   void dispose() {
