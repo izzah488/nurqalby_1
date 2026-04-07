@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 import '../cubit/verse_cubit.dart';
 import '../cubit/verse_state.dart';
+import '../services/dua_service.dart';
 import 'share_screen.dart';
 import 'audio_screen.dart';
+import 'doa_detail_screen.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   final String userText;
   final String emotion;
   final String cause;
@@ -18,44 +21,80 @@ class ResultScreen extends StatelessWidget {
   });
 
   @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  int _selectedTab = 0;
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => VerseCubit()
         ..fetchVerses(
-          text: userText,
-          emotion: emotion,
-          cause: cause,
+          text:    widget.userText,
+          emotion: widget.emotion,
+          cause:   widget.cause,
         ),
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F5F0),
         body: SafeArea(
           child: Column(
             children: [
-              // --- Header ---
+
+              // --- Header + Tabs ---
               Container(
-                width: double.infinity,
                 color: const Color(0xFF1a3a2a),
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-                child: Row(
+                child: Column(
                   children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.arrow_back_ios,
-                          color: Colors.white, size: 18),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 12),
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Icon(Icons.arrow_back_ios,
+                                color: Colors.white, size: 18),
+                          ),
+                          const SizedBox(width: 12),
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Recommended for you',
+                                  style: TextStyle(
+                                      color: Color(0xFF9fd4b0),
+                                      fontSize: 12)),
+                              Text('Your Results',
+                                  style: TextStyle(
+                                      color:      Colors.white,
+                                      fontSize:   18,
+                                      fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 12),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Recommended for you',
-                            style: TextStyle(
-                                color: Color(0xFF9fd4b0), fontSize: 12)),
-                        Text('Your Verses',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600)),
-                      ],
+
+                    // Tabs
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+                      child: Row(
+                        children: [
+                          _TabButton(
+                            label:      '📖  Verses',
+                            isSelected: _selectedTab == 0,
+                            onTap: () =>
+                                setState(() => _selectedTab = 0),
+                          ),
+                          const SizedBox(width: 8),
+                          _TabButton(
+                            label:      '🤲  Dua',
+                            isSelected: _selectedTab == 1,
+                            onTap: () =>
+                                setState(() => _selectedTab = 1),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -73,8 +112,9 @@ class ResultScreen extends StatelessWidget {
                             CircularProgressIndicator(
                                 color: Color(0xFF1a3a2a)),
                             SizedBox(height: 12),
-                            Text('Finding your verses...',
-                                style: TextStyle(color: Colors.grey)),
+                            Text('Finding your results...',
+                                style:
+                                    TextStyle(color: Colors.grey)),
                           ],
                         ),
                       );
@@ -96,12 +136,13 @@ class ResultScreen extends StatelessWidget {
                                       color: Colors.grey)),
                               const SizedBox(height: 16),
                               ElevatedButton(
-                                onPressed: () =>
-                                    context.read<VerseCubit>().fetchVerses(
-                                          text: userText,
-                                          emotion: emotion,
-                                          cause: cause,
-                                        ),
+                                onPressed: () => context
+                                    .read<VerseCubit>()
+                                    .fetchVerses(
+                                      text:    widget.userText,
+                                      emotion: widget.emotion,
+                                      cause:   widget.cause,
+                                    ),
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor:
                                         const Color(0xFF1a3a2a)),
@@ -116,34 +157,59 @@ class ResultScreen extends StatelessWidget {
                     }
 
                     if (state is VerseSuccess) {
-                      return ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: state.verses.length,
-                        itemBuilder: (context, index) {
-                          final verse = state.verses[index];
-                          final isTop = index == 0;
-                          return _VerseCard(
-                            verse:  verse,
-                            isTop:  isTop,
-                            onPlay: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => AudioScreen(
-                                  verses:       state.verses,
-                                  initialIndex: index,
-                                ),
-                              ),
-                            ),
-                            onShare: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    ShareScreen(verse: verse),
-                              ),
-                            ),
-                          );
-                        },
-                      );
+                      final duas =
+                          DuaService.getDuasByEmotion(widget.emotion);
+
+                      return _selectedTab == 0
+                          // ── VERSES TAB ──
+                          ? ListView.builder(
+                              padding: const EdgeInsets.all(16),
+                              itemCount: state.verses.length,
+                              itemBuilder: (context, index) {
+                                final verse = state.verses[index];
+                                final isTop = index == 0;
+                                return _VerseCard(
+                                  verse:  verse,
+                                  isTop:  isTop,
+                                  onPlay: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => AudioScreen(
+                                        verses:       state.verses,
+                                        initialIndex: index,
+                                      ),
+                                    ),
+                                  ),
+                                  onShare: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          ShareScreen(verse: verse),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          // ── DUA TAB ──
+                          : ListView.builder(
+                              padding: const EdgeInsets.all(16),
+                              itemCount: duas.length,
+                              itemBuilder: (context, index) {
+                                return _DuaCard(
+                                  dua: duas[index],
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => DoaDetailScreen(
+                                        arabic:      duas[index]['arabic_text'] ?? duas[index]['arabic']!,
+                                        translation: duas[index]['english_text'] ?? duas[index]['translation']!,
+                                        prayerName:  widget.emotion,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
                     }
 
                     return const SizedBox();
@@ -159,7 +225,52 @@ class ResultScreen extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────
-// _VerseCard widget
+// Tab button
+// ─────────────────────────────────────────
+class _TabButton extends StatelessWidget {
+  final String       label;
+  final bool         isSelected;
+  final VoidCallback onTap;
+
+  const _TabButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding:  const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? Colors.white
+                : Colors.white.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize:   13,
+              fontWeight: FontWeight.w600,
+              color: isSelected
+                  ? const Color(0xFF1a3a2a)
+                  : Colors.white.withOpacity(0.7),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────
+// Verse card
 // ─────────────────────────────────────────
 class _VerseCard extends StatelessWidget {
   final Map<String, dynamic> verse;
@@ -193,7 +304,6 @@ class _VerseCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // Rank + Score row
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -206,105 +316,81 @@ class _VerseCard extends StatelessWidget {
                         : Colors.grey.shade600,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(
-                    'Rank ${verse['rank']}',
-                    style: const TextStyle(
-                        color:      Colors.white,
-                        fontSize:   11,
-                        fontWeight: FontWeight.w500),
-                  ),
+                  child: Text('Rank ${verse['rank']}',
+                      style: const TextStyle(
+                          color:      Colors.white,
+                          fontSize:   11,
+                          fontWeight: FontWeight.w500)),
                 ),
-                Text(
-                  'Score: ${verse['score']}',
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: isTop
-                        ? const Color(0xFF5a8a6a)
-                        : Colors.grey,
-                  ),
-                ),
+                Text('Score: ${verse['score']}',
+                    style: TextStyle(
+                        fontSize: 11,
+                        color: isTop
+                            ? const Color(0xFF5a8a6a)
+                            : Colors.grey)),
               ],
             ),
             const SizedBox(height: 10),
 
-            // Arabic text
             Directionality(
               textDirection: TextDirection.rtl,
               child: Text(
                 verse['arabic_text'] ?? '',
                 style: TextStyle(
-                  fontSize:   18,
-                  fontWeight: FontWeight.w600,
-                  color: isTop
-                      ? const Color(0xFF1a3a2a)
-                      : Colors.black87,
-                  height: 1.8,
-                ),
+                    fontSize:   18,
+                    fontWeight: FontWeight.w600,
+                    color: isTop
+                        ? const Color(0xFF1a3a2a)
+                        : Colors.black87,
+                    height: 1.8),
               ),
             ),
             const SizedBox(height: 8),
 
-            // English verse
-            Text(
-              verse['verse_text'] ?? '',
-              style: TextStyle(
-                fontSize:   15,
-                fontWeight: FontWeight.w600,
-                color: isTop
-                    ? const Color(0xFF1a3a2a)
-                    : Colors.black87,
-              ),
-            ),
+            Text(verse['verse_text'] ?? '',
+                style: TextStyle(
+                    fontSize:   15,
+                    fontWeight: FontWeight.w600,
+                    color: isTop
+                        ? const Color(0xFF1a3a2a)
+                        : Colors.black87)),
             const SizedBox(height: 4),
 
-            // Surah + Ayah
             Text(
-              'Surah ${verse['surah']}  •  Ayah ${verse['ayah']}',
-              style: TextStyle(
-                fontSize: 12,
-                color: isTop
-                    ? const Color(0xFF5a8a6a)
-                    : Colors.grey,
-              ),
-            ),
+                'Surah ${verse['surah']}  •  Ayah ${verse['ayah']}',
+                style: TextStyle(
+                    fontSize: 12,
+                    color: isTop
+                        ? const Color(0xFF5a8a6a)
+                        : Colors.grey)),
             const SizedBox(height: 4),
 
-            // Tags
-            Text(
-              '${verse['emotion']}  ·  ${verse['cause']}',
-              style: const TextStyle(fontSize: 11, color: Colors.grey),
-            ),
+            Text('${verse['emotion']}  ·  ${verse['cause']}',
+                style: const TextStyle(
+                    fontSize: 11, color: Colors.grey)),
             const SizedBox(height: 10),
 
-            // Play + Share buttons row
             Row(
               children: [
-                // Play button
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: onPlay,
-                    icon: Icon(
-                      Icons.play_circle_outline,
-                      size:  18,
-                      color: isTop
-                          ? const Color(0xFF1a3a2a)
-                          : Colors.grey.shade700,
-                    ),
-                    label: Text(
-                      'Play Audio',
-                      style: TextStyle(
-                        fontSize: 13,
+                    icon: Icon(Icons.play_circle_outline,
+                        size:  18,
                         color: isTop
                             ? const Color(0xFF1a3a2a)
-                            : Colors.grey.shade700,
-                      ),
-                    ),
+                            : Colors.grey.shade700),
+                    label: Text('Play Audio',
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: isTop
+                                ? const Color(0xFF1a3a2a)
+                                : Colors.grey.shade700)),
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(
-                        color: isTop
-                            ? const Color(0xFF1a3a2a)
-                            : Colors.grey.shade400,
-                      ),
+                          color: isTop
+                              ? const Color(0xFF1a3a2a)
+                              : Colors.grey.shade400),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
                       padding:
@@ -313,22 +399,16 @@ class _VerseCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-
-                // Share button
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: onShare,
-                    icon: Icon(
-                      Icons.share_rounded,
-                      size:  18,
-                      color: Colors.grey.shade700,
-                    ),
-                    label: Text(
-                      'Share',
-                      style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade700),
-                    ),
+                    icon: Icon(Icons.share_rounded,
+                        size:  18,
+                        color: Colors.grey.shade700),
+                    label: Text('Share',
+                        style: TextStyle(
+                            fontSize: 13,
+                            color:    Colors.grey.shade700)),
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: Colors.grey.shade400),
                       shape: RoundedRectangleBorder(
@@ -338,6 +418,101 @@ class _VerseCard extends StatelessWidget {
                     ),
                   ),
                 ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────
+// Dua card — tap opens detail screen
+// ─────────────────────────────────────────
+class _DuaCard extends StatelessWidget {
+  final Map<String, String> dua;
+  final VoidCallback        onTap;
+
+  const _DuaCard({
+    required this.dua,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin:  const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color:        const Color(0xFFf7f0ff),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFd4b8f0)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            // Title
+            if (dua['title'] != null && dua['title']!.isNotEmpty) ...[
+              Text(
+                dua['title']!,
+                style: const TextStyle(
+                    fontSize:   13,
+                    fontWeight: FontWeight.w600,
+                    color:      Color(0xFF3a1a6a)),
+              ),
+              const SizedBox(height: 8),
+            ],
+
+            // Arabic
+            Directionality(
+              textDirection: TextDirection.rtl,
+              child: Text(
+                dua['arabic_text'] ?? dua['arabic'] ?? '',
+                style: const TextStyle(
+                    fontSize:   17,
+                    fontWeight: FontWeight.w600,
+                    color:      Color(0xFF3a1a6a),
+                    height:     1.8),
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Translation / English
+            Text(
+              dua['english_text'] ?? dua['translation'] ?? '',
+              style: const TextStyle(
+                  fontSize: 13,
+                  color:    Color(0xFF5a3a8a),
+                  height:   1.5),
+            ),
+            const SizedBox(height: 4),
+
+            // Reference
+            Text(
+              dua['reference'] ?? '',
+              style: TextStyle(
+                  fontSize:  11,
+                  color:     Colors.grey.shade500,
+                  fontStyle: FontStyle.italic),
+            ),
+            const SizedBox(height: 10),
+
+            // Tap hint
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('Tap to read more',
+                    style: TextStyle(
+                        fontSize: 11,
+                        color:    Colors.grey.shade400)),
+                const SizedBox(width: 4),
+                Icon(Icons.arrow_forward_ios,
+                    size:  11,
+                    color: Colors.grey.shade400),
               ],
             ),
           ],

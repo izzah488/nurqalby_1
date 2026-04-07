@@ -26,7 +26,29 @@ class ApiService {
       final data = jsonDecode(response.body);
       return List<Map<String, dynamic>>.from(data['results']);
     } else {
-      throw Exception('API error: ${response.statusCode}');
+      throw Exception('Recommend API error: ${response.statusCode}');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> recommendDua({
+    required String text,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/recommend_dua'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'text':    text,
+        'emotion': '',
+        'cause':   '',
+        'top_k':   3,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return List<Map<String, dynamic>>.from(data['results']);
+    } else {
+      throw Exception('Dua API error: ${response.statusCode}');
     }
   }
 }

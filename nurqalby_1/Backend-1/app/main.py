@@ -83,6 +83,41 @@ def recommend(data: UserInput):
         "results"        : results
     }
 
+# Load duas dataset
+DUA_PATH = os.path.join(BASE_DIR, "dataset", "duas.csv")
+df_dua   = pd.read_csv(DUA_PATH)
+
+print(f"Ready. {len(df)} verses and {len(df_dua)} duas loaded.")
+
+# Encode duas once at startup
+dua_texts      = df_dua["english_text"].tolist()
+dua_embeddings = model.encode(dua_texts)
+
+
+@app.post("/recommend_dua")
+def recommend_dua(data: UserInput):
+    user_embedding = model.encode([data.text])
+    similarities   = cosine_similarity(user_embedding, dua_embeddings)[0]
+
+    top_k       = min(data.top_k, len(df_dua))
+    top_indices = np.argsort(similarities)[-top_k:][::-1]
+
+    results = []
+    for rank, idx in enumerate(top_indices, start=1):
+        row = df_dua.iloc[idx]
+        results.append({
+            "rank"        : rank,
+            "title"       : row["title"],
+            "arabic_text" : row["arabic_text"],
+            "english_text": row["english_text"],
+            "reference"   : row["reference"],
+            "score"       : round(float(similarities[idx]), 4),
+        })
+
+    return {
+        "total_results": len(results),
+        "results":       results
+    }
 
 if __name__ == "__main__":
     import uvicorn
