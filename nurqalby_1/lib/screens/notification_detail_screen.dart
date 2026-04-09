@@ -38,11 +38,16 @@ class _NotificationDetailScreenState
   Future<void> _checkIfSaved() async {
     final prefs   = await SharedPreferences.getInstance();
     final saved   = prefs.getStringList('saved_items') ?? [];
+    
+    // Made the key dynamic based on whether it's a verse or a dua
     final thisKey = '${widget.type}_${widget.arabic}';
-    setState(() => isSaved = saved.any((s) {
-      final map = jsonDecode(s);
-      return map['key'] == thisKey;
-    }));
+    
+    setState(() {
+      isSaved = saved.any((s) {
+        final map = jsonDecode(s);
+        return map['key'] == thisKey;
+      });
+    });
   }
 
   Future<void> _toggleSave() async {
@@ -66,11 +71,11 @@ class _NotificationDetailScreenState
     } else {
       saved.add(jsonEncode({
         'key':       thisKey,
-        'type':      widget.type,
-        'title':     widget.title,
+        'type':      widget.type,        // Uses dynamic type
+        'title':     widget.title,       // Fixed: was widget.prayerName
         'arabic':    widget.arabic,
-        'english':   widget.english,
-        'reference': widget.reference,
+        'english':   widget.english,     // Fixed: was widget.translation
+        'reference': widget.reference,   // Fixed: was empty
       }));
       setState(() => isSaved = true);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -81,7 +86,6 @@ class _NotificationDetailScreenState
         ),
       );
     }
-
     await prefs.setStringList('saved_items', saved);
   }
 

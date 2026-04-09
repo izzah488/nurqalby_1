@@ -7,6 +7,7 @@ import '../services/dua_service.dart';
 import 'share_screen.dart';
 import 'audio_screen.dart';
 import 'doa_detail_screen.dart';
+import 'home_screen.dart';
 
 class ResultScreen extends StatefulWidget {
   final String userText;
@@ -70,6 +71,26 @@ class _ResultScreenState extends State<ResultScreen> {
                                       fontSize:   18,
                                       fontWeight: FontWeight.w600)),
                             ],
+                          ),
+                          const Spacer(), // Pushes the home button to the right
+
+                          // Home button
+                          GestureDetector(
+                            onTap: () => Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const HomeScreen()),
+                              (route) => false,
+                            ),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color:        Colors.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(Icons.home_rounded,
+                                  color: Colors.white, size: 20),
+                            ),
                           ),
                         ],
                       ),
