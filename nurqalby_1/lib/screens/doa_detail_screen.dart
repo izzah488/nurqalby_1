@@ -43,33 +43,38 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
   }
 
   Future<void> _toggleFavourite() async {
-    final prefs   = await SharedPreferences.getInstance();
-    final saved   = prefs.getStringList('saved_items') ?? [];
-    final thisKey = 'dua_${widget.arabic}';
+  final prefs   = await SharedPreferences.getInstance();
+  final saved   = prefs.getStringList('saved_items') ?? [];
+  final thisKey = 'dua_${widget.arabic}';
 
-    setState(() {
-      isFavourite = !isFavourite;
+  setState(() => isFavourite = !isFavourite);
+
+  if (isFavourite) {
+    saved.add(jsonEncode({
+      'key':       thisKey,
+      'type':      'dua',
+      'title':     widget.prayerName,      // maps to title
+      'arabic':    widget.arabic,
+      'english':   widget.translation,     // maps to english
+      'reference': '',
+    }));
+  } else {
+    saved.removeWhere((s) {
+      final map = jsonDecode(s);
+      return map['key'] == thisKey;
     });
-
-    if (isFavourite) {
-      // Save it
-      saved.add(jsonEncode({
-        'key':         thisKey,
-        'arabic':      widget.arabic,
-        'translation': widget.translation,
-        'prayerName':  widget.prayerName,
-        'type':        'dua',
-      }));
-    } else {
-      // Remove it
-      saved.removeWhere((s) {
-        final map = jsonDecode(s);
-        return map['key'] == thisKey;
-      });
-    }
-
-    await prefs.setStringList('saved_items', saved);
   }
+
+  await prefs.setStringList('saved_items', saved);
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content:         Text(isFavourite ? 'Saved successfully' : 'Removed from saved'),
+      backgroundColor: const Color(0xFF1a3a2a),
+      duration:        const Duration(seconds: 2),
+    ),
+  );
+}
 
   void _share() {
     Share.share(

@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adhan/adhan.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+// Add these imports at top of notification_service.dart
+
 
 import '../screens/notification_detail_screen.dart';
 import '../main.dart'; // Make sure navigatorKey is exported from here
@@ -31,33 +33,28 @@ class NotificationService {
     );
   }
 
-  static Future<void> _saveToHistory({
-    required String arabic,
-    required String english,
-    required String title,
-    required String reference,
-    required String type,
-  }) async {
-    final prefs   = await SharedPreferences.getInstance();
-    final history = prefs.getStringList('notification_history') ?? [];
+ static Future<void> _saveToHistory({
+  required String arabic,
+  required String english,
+  required String title,
+  required String reference,
+  required String type,
+}) async {
+  final prefs   = await SharedPreferences.getInstance();
+  final history = prefs.getStringList('notification_history') ?? [];
 
-    history.add(jsonEncode({
-      'arabic':    arabic,
-      'english':   english,
-      'title':     title,
-      'reference': reference,
-      'type':      type,
-      'time':      DateTime.now().toIso8601String(),
-    }));
+  history.add(jsonEncode({
+    'arabic':    arabic,
+    'english':   english,
+    'title':     title,
+    'reference': reference,
+    'type':      type,
+    'time':      DateTime.now().toIso8601String(),
+  }));
 
-    // Keep only last 30 notifications
-    if (history.length > 30) {
-      history.removeAt(0);
-    }
-
-    await prefs.setStringList('notification_history', history);
-  }
-
+  if (history.length > 30) history.removeAt(0);
+  await prefs.setStringList('notification_history', history);
+}
   static void _onNotificationTap(NotificationResponse response) {
     final payload = response.payload;
     if (payload == null) return;
@@ -171,6 +168,14 @@ class NotificationService {
           matchDateTimeComponents: DateTimeComponents.time,
           payload: '${doa['arabic']}||${doa['translation']}||${prayers[i]['name']} Dua||Hisnul Muslim||dua',
         );
+        // Save to history so user can see missed notifications
+await _saveToHistory(
+  arabic:    doa['arabic']!,
+  english:   doa['translation']!,
+  title:     '${prayers[i]['name']} Reminder',
+  reference: 'Hisnul Muslim',
+  type:      'dua',
+);
       }
     }
   }

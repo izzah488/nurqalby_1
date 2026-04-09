@@ -118,18 +118,17 @@ class _SavedScreenState extends State<SavedScreen> {
                             final isVerse = item['type'] == 'verse';
                             return GestureDetector(
                               onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      NotificationDetailScreen(
-                                    arabic:    item['arabic'],
-                                    english:   item['english'],
-                                    title:     item['title'],
-                                    reference: item['reference'],
-                                    type:      item['type'],
-                                  ),
-                                ),
-                              ).then((_) => _loadSaved()),
+  context,
+  MaterialPageRoute(
+    builder: (_) => NotificationDetailScreen(
+      arabic:    item['arabic']    ?? '',
+      english:   item['english']   ?? item['translation'] ?? '',
+      title:     item['title']     ?? item['prayerName']  ?? '',
+      reference: item['reference'] ?? '',
+      type:      item['type']      ?? 'dua',
+    ),
+  ),
+).then((_) => _loadSaved()),
                               child: Container(
                                 margin: const EdgeInsets.only(
                                     bottom: 12),
@@ -224,18 +223,40 @@ class _SavedScreenState extends State<SavedScreen> {
                                     ),
                                     const SizedBox(height: 6),
 
-                                    // English
+                                    // English — handle both field names safely
                                     Text(
-                                      item['english'] ?? '',
+                                     (item['english'] ?? item['translation'] ?? ''),
                                       style: TextStyle(
-                                          color: Colors.white
-                                              .withOpacity(0.6),
-                                          fontSize: 12,
-                                          height:   1.4),
-                                      maxLines:  2,
-                                      overflow:
-                                          TextOverflow.ellipsis,
+                                      color:    Colors.white.withOpacity(0.6),
+                                      fontSize: 12,
+                                      height:   1.4),
+                                    maxLines: 2,
+                                   overflow: TextOverflow.ellipsis,
                                     ),
+                                    const SizedBox(height: 8),
+
+                                    // Reference + time
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment
+                                              .spaceBetween,
+                                      children: [
+                                        Text(
+                                          item['reference'] ?? '',
+                                          style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(0.4),
+                                              fontSize: 11),
+                                        ),
+                                        Text(
+                                          item['time'] ?? '',
+                                          style: TextStyle(
+                                              color: Colors.white
+                                                  .withOpacity(0.3),
+                                              fontSize: 11),
+                                        ),
+                                      ],
+                                    )
                                   ],
                                 ),
                               ),

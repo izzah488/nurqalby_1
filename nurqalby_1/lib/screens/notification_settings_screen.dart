@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/notification_service.dart';
+import 'notification_history_screen.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -82,34 +83,66 @@ class _NotificationSettingsScreenState
           children: [
 
             // --- Header ---
-            Container(
-              width: double.infinity,
-              color: const Color(0xFF1a3a2a),
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back_ios,
-                        color: Colors.white, size: 18),
-                  ),
-                  const SizedBox(width: 12),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Reminders',
-                          style: TextStyle(
-                              color: Color(0xFF9fd4b0), fontSize: 12)),
-                      Text('Notification Settings',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            // In header Row, update to add history button:
+Container(
+  width: double.infinity,
+  color: const Color(0xFF1a3a2a),
+  padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+  child: Row(
+    children: [
+      GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: const Icon(Icons.arrow_back_ios,
+            color: Colors.white, size: 18),
+      ),
+      const SizedBox(width: 12),
+      const Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Reminders',
+                style: TextStyle(
+                    color: Color(0xFF9fd4b0), fontSize: 12)),
+            Text('Notification Settings',
+                style: TextStyle(
+                    color:      Colors.white,
+                    fontSize:   18,
+                    fontWeight: FontWeight.w600)),
+          ],
+        ),
+      ),
+
+      // History button
+      GestureDetector(
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const NotificationHistoryScreen(),
+          ),
+        ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+              horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color:        Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Row(
+            children: [
+              Icon(Icons.history_rounded,
+                  color: Colors.white, size: 16),
+              SizedBox(width: 4),
+              Text('History',
+                  style: TextStyle(
+                      color:    Colors.white,
+                      fontSize: 12)),
+            ],
+          ),
+        ),
+      ),
+    ],
+  ),
+),
 
             // --- Body ---
             _isLoading
