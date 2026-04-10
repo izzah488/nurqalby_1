@@ -25,9 +25,13 @@ class _NotificationHistoryScreenState
   Future<void> _loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
     final list  = prefs.getStringList('notification_history') ?? [];
+    final now   = DateTime.now();
+
     setState(() {
       history = list
           .map((s) => Map<String, dynamic>.from(jsonDecode(s)))
+          // IMPORTANT: Only show notifications whose time has already passed!
+          .where((map) => DateTime.parse(map['time']).isBefore(now))
           .toList()
           .reversed
           .toList();
@@ -36,14 +40,24 @@ class _NotificationHistoryScreenState
   }
 
   String _formatTime(String isoString) {
-    final dt  = DateTime.parse(isoString);
-    final now = DateTime.now();
+    final dt   = DateTime.parse(isoString);
+    final now  = DateTime.now();
     final diff = now.difference(dt);
 
+    if (diff.inMinutes < 1)  return 'Just now';
     if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
     if (diff.inHours < 24)   return '${diff.inHours}h ago';
     if (diff.inDays < 7)     return '${diff.inDays}d ago';
     return '${dt.day}/${dt.month}/${dt.year}';
+  }
+
+  // Add a way to manually clear history
+  Future<void> _clearHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('notification_history');
+    setState(() {
+      history.clear();
+    });
   }
 
   @override
@@ -60,27 +74,39 @@ class _NotificationHistoryScreenState
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
               color:   const Color(0xFF1a3a2a),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back_ios,
-                        color: Colors.white, size: 18),
-                  ),
-                  const SizedBox(width: 12),
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      Text('Your Reminders',
-                          style: TextStyle(
-                              color: Color(0xFF9fd4b0),
-                              fontSize: 12)),
-                      Text('Notification History',
-                          style: TextStyle(
-                              color:      Colors.white,
-                              fontSize:   18,
-                              fontWeight: FontWeight.w600)),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(Icons.arrow_back_ios,
+                            color: Colors.white, size: 18),
+                      ),
+                      const SizedBox(width: 12),
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Your Reminders',
+                              style: TextStyle(
+                                  color: Color(0xFF9fd4b0),
+                                  fontSize: 12)),
+                          Text('Notification History',
+                              style: TextStyle(
+                                  color:      Colors.white,
+                                  fontSize:   18,
+                                  fontWeight: FontWeight.w600)),
+                        ],
+                      ),
                     ],
                   ),
+                  // Clear button
+                  if (history.isNotEmpty)
+                    GestureDetector(
+                      onTap: _clearHistory,
+                      child: const Icon(Icons.delete_outline,
+                          color: Color(0xFF4CAF50), size: 22),
+                    ),
                 ],
               ),
             ),

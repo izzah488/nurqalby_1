@@ -5,16 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:adhan/adhan.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
-// Add these imports at top of notification_service.dart
-
 
 import '../screens/notification_detail_screen.dart';
-import '../main.dart'; // Make sure navigatorKey is exported from here
+import '../main.dart'; 
 
 class NotificationService {
   static final _plugin = FlutterLocalNotificationsPlugin();
 
-  // Quotes to show before each prayer
   static const List<String> quotes = [
     'إِنَّ مَعَ الْعُسْرِ يُسْرًا — Indeed with hardship comes ease (94:6)',
     'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ — In remembrance of Allah hearts find rest (13:28)',
@@ -29,32 +26,49 @@ class NotificationService {
     const ios     = DarwinInitializationSettings();
     await _plugin.initialize(
       const InitializationSettings(android: android, iOS: ios),
-      onDidReceiveNotificationResponse: _onNotificationTap, // Wired up the tap handler
+      onDidReceiveNotificationResponse: _onNotificationTap,
     );
   }
 
- static Future<void> _saveToHistory({
-  required String arabic,
-  required String english,
-  required String title,
-  required String reference,
-  required String type,
-}) async {
-  final prefs   = await SharedPreferences.getInstance();
-  final history = prefs.getStringList('notification_history') ?? [];
+  // UPDATED: Now takes the scheduledTime and checks for duplicates
+  static Future<void> _saveToHistory({
+    required String arabic,
+    required String english,
+    required String title,
+    required String reference,
+    required String type,
+    required DateTime scheduledTime,
+  }) async {
+    final prefs   = await SharedPreferences.getInstance();
+    final history = prefs.getStringList('notification_history') ?? [];
 
-  history.add(jsonEncode({
-    'arabic':    arabic,
-    'english':   english,
-    'title':     title,
-    'reference': reference,
-    'type':      type,
-    'time':      DateTime.now().toIso8601String(),
-  }));
+    final timeString = scheduledTime.toIso8601String();
 
-  if (history.length > 30) history.removeAt(0);
-  await prefs.setStringList('notification_history', history);
-}
+    // Prevent duplicate entries for the same prayer at the exact same time
+    final isDuplicate = history.any((s) {
+      final map = jsonDecode(s);
+      return map['title'] == title && map['time'] == timeString;
+    });
+
+    if (isDuplicate) return;
+
+    history.add(jsonEncode({
+      'arabic':    arabic,
+      'english':   english,
+      'title':     title,
+      'reference': reference,
+      'type':      type,
+      'time':      timeString, // Save the exact time it will ring
+    }));
+
+    // Keep history clean (Max 50)
+    if (history.length > 50) {
+      history.removeAt(0);
+    }
+
+    await prefs.setStringList('notification_history', history);
+  }
+
   static void _onNotificationTap(NotificationResponse response) {
     final payload = response.payload;
     if (payload == null) return;
@@ -75,7 +89,6 @@ class NotificationService {
     );
   }
 
-  // Extracted the test notification into its own properly formed method
   static Future<void> showTestNotification() async {
     await _plugin.show(
       99,
@@ -122,8 +135,6 @@ class NotificationService {
       {'time': times.isha,    'enabled': ishaEnabled,    'name': 'Isha'},
     ];
 
-    // Added a sample 'doa' map so your payload compiles. 
-    // You can replace this with a dynamic dua fetcher if you prefer!
     final doa = {
       'arabic': 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ، وَشُكْرِكَ، وَحُسْنِ عِبَادَتِكَ',
       'translation': 'O Allah, help me remember You, to be grateful to You, and to worship You in an excellent manner.'
@@ -137,14 +148,14 @@ class NotificationService {
 
       if (notifTime.isAfter(DateTime.now())) {
         
-        // Save to history when scheduling (Optional: you might want to adjust 
-        // this to save the time it actually rings instead)
+        // Pass the notifTime here so it saves the actual ringing time
         await _saveToHistory(
-          arabic:    doa['arabic']!,
-          english:   doa['translation']!,
-          title:     '${prayers[i]['name']} Dua',
-          reference: 'Hisnul Muslim',
-          type:      'dua',
+          arabic:        doa['arabic']!,
+          english:       doa['translation']!,
+          title:         '${prayers[i]['name']} Reminder',
+          reference:     'Hisnul Muslim',
+          type:          'dua',
+          scheduledTime: notifTime, 
         );
 
         await _plugin.zonedSchedule(
@@ -168,14 +179,6 @@ class NotificationService {
           matchDateTimeComponents: DateTimeComponents.time,
           payload: '${doa['arabic']}||${doa['translation']}||${prayers[i]['name']} Dua||Hisnul Muslim||dua',
         );
-        // Save to history so user can see missed notifications
-await _saveToHistory(
-  arabic:    doa['arabic']!,
-  english:   doa['translation']!,
-  title:     '${prayers[i]['name']} Reminder',
-  reference: 'Hisnul Muslim',
-  type:      'dua',
-);
       }
     }
   }
