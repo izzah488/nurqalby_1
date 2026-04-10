@@ -30,7 +30,7 @@ class UserInput(BaseModel):
     text    : str
     emotion : str
     cause   : str
-    top_k   : int = 3
+    top_k   : int = 3 #tukar dekat sini kut berapa output ranking
 
 
 def generate_audio_url(surah, ayah):

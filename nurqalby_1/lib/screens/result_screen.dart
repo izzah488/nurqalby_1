@@ -400,13 +400,21 @@ class _VerseCard extends StatelessWidget {
             const SizedBox(height: 12),
             const _Divider(color: Color(0xFF3d6b4a)),
             const SizedBox(height: 12),
-            Text(
-              '"${verse['verse_text'] ?? ''}"',
-              textAlign: TextAlign.center,
-              maxLines: 4,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13, height: 1.6, fontStyle: FontStyle.italic),
-            ),
+           ConstrainedBox(
+  constraints: const BoxConstraints(maxHeight: 110),
+  child: SingleChildScrollView(
+    child: Text(
+      '"${verse['verse_text'] ?? ''}"',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: Colors.white.withOpacity(0.8),
+        fontSize: 13,
+        height: 1.6,
+        fontStyle: FontStyle.italic,
+      ),
+    ),
+  ),
+),
             const SizedBox(height: 14),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -474,13 +482,21 @@ class _DuaCard extends StatelessWidget {
             const SizedBox(height: 12),
             const _Divider(color: Color(0xFF5a3a8a)),
             const SizedBox(height: 12),
-            Text(
-              '"${dua['translation'] ?? ''}"',
-              textAlign: TextAlign.center,
-              maxLines: 4,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.white.withOpacity(0.75), fontSize: 12, height: 1.6, fontStyle: FontStyle.italic),
-            ),
+           ConstrainedBox(
+  constraints: const BoxConstraints(maxHeight: 110),
+  child: SingleChildScrollView(
+    child: Text(
+      '"${dua['translation'] ?? ''}"',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        color: Colors.white.withOpacity(0.75),
+        fontSize: 12,
+        height: 1.6,
+        fontStyle: FontStyle.italic,
+      ),
+    ),
+  ),
+),
             const SizedBox(height: 14),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
