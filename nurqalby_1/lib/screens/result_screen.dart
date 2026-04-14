@@ -31,6 +31,8 @@ class _ResultScreenState extends State<ResultScreen> {
   int _selectedTab = 0;
   int _currentIndex = 0;
   late PageController _pageController;
+  
+  // Stores a unique GlobalKey for each card so we can take a screenshot of it
   final Map<int, GlobalKey> _cardKeys = {};
 
   @override
@@ -77,16 +79,16 @@ class _ResultScreenState extends State<ResultScreen> {
                 leading: const Icon(Icons.image_rounded, color: Color(0xFF4CAF50)),
                 title: const Text('Share as Image', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
                 onTap: () {
-                  Navigator.pop(context);
-                  _shareAsImage(key, textToShare);
+                  Navigator.pop(context); // Close the menu
+                  _shareAsImage(key, textToShare); // Trigger screenshot
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.text_fields_rounded, color: Color(0xFF4CAF50)),
                 title: const Text('Share as Text', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
                 onTap: () {
-                  Navigator.pop(context);
-                  Share.share(textToShare);
+                  Navigator.pop(context); // Close the menu
+                  Share.share(textToShare); // Share normal text
                 },
               ),
               const SizedBox(height: 16),
@@ -104,12 +106,17 @@ class _ResultScreenState extends State<ResultScreen> {
         Share.share(fallbackText);
         return;
       }
+      
+      // Capture the card as an image
       final image = await boundary.toImage(pixelRatio: 3.0);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      
       if (byteData == null) {
         Share.share(fallbackText);
         return;
       }
+      
+      // Share the image file directly
       await Share.shareXFiles(
         [
           XFile.fromData(
@@ -121,6 +128,7 @@ class _ResultScreenState extends State<ResultScreen> {
         text: 'Shared via NurQalby 🌿',
       );
     } catch (_) {
+      // If taking the screenshot fails for any reason, safely fallback to text sharing
       Share.share(fallbackText);
     }
   }
@@ -180,6 +188,27 @@ class _ResultScreenState extends State<ResultScreen> {
                         ),
                         child: const Icon(Icons.home_rounded, color: Colors.white, size: 20),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Tabs
+              Container(
+                color: const Color(0xFF1a3a2a),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+                child: Row(
+                  children: [
+                    _TabButton(
+                      label: '📖  Verses',
+                      isSelected: _selectedTab == 0,
+                      onTap: () => _switchTab(0),
+                    ),
+                    const SizedBox(width: 8),
+                    _TabButton(
+                      label: '🤲  Dua',
+                      isSelected: _selectedTab == 1,
+                      onTap: () => _switchTab(1),
                     ),
                   ],
                 ),
@@ -331,6 +360,41 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 }
 
+// ── Tab button ───────────────────────────
+class _TabButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _TabButton({required this.label, required this.isSelected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white : Colors.white.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: isSelected ? const Color(0xFF1a3a2a) : Colors.white.withOpacity(0.6),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 // ── Verse card ───────────────────────────
 class _VerseCard extends StatelessWidget {
   final Map<String, dynamic> verse;
@@ -338,12 +402,7 @@ class _VerseCard extends StatelessWidget {
   final int rank;
   final VoidCallback onShare;
 
-  const _VerseCard({
-    required this.verse,
-    required this.isFocused,
-    required this.rank,
-    required this.onShare,
-  });
+  const _VerseCard({required this.verse, required this.isFocused, required this.rank, required this.onShare});
 
   @override
   Widget build(BuildContext context) {
@@ -352,13 +411,8 @@ class _VerseCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF142d1e),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isFocused ? const Color(0xFF4CAF50).withOpacity(0.5) : const Color(0xFF2d5a3d),
-          width: isFocused ? 1.5 : 1,
-        ),
-        boxShadow: isFocused
-            ? [BoxShadow(color: const Color(0xFF4CAF50).withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 10))]
-            : [],
+        border: Border.all(color: isFocused ? const Color(0xFF4CAF50).withOpacity(0.5) : const Color(0xFF2d5a3d), width: isFocused ? 1.5 : 1),
+        boxShadow: isFocused ? [BoxShadow(color: const Color(0xFF4CAF50).withOpacity(0.15), blurRadius: 30, offset: const Offset(0, 10))] : [],
       ),
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -366,9 +420,9 @@ class _VerseCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _Chip(label: rank == 1 ? 'RANK 1 · BEST' : 'RANK $rank', isDua: false),
-                const SizedBox(width: 8),
                 if (verse['score'] != null)
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -377,10 +431,7 @@ class _VerseCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: const Color(0xFF4CAF50).withOpacity(0.3)),
                     ),
-                    child: Text(
-                      '${verse['score']}',
-                      style: const TextStyle(color: Color(0xFF4CAF50), fontSize: 10, fontWeight: FontWeight.w600),
-                    ),
+                    child: Text('${verse['score']}', style: const TextStyle(color: Color(0xFF4CAF50), fontSize: 10, fontWeight: FontWeight.w600)),
                   ),
               ],
             ),
@@ -400,31 +451,50 @@ class _VerseCard extends StatelessWidget {
             const SizedBox(height: 12),
             const _Divider(color: Color(0xFF3d6b4a)),
             const SizedBox(height: 12),
-           ConstrainedBox(
-  constraints: const BoxConstraints(maxHeight: 110),
-  child: SingleChildScrollView(
-    child: Text(
-      '"${verse['verse_text'] ?? ''}"',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        color: Colors.white.withOpacity(0.8),
-        fontSize: 13,
-        height: 1.6,
-        fontStyle: FontStyle.italic,
-      ),
-    ),
-  ),
-),
+            Text(
+              '"${verse['verse_text'] ?? ''}"',
+              textAlign: TextAlign.center,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13, height: 1.6, fontStyle: FontStyle.italic),
+            ),
             const SizedBox(height: 14),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'SURAH ${verse['surah']}  •  AYAH ${verse['ayah']}',
-                  style: const TextStyle(color: Color(0xFF4CAF50), fontSize: 10, letterSpacing: 1.0, fontWeight: FontWeight.w600),
+            
+            // Text at the bottom
+            Text(
+              'SURAH ${verse['surah']}  •  AYAH ${verse['ayah']}',
+              style: const TextStyle(color: Color(0xFF4CAF50), fontSize: 10, letterSpacing: 1.0, fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+
+            // Beautiful full-width Share button at the very bottom
+            GestureDetector(
+              onTap: onShare,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white.withOpacity(0.1)),
                 ),
-                _ShareIcon(onTap: onShare),
-              ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.share_rounded, color: Colors.white.withOpacity(0.9), size: 18),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Share',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -439,11 +509,7 @@ class _DuaCard extends StatelessWidget {
   final bool isFocused;
   final VoidCallback onShare;
 
-  const _DuaCard({
-    required this.dua,
-    required this.isFocused,
-    required this.onShare,
-  });
+  const _DuaCard({required this.dua, required this.isFocused, required this.onShare});
 
   @override
   Widget build(BuildContext context) {
@@ -452,20 +518,19 @@ class _DuaCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF1e1428),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isFocused ? const Color(0xFFb088f0).withOpacity(0.5) : const Color(0xFF3d2d5a),
-          width: isFocused ? 1.5 : 1,
-        ),
-        boxShadow: isFocused
-            ? [BoxShadow(color: const Color(0xFF9c6fdf).withOpacity(0.2), blurRadius: 30, offset: const Offset(0, 10))]
-            : [],
+        border: Border.all(color: isFocused ? const Color(0xFFb088f0).withOpacity(0.5) : const Color(0xFF3d2d5a), width: isFocused ? 1.5 : 1),
+        boxShadow: isFocused ? [BoxShadow(color: const Color(0xFF9c6fdf).withOpacity(0.2), blurRadius: 30, offset: const Offset(0, 10))] : [],
       ),
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const _Chip(label: 'DUA', isDua: true),
+            const Row(
+              children: [
+                _Chip(label: 'DUA', isDua: true),
+              ],
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: Center(
@@ -482,31 +547,50 @@ class _DuaCard extends StatelessWidget {
             const SizedBox(height: 12),
             const _Divider(color: Color(0xFF5a3a8a)),
             const SizedBox(height: 12),
-           ConstrainedBox(
-  constraints: const BoxConstraints(maxHeight: 110),
-  child: SingleChildScrollView(
-    child: Text(
-      '"${dua['translation'] ?? ''}"',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        color: Colors.white.withOpacity(0.75),
-        fontSize: 12,
-        height: 1.6,
-        fontStyle: FontStyle.italic,
-      ),
-    ),
-  ),
-),
+            Text(
+              '"${dua['translation'] ?? ''}"',
+              textAlign: TextAlign.center,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.white.withOpacity(0.75), fontSize: 12, height: 1.6, fontStyle: FontStyle.italic),
+            ),
             const SizedBox(height: 14),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  dua['reference'] ?? '',
-                  style: const TextStyle(color: Color(0xFFb088f0), fontSize: 10, letterSpacing: 0.8, fontWeight: FontWeight.w600),
+
+            // Text at the bottom
+            Text(
+              dua['reference'] ?? '',
+              style: const TextStyle(color: Color(0xFFb088f0), fontSize: 10, letterSpacing: 0.8, fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+
+            // Beautiful full-width Share button at the very bottom
+            GestureDetector(
+              onTap: onShare,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white.withOpacity(0.1)),
                 ),
-                _ShareIcon(onTap: onShare),
-              ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.share_rounded, color: Colors.white.withOpacity(0.9), size: 18),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Share',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -545,7 +629,7 @@ class _BottomActionsState extends State<_BottomActions> {
     return '${widget.selectedTab == 0 ? 'verse' : 'dua'}_${item['arabic_text'] ?? item['arabic'] ?? ''}';
   }
 
-  // Because _savedKeys holds all items, this check is now instant when swiping!
+  // BUG FIX: This dynamic getter automatically checks the new verse every time you swipe!
   bool get _isSaved => _savedKeys.contains(_key);
 
   @override
@@ -553,10 +637,6 @@ class _BottomActionsState extends State<_BottomActions> {
     super.initState();
     _load();
   }
-
-  // --- FIX: Removed didUpdateWidget! ---
-  // We no longer read SharedPreferences every time the user swipes. 
-  // It causes a delay. _savedKeys is already fully loaded in memory!
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -582,29 +662,24 @@ class _BottomActionsState extends State<_BottomActions> {
       saved.removeWhere((s) => jsonDecode(s)['key'] == key);
       setState(() => _savedKeys.remove(key));
     } else {
-      saved.add(
-        jsonEncode({
-          'key': key,
-          'type': isVerse ? 'verse' : 'dua',
-          'title': isVerse ? 'Surah ${item['surah']} Ayah ${item['ayah']}' : (item['title'] ?? ''),
-          'arabic': item['arabic_text'] ?? item['arabic'] ?? '',
-          'english': item['verse_text'] ?? item['translation'] ?? '',
-          'reference': isVerse ? 'Surah ${item['surah']}, Ayah ${item['ayah']}' : (item['reference'] ?? ''),
-        }),
-      );
+      saved.add(jsonEncode({
+        'key': key,
+        'type': isVerse ? 'verse' : 'dua',
+        'title': isVerse ? 'Surah ${item['surah']} Ayah ${item['ayah']}' : (item['title'] ?? ''),
+        'arabic': item['arabic_text'] ?? item['arabic'] ?? '',
+        'english': item['verse_text'] ?? item['translation'] ?? '',
+        'reference': isVerse ? 'Surah ${item['surah']}, Ayah ${item['ayah']}' : (item['reference'] ?? ''),
+      }));
       setState(() => _savedKeys.add(key));
     }
 
     await prefs.setStringList('saved_items', saved);
-
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(_isSaved ? 'Saved ✓' : 'Removed'),
-          backgroundColor: const Color(0xFF1a3a2a),
-          duration: const Duration(seconds: 2),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(_isSaved ? 'Saved ✓' : 'Removed'),
+        backgroundColor: const Color(0xFF1a3a2a),
+        duration: const Duration(seconds: 2),
+      ));
     }
   }
 
@@ -625,13 +700,10 @@ class _BottomActionsState extends State<_BottomActions> {
             onTap: _toggleSave,
           ),
           _Btn(
-            icon: Icons.play_arrow_rounded,
-            label: isVerse ? 'PLAY' : '—',
+            icon: Icons.play_arrow_rounded, label: isVerse ? 'PLAY' : '—',
             color: Colors.white,
             bgColor: isVerse ? const Color(0xFF4CAF50) : Colors.white.withOpacity(0.1),
-            border: Colors.transparent,
-            size: 64,
-            isMain: true,
+            border: Colors.transparent, size: 64, isMain: true,
             onTap: isVerse ? widget.onPlay : null,
           ),
           _Btn(
@@ -650,133 +722,48 @@ class _BottomActionsState extends State<_BottomActions> {
 
 // ── Micro widgets ─────────────────────────
 class _Chip extends StatelessWidget {
-  final String label;
-  final bool isDua;
-
+  final String label; final bool isDua;
   const _Chip({required this.label, required this.isDua});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: isDua ? const Color(0xFF2a1a3a) : const Color(0xFF1a3a2a),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: isDua ? const Color(0xFF5a3a8a) : const Color(0xFF3d6b4a)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (isDua)
-            const Text('🤲', style: TextStyle(fontSize: 10))
-          else
-            Container(width: 6, height: 6, decoration: const BoxDecoration(color: Color(0xFF4CAF50), shape: BoxShape.circle)),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: isDua ? const Color(0xFFd4b8f0) : const Color(0xFF9fd4b0),
-              fontSize: 9,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.6,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+    decoration: BoxDecoration(
+      color: isDua ? const Color(0xFF2a1a3a) : const Color(0xFF1a3a2a),
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: isDua ? const Color(0xFF5a3a8a) : const Color(0xFF3d6b4a)),
+    ),
+    child: Row(mainAxisSize: MainAxisSize.min, children: [
+      if (isDua) const Text('🤲', style: TextStyle(fontSize: 10))
+      else Container(width: 6, height: 6, decoration: const BoxDecoration(color: Color(0xFF4CAF50), shape: BoxShape.circle)),
+      const SizedBox(width: 6),
+      Text(label, style: TextStyle(color: isDua ? const Color(0xFFd4b8f0) : const Color(0xFF9fd4b0), fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 0.6)),
+    ]),
+  );
 }
 
 class _Divider extends StatelessWidget {
   final Color color;
-
   const _Divider({required this.color});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 1,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.transparent, color, Colors.transparent],
-        ),
-      ),
-    );
-  }
-}
-
-class _ShareIcon extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _ShareIcon({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(Icons.share_rounded, color: Colors.white.withOpacity(0.8), size: 18),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(height: 1, decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.transparent, color, Colors.transparent])));
 }
 
 class _Btn extends StatelessWidget {
-  final IconData icon;
-  final String label;
+  final IconData icon; final String label;
   final Color color, bgColor, border;
-  final double size;
-  final VoidCallback? onTap;
-  final bool isMain;
-
-  const _Btn({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.bgColor,
-    required this.border,
-    this.size = 52,
-    this.onTap,
-    this.isMain = false,
-  });
+  final double size; final VoidCallback? onTap; final bool isMain;
+  const _Btn({required this.icon, required this.label, required this.color, required this.bgColor, required this.border, this.size = 52, this.onTap, this.isMain = false});
 
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: size,
-            height: size,
-            decoration: BoxDecoration(
-              color: bgColor,
-              borderRadius: BorderRadius.circular(isMain ? 20 : 16),
-              border: Border.all(color: border),
-              boxShadow: isMain
-                  ? [BoxShadow(color: const Color(0xFF4CAF50).withOpacity(0.4), blurRadius: 20, offset: const Offset(0, 6))]
-                  : [],
-            ),
-            child: Icon(icon, color: color, size: isMain ? 28 : 22),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.4),
-              fontSize: 9,
-              letterSpacing: 0.6,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => GestureDetector(onTap: onTap,
+    child: Column(children: [
+      AnimatedContainer(duration: const Duration(milliseconds: 200), width: size, height: size,
+        decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(isMain ? 20 : 16), border: Border.all(color: border),
+        boxShadow: isMain ? [BoxShadow(color: const Color(0xFF4CAF50).withOpacity(0.4), blurRadius: 20, offset: const Offset(0, 6))] : []),
+        child: Icon(icon, color: color, size: isMain ? 28 : 22)),
+      const SizedBox(height: 6),
+      Text(label, style: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 9, letterSpacing: 0.6, fontWeight: FontWeight.w600)),
+    ]));
 }
