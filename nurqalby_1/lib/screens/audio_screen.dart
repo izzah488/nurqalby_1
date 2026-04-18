@@ -19,6 +19,7 @@ class _AudioScreenState extends State<AudioScreen> {
   late AudioPlayer _player;
   late int currentIndex;
   bool isPlaying = false;
+  bool isLooping  = false;
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
 
@@ -35,17 +36,19 @@ class _AudioScreenState extends State<AudioScreen> {
     _player.positionStream.listen((pos) {
       if (mounted) setState(() => position = pos);
     });
-
     _player.durationStream.listen((dur) {
       if (mounted) setState(() => duration = dur ?? Duration.zero);
     });
-
     _player.playerStateStream.listen((state) {
       if (mounted) {
         setState(() => isPlaying = state.playing);
-        // Auto-play next verse when done
         if (state.processingState == ProcessingState.completed) {
-          _nextVerse();
+          if (isLooping) {
+            _player.seek(Duration.zero);
+            _player.play();
+          } else {
+            _nextVerse();
+          }
         }
       }
     });
@@ -66,11 +69,18 @@ class _AudioScreenState extends State<AudioScreen> {
   }
 
   void _togglePlay() {
-    if (isPlaying) {
-      _player.pause();
-    } else {
-      _player.play();
-    }
+    if (isPlaying) { _player.pause(); } else { _player.play(); }
+  }
+
+  void _toggleLoop() {
+    setState(() => isLooping = !isLooping);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content:         Text(isLooping ? 'Repeat ON' : 'Repeat OFF'),
+        backgroundColor: const Color(0xFF1a3a2a),
+        duration:        const Duration(seconds: 1),
+      ),
+    );
   }
 
   void _nextVerse() {
@@ -104,85 +114,118 @@ class _AudioScreenState extends State<AudioScreen> {
     final verse = widget.verses[currentIndex];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F0),
+      backgroundColor: const Color(0xFF0d2016),
       body: SafeArea(
         child: Column(
           children: [
 
-            // --- Header ---
+            // ── Fixed top bar (never scrolls away) ─────────
             Container(
-              width: double.infinity,
-              color: const Color(0xFF1a3a2a),
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              color:   const Color(0xFF1a3a2a),
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
+              child: Row(
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: const Icon(Icons.arrow_back_ios,
                         color: Color(0xFF9fd4b0), size: 18),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(width: 12),
                   const Text('Now playing',
                       style: TextStyle(
-                          color: Color(0xFF9fd4b0), fontSize: 12)),
-                  const SizedBox(height: 4),
-                  Text(
-                    verse['verse_text'] ?? '',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                        height: 1.4),
-                  ),
-                  // arab text
-                    Text(
-                      verse['arabic_text'] ?? '',
-                      textAlign: TextAlign.right,
-                      textDirection: TextDirection.rtl,
-                      style: const TextStyle(
-                      color: Color(0xFF9fd4b0),
-                      fontSize: 16,
-                      height: 1.8),
-),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Surah ${verse['surah']}  •  Ayah ${verse['ayah']}',
-                    style: const TextStyle(
-                        color: Color(0xFF9fd4b0), fontSize: 13),
-                  ),
+                          color:      Color(0xFF9fd4b0),
+                          fontSize:   13,
+                          fontWeight: FontWeight.w500)),
                 ],
               ),
             ),
 
-            // --- Player ---
+            // ── Everything else scrolls ─────────────────────
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
                 child: Column(
                   children: [
-                    const SizedBox(height: 20),
 
-                    // Progress bar
+                    // Verse info card
                     Container(
-                      padding: const EdgeInsets.all(20),
+                      width:   double.infinity,
+                      padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFf0f7f3),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                            color: const Color(0xFFc8e6d4)),
+                        color:        const Color(0xFF142d1e),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFF2d5a3d)),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          // English verse — no maxLines, no ellipsis
+                          Text(
+                            verse['verse_text'] ?? '',
+                            style: const TextStyle(
+                                color:      Colors.white,
+                                fontSize:   15,
+                                fontWeight: FontWeight.w600,
+                                height:     1.6),
+                          ),
+                          const SizedBox(height: 16),
+
+                          Container(height: 1,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(colors: [
+                                Colors.transparent,
+                                Color(0xFF4CAF50),
+                                Colors.transparent,
+                              ]),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Arabic verse — right to left, full text
+                          Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: Text(
+                              verse['arabic_text'] ?? '',
+                              style: const TextStyle(
+                                  color:      Color(0xFF9fd4b0),
+                                  fontSize:   18,
+                                  height:     1.9),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Surah info
+                          Text(
+                            'Surah ${verse['surah']}  •  Ayah ${verse['ayah']}',
+                            style: const TextStyle(
+                                color:      Color(0xFF4CAF50),
+                                fontSize:   12,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // ── Player controls card ────────────────
+                    Container(
+                      width:   double.infinity,
+                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                      decoration: BoxDecoration(
+                        color:        const Color(0xFF142d1e),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFF2d5a3d)),
                       ),
                       child: Column(
                         children: [
 
-                          // Slider
+                          // Progress slider
                           SliderTheme(
                             data: SliderTheme.of(context).copyWith(
-                              activeTrackColor:
-                                  const Color(0xFF1a3a2a),
-                              inactiveTrackColor:
-                                  const Color(0xFFc8e6d4),
-                              thumbColor: const Color(0xFF1a3a2a),
+                              activeTrackColor:   const Color(0xFF4CAF50),
+                              inactiveTrackColor: const Color(0xFF2d5a3d),
+                              thumbColor:         const Color(0xFF4CAF50),
                               trackHeight: 4,
                               thumbShape: const RoundSliderThumbShape(
                                   enabledThumbRadius: 6),
@@ -193,95 +236,135 @@ class _AudioScreenState extends State<AudioScreen> {
                               value: duration.inSeconds > 0
                                   ? position.inSeconds
                                       .toDouble()
-                                      .clamp(0,
-                                          duration.inSeconds.toDouble())
+                                      .clamp(0, duration.inSeconds.toDouble())
                                   : 0,
                               min: 0,
                               max: duration.inSeconds > 0
                                   ? duration.inSeconds.toDouble()
                                   : 1,
-                              onChanged: (val) {
-                                _player.seek(
-                                    Duration(seconds: val.toInt()));
-                              },
+                              onChanged: (val) =>
+                                  _player.seek(Duration(seconds: val.toInt())),
                             ),
                           ),
 
                           // Time labels
                           Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(_formatDuration(position),
                                     style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF5a8a6a))),
+                                        fontSize: 12, color: Color(0xFF9fd4b0))),
                                 Text(_formatDuration(duration),
                                     style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF5a8a6a))),
+                                        fontSize: 12, color: Color(0xFF9fd4b0))),
                               ],
                             ),
                           ),
                           const SizedBox(height: 16),
 
-                          // Controls
+                          // Playback controls
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-
-                              // Prev
                               IconButton(
-                                onPressed: currentIndex > 0
-                                    ? _prevVerse
-                                    : null,
-                                icon: Icon(
-                                  Icons.skip_previous_rounded,
-                                  size: 32,
+                                onPressed: currentIndex > 0 ? _prevVerse : null,
+                                icon: Icon(Icons.skip_previous_rounded,
+                                  size:  36,
                                   color: currentIndex > 0
-                                      ? const Color(0xFF1a3a2a)
-                                      : Colors.grey.shade300,
-                                ),
+                                      ? Colors.white
+                                      : Colors.white.withOpacity(0.2)),
                               ),
-                              const SizedBox(width: 16),
-
-                              // Play/Pause
+                              const SizedBox(width: 12),
                               GestureDetector(
                                 onTap: _togglePlay,
                                 child: Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFF1a3a2a),
-                                    shape: BoxShape.circle,
+                                  width: 68, height: 68,
+                                  decoration: BoxDecoration(
+                                    color:  const Color(0xFF4CAF50),
+                                    shape:  BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:      const Color(0xFF4CAF50).withOpacity(0.4),
+                                        blurRadius: 20,
+                                        offset:     const Offset(0, 6),
+                                      ),
+                                    ],
                                   ),
                                   child: Icon(
                                     isPlaying
                                         ? Icons.pause_rounded
                                         : Icons.play_arrow_rounded,
-                                    color: Colors.white,
-                                    size: 32,
+                                    color: Colors.white, size: 36,
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 16),
-
-                              // Next
+                              const SizedBox(width: 12),
                               IconButton(
-                                onPressed: currentIndex <
-                                        widget.verses.length - 1
+                                onPressed: currentIndex < widget.verses.length - 1
                                     ? _nextVerse
                                     : null,
-                                icon: Icon(
-                                  Icons.skip_next_rounded,
-                                  size: 32,
-                                  color: currentIndex <
-                                          widget.verses.length - 1
-                                      ? const Color(0xFF1a3a2a)
-                                      : Colors.grey.shade300,
+                                icon: Icon(Icons.skip_next_rounded,
+                                  size:  36,
+                                  color: currentIndex < widget.verses.length - 1
+                                      ? Colors.white
+                                      : Colors.white.withOpacity(0.2)),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Verse counter + Repeat button row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Verse ${currentIndex + 1} of ${widget.verses.length}',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color:    Colors.white.withOpacity(0.4)),
+                              ),
+                              GestureDetector(
+                                onTap: _toggleLoop,
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: isLooping
+                                        ? const Color(0xFF4CAF50).withOpacity(0.15)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: isLooping
+                                          ? const Color(0xFF4CAF50)
+                                          : Colors.white.withOpacity(0.2),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.repeat_rounded,
+                                        size:  16,
+                                        color: isLooping
+                                            ? const Color(0xFF4CAF50)
+                                            : Colors.white.withOpacity(0.4)),
+                                      const SizedBox(width: 5),
+                                      Text(
+                                        isLooping ? 'Repeat ON' : 'Repeat',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: isLooping
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                          color: isLooping
+                                              ? const Color(0xFF4CAF50)
+                                              : Colors.white.withOpacity(0.4),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -291,34 +374,21 @@ class _AudioScreenState extends State<AudioScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Verse counter
-                    Text(
-                      'Verse ${currentIndex + 1} of ${widget.verses.length}',
-                      style: const TextStyle(
-                          fontSize: 13, color: Colors.grey),
-                    ),
-                    const Spacer(),
-
                     // Back button
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
                         onPressed: () =>
-                            Navigator.popUntil(context,
-                                (route) => route.isFirst),
+                            Navigator.popUntil(context, (r) => r.isFirst),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                              color: Color(0xFF1a3a2a)),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                          side:    const BorderSide(color: Color(0xFF4CAF50)),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape:   RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
-                        child: const Text(
-                          '← Try another feeling',
-                          style: TextStyle(
-                              color: Color(0xFF1a3a2a), fontSize: 14),
-                        ),
+                        child: const Text('← Try another feeling',
+                            style: TextStyle(
+                                color: Color(0xFF4CAF50), fontSize: 14)),
                       ),
                     ),
                   ],
