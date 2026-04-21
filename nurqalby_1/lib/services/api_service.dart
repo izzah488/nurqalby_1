@@ -15,10 +15,10 @@ class ApiService {
       Uri.parse('$baseUrl/recommend'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'text':    text,
+        'text': text,
         'emotion': emotion,
-        'cause':   cause,
-        'top_k':   3,
+        'cause': cause,
+        'top_k': 3,
       }),
     );
 
@@ -37,10 +37,10 @@ class ApiService {
       Uri.parse('$baseUrl/recommend_dua'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
-        'text':    text,
+        'text': text,
         'emotion': '',
-        'cause':   '',
-        'top_k':   3,
+        'cause': '',
+        'top_k': 3,
       }),
     );
 
@@ -51,4 +51,21 @@ class ApiService {
       throw Exception('Dua API error: ${response.statusCode}');
     }
   }
-}
+
+  // ← moved INSIDE the class (was outside before, causing the error)
+  static Future<Map<String, dynamic>> classifyEmotion({
+    required String text,
+  }) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/classify_emotion'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'text': text}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Classify error: ${response.statusCode}');
+    }
+  }
+} // ← single closing brace for the class

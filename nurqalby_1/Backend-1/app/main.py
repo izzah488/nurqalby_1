@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from transformers import pipeline
 import os
 
 app = FastAPI(title="Quran Verse Recommender API")
@@ -19,27 +20,79 @@ app.add_middleware(
 # Fix path — works both locally and on Render
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSV_PATH = os.path.join(BASE_DIR, "dataset", "verses.csv")
+DUA_PATH = os.path.join(BASE_DIR, "dataset", "duas.csv")
 
-print("Loading model...")
+# ── Load sentence-transformer ──────────────────────────────────────────────────
+print("Loading sentence transformer model...")
 model = SentenceTransformer("all-MiniLM-L6-v2")
-df    = pd.read_csv(CSV_PATH)
-print(f"Ready. {len(df)} verses loaded.")
+
+# ── Load datasets ──────────────────────────────────────────────────────────────
+df     = pd.read_csv(CSV_PATH)
+df_dua = pd.read_csv(DUA_PATH)
+print(f"Ready. {len(df)} verses and {len(df_dua)} duas loaded.")
+
+# ── Pre-encode duas once at startup ────────────────────────────────────────────
+dua_texts      = df_dua["english_text"].tolist()
+dua_embeddings = model.encode(dua_texts)
+
+# ── Load emotion classifier ────────────────────────────────────────────────────
+print("Loading emotion classifier...")
+emotion_classifier = pipeline(
+    "text-classification",
+    model="j-hartmann/emotion-english-distilroberta-base",  #BERT-based model for better accuracy
+    top_k=1,
+)
+print("Emotion classifier ready.")
+
+# Map model labels → your 4 app emotions
+EMOTION_MAP = {
+    "joy":      "joy",
+    "sadness":  "sadness",
+    "anger":    "anger",
+    "fear":     "fear",
+    "disgust":  "anger",    # disgust → anger
+    "surprise": "joy",      # surprise → joy
+    "neutral":  "sadness",  # neutral  → sadness
+}
 
 
+# ── Pydantic models ────────────────────────────────────────────────────────────
 class UserInput(BaseModel):
     text    : str
     emotion : str
     cause   : str
-    top_k   : int = 3 #tukar dekat sini kut berapa output ranking
+    top_k   : int = 3 # Default to 3 results if not specified
 
 
+class TextOnly(BaseModel):
+    text: str  
+
+
+# ── Helpers ────────────────────────────────────────────────────────────────────
 def generate_audio_url(surah, ayah):
-    return f"https://everyayah.com/data/Alafasy_64kbps/{str(surah).zfill(3)}{str(ayah).zfill(3)}.mp3"
+    return (
+        f"https://everyayah.com/data/Alafasy_64kbps/"
+        f"{str(surah).zfill(3)}{str(ayah).zfill(3)}.mp3"
+    )
 
 
+# ── Routes ─────────────────────────────────────────────────────────────────────
 @app.get("/")
 def root():
     return {"status": "ok", "message": "Quran Recommender API is running"}
+
+
+@app.post("/classify_emotion")
+def classify_emotion(data: TextOnly):
+    result    = emotion_classifier(data.text)[0][0]
+    raw_label = result["label"].lower()
+    score     = round(result["score"], 4)
+    mapped    = EMOTION_MAP.get(raw_label, "sadness")
+    return {
+        "detected_emotion": mapped,
+        "confidence":       score,
+        "raw_label":        raw_label,
+    }
 
 
 @app.post("/recommend")
@@ -74,24 +127,14 @@ def recommend(data: UserInput):
             "emotion"     : row["emotion"],
             "cause"       : row["cause"],
             "score"       : round(float(similarities[idx]), 4),
-            "audio_url"   : generate_audio_url(row["surah"], row["ayah"])
+            "audio_url"   : generate_audio_url(row["surah"], row["ayah"]),
         })
 
     return {
-        "filter_applied" : used_filter,
-        "total_results"  : len(results),
-        "results"        : results
+        "filter_applied": used_filter,
+        "total_results" : len(results),
+        "results"       : results,
     }
-
-# Load duas dataset
-DUA_PATH = os.path.join(BASE_DIR, "dataset", "duas.csv")
-df_dua   = pd.read_csv(DUA_PATH)
-
-print(f"Ready. {len(df)} verses and {len(df_dua)} duas loaded.")
-
-# Encode duas once at startup
-dua_texts      = df_dua["english_text"].tolist()
-dua_embeddings = model.encode(dua_texts)
 
 
 @app.post("/recommend_dua")
@@ -116,12 +159,12 @@ def recommend_dua(data: UserInput):
 
     return {
         "total_results": len(results),
-        "results":       results
+        "results"      : results,
     }
 
+
+# ── Entry point (local dev only — Render uses uvicorn main:app directly) ───────
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
-
-    
