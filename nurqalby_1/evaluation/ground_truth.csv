@@ -1,0 +1,691 @@
+query_id,query_text,query_emotion,query_cause,verse_id,surah,ayah,verse_emotion,verse_cause,relevance
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,75,2,90,Anger,Faith / Spiritual State,2
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,76,9,67,Anger,Faith / Spiritual State,2
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,77,2,15,Anger,Faith / Spiritual State,2
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,78,58,14,Anger,Faith / Spiritual State,2
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,79,5,58,Anger,Faith / Spiritual State,2
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,94,2,34,Anger,Faith / Spiritual State,2
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,95,2,51,Anger,Faith / Spiritual State,2
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,96,2,61,Anger,Faith / Spiritual State,2
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,98,2,83,Anger,Faith / Spiritual State,2
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,80,7,150,Anger,Life Trials / Hardship,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,81,20,86,Anger,Life Trials / Hardship,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,82,3,153,Anger,Life Trials / Hardship,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,83,2,72,Anger,Life Trials / Hardship,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,84,2,49,Anger,Life Trials / Hardship,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,85,33,10,Anger,Life Trials / Hardship,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,86,4,155,Anger,Relationships / People,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,87,9,30,Anger,Relationships / People,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,88,49,6,Anger,Relationships / People,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,89,42,37,Anger,Relationships / People,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,90,3,186,Anger,Relationships / People,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,91,33,57,Anger,Relationships / People,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,92,60,1,Anger,Relationships / People,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,93,2,85,Anger,Relationships / People,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,97,5,64,Anger,Relationships / People,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,99,2,87,Anger,Life Trials / Hardship,1
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,20,79,40,Fear,Faith / Spiritual State,0
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,56,2,62,Sadness,Faith / Spiritual State,0
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,11,5,52,Fear,Relationships / People,0
+Q1,I feel so angry when my faith feels weak and I keep making the same mistakes,Anger,Faith / Spiritual State,71,12,17,Sadness,Relationships / People,0
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,75,2,90,Anger,Faith / Spiritual State,2
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,76,9,67,Anger,Faith / Spiritual State,2
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,77,2,15,Anger,Faith / Spiritual State,2
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,78,58,14,Anger,Faith / Spiritual State,2
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,79,5,58,Anger,Faith / Spiritual State,2
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,94,2,34,Anger,Faith / Spiritual State,2
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,95,2,51,Anger,Faith / Spiritual State,2
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,96,2,61,Anger,Faith / Spiritual State,2
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,98,2,83,Anger,Faith / Spiritual State,2
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,80,7,150,Anger,Life Trials / Hardship,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,81,20,86,Anger,Life Trials / Hardship,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,82,3,153,Anger,Life Trials / Hardship,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,83,2,72,Anger,Life Trials / Hardship,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,84,2,49,Anger,Life Trials / Hardship,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,85,33,10,Anger,Life Trials / Hardship,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,86,4,155,Anger,Relationships / People,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,87,9,30,Anger,Relationships / People,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,88,49,6,Anger,Relationships / People,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,89,42,37,Anger,Relationships / People,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,90,3,186,Anger,Relationships / People,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,91,33,57,Anger,Relationships / People,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,92,60,1,Anger,Relationships / People,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,93,2,85,Anger,Relationships / People,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,97,5,64,Anger,Relationships / People,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,99,2,87,Anger,Life Trials / Hardship,1
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,33,39,17,Joy,Faith / Spiritual State,0
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,37,98,8,Joy,Faith / Spiritual State,0
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,2,2,190,Fear,Faith / Spiritual State,0
+Q2,I am furious at myself for drifting away from Allah,Anger,Faith / Spiritual State,19,55,46,Fear,Faith / Spiritual State,0
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,80,7,150,Anger,Life Trials / Hardship,2
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,81,20,86,Anger,Life Trials / Hardship,2
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,82,3,153,Anger,Life Trials / Hardship,2
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,83,2,72,Anger,Life Trials / Hardship,2
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,84,2,49,Anger,Life Trials / Hardship,2
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,85,33,10,Anger,Life Trials / Hardship,2
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,99,2,87,Anger,Life Trials / Hardship,2
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,75,2,90,Anger,Faith / Spiritual State,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,76,9,67,Anger,Faith / Spiritual State,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,77,2,15,Anger,Faith / Spiritual State,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,78,58,14,Anger,Faith / Spiritual State,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,79,5,58,Anger,Faith / Spiritual State,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,86,4,155,Anger,Relationships / People,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,87,9,30,Anger,Relationships / People,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,88,49,6,Anger,Relationships / People,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,89,42,37,Anger,Relationships / People,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,90,3,186,Anger,Relationships / People,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,91,33,57,Anger,Relationships / People,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,92,60,1,Anger,Relationships / People,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,93,2,85,Anger,Relationships / People,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,94,2,34,Anger,Faith / Spiritual State,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,95,2,51,Anger,Faith / Spiritual State,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,96,2,61,Anger,Faith / Spiritual State,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,97,5,64,Anger,Relationships / People,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,98,2,83,Anger,Faith / Spiritual State,1
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,9,3,137,Fear,Life Trials / Hardship,0
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,17,23,57,Fear,Faith / Spiritual State,0
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,26,3,171,Joy,Faith / Spiritual State,0
+Q3,I feel so angry going through these hardships and trials in life,Anger,Life Trials / Hardship,69,2,216,Sadness,Life Trials / Hardship,0
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,80,7,150,Anger,Life Trials / Hardship,2
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,81,20,86,Anger,Life Trials / Hardship,2
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,82,3,153,Anger,Life Trials / Hardship,2
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,83,2,72,Anger,Life Trials / Hardship,2
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,84,2,49,Anger,Life Trials / Hardship,2
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,85,33,10,Anger,Life Trials / Hardship,2
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,99,2,87,Anger,Life Trials / Hardship,2
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,75,2,90,Anger,Faith / Spiritual State,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,76,9,67,Anger,Faith / Spiritual State,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,77,2,15,Anger,Faith / Spiritual State,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,78,58,14,Anger,Faith / Spiritual State,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,79,5,58,Anger,Faith / Spiritual State,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,86,4,155,Anger,Relationships / People,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,87,9,30,Anger,Relationships / People,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,88,49,6,Anger,Relationships / People,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,89,42,37,Anger,Relationships / People,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,90,3,186,Anger,Relationships / People,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,91,33,57,Anger,Relationships / People,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,92,60,1,Anger,Relationships / People,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,93,2,85,Anger,Relationships / People,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,94,2,34,Anger,Faith / Spiritual State,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,95,2,51,Anger,Faith / Spiritual State,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,96,2,61,Anger,Faith / Spiritual State,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,97,5,64,Anger,Relationships / People,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,98,2,83,Anger,Faith / Spiritual State,1
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,30,18,107,Joy,Faith / Spiritual State,0
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,54,52,21,Joy,Relationships / People,0
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,38,3,139,Joy,Life Trials / Hardship,0
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship,49,15,47,Joy,Relationships / People,0
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,86,4,155,Anger,Relationships / People,2
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,87,9,30,Anger,Relationships / People,2
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,88,49,6,Anger,Relationships / People,2
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,89,42,37,Anger,Relationships / People,2
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,90,3,186,Anger,Relationships / People,2
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,91,33,57,Anger,Relationships / People,2
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,92,60,1,Anger,Relationships / People,2
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,93,2,85,Anger,Relationships / People,2
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,97,5,64,Anger,Relationships / People,2
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,75,2,90,Anger,Faith / Spiritual State,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,76,9,67,Anger,Faith / Spiritual State,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,77,2,15,Anger,Faith / Spiritual State,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,78,58,14,Anger,Faith / Spiritual State,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,79,5,58,Anger,Faith / Spiritual State,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,80,7,150,Anger,Life Trials / Hardship,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,81,20,86,Anger,Life Trials / Hardship,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,82,3,153,Anger,Life Trials / Hardship,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,83,2,72,Anger,Life Trials / Hardship,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,84,2,49,Anger,Life Trials / Hardship,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,85,33,10,Anger,Life Trials / Hardship,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,94,2,34,Anger,Faith / Spiritual State,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,95,2,51,Anger,Faith / Spiritual State,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,96,2,61,Anger,Faith / Spiritual State,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,98,2,83,Anger,Faith / Spiritual State,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,99,2,87,Anger,Life Trials / Hardship,1
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,26,3,171,Joy,Faith / Spiritual State,0
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,27,9,21,Joy,Faith / Spiritual State,0
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,11,5,52,Fear,Relationships / People,0
+Q5,I feel angry and hurt because of how people treated me,Anger,Relationships / People,35,52,17,Joy,Faith / Spiritual State,0
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,86,4,155,Anger,Relationships / People,2
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,87,9,30,Anger,Relationships / People,2
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,88,49,6,Anger,Relationships / People,2
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,89,42,37,Anger,Relationships / People,2
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,90,3,186,Anger,Relationships / People,2
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,91,33,57,Anger,Relationships / People,2
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,92,60,1,Anger,Relationships / People,2
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,93,2,85,Anger,Relationships / People,2
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,97,5,64,Anger,Relationships / People,2
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,75,2,90,Anger,Faith / Spiritual State,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,76,9,67,Anger,Faith / Spiritual State,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,77,2,15,Anger,Faith / Spiritual State,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,78,58,14,Anger,Faith / Spiritual State,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,79,5,58,Anger,Faith / Spiritual State,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,80,7,150,Anger,Life Trials / Hardship,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,81,20,86,Anger,Life Trials / Hardship,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,82,3,153,Anger,Life Trials / Hardship,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,83,2,72,Anger,Life Trials / Hardship,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,84,2,49,Anger,Life Trials / Hardship,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,85,33,10,Anger,Life Trials / Hardship,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,94,2,34,Anger,Faith / Spiritual State,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,95,2,51,Anger,Faith / Spiritual State,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,96,2,61,Anger,Faith / Spiritual State,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,98,2,83,Anger,Faith / Spiritual State,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,99,2,87,Anger,Life Trials / Hardship,1
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,33,39,17,Joy,Faith / Spiritual State,0
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,73,6,33,Sadness,Relationships / People,0
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,62,10,65,Sadness,Faith / Spiritual State,0
+Q6,Someone betrayed my trust and I feel so angry,Anger,Relationships / People,39,9,111,Joy,Life Trials / Hardship,0
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,1,2,40,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,2,2,190,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,3,3,102,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,4,5,44,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,5,16,50,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,6,67,12,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,15,2,2,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,16,8,2,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,17,23,57,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,18,39,9,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,19,55,46,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,20,79,40,Fear,Faith / Spiritual State,2
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,7,2,155,Fear,Life Trials / Hardship,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,8,2,214,Fear,Life Trials / Hardship,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,9,3,137,Fear,Life Trials / Hardship,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,10,4,9,Fear,Life Trials / Hardship,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,11,5,52,Fear,Relationships / People,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,12,33,39,Fear,Relationships / People,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,13,114,4,Fear,Relationships / People,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,14,113,5,Fear,Relationships / People,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,21,3,173,Fear,Relationships / People,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,22,8,26,Fear,Relationships / People,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,23,9,13,Fear,Relationships / People,1
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,77,2,15,Anger,Faith / Spiritual State,0
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,60,12,86,Sadness,Faith / Spiritual State,0
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,94,2,34,Anger,Faith / Spiritual State,0
+Q7,I am scared that my iman is getting weaker and I might stray,Fear,Faith / Spiritual State,41,21,90,Joy,Life Trials / Hardship,0
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,1,2,40,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,2,2,190,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,3,3,102,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,4,5,44,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,5,16,50,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,6,67,12,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,15,2,2,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,16,8,2,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,17,23,57,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,18,39,9,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,19,55,46,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,20,79,40,Fear,Faith / Spiritual State,2
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,7,2,155,Fear,Life Trials / Hardship,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,8,2,214,Fear,Life Trials / Hardship,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,9,3,137,Fear,Life Trials / Hardship,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,10,4,9,Fear,Life Trials / Hardship,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,11,5,52,Fear,Relationships / People,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,12,33,39,Fear,Relationships / People,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,13,114,4,Fear,Relationships / People,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,14,113,5,Fear,Relationships / People,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,21,3,173,Fear,Relationships / People,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,22,8,26,Fear,Relationships / People,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,23,9,13,Fear,Relationships / People,1
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,60,12,86,Sadness,Faith / Spiritual State,0
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,59,6,33,Sadness,Faith / Spiritual State,0
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,43,39,10,Joy,Life Trials / Hardship,0
+Q8,I fear that Allah is not pleased with me because of my sins,Fear,Faith / Spiritual State,27,9,21,Joy,Faith / Spiritual State,0
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,7,2,155,Fear,Life Trials / Hardship,2
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,8,2,214,Fear,Life Trials / Hardship,2
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,9,3,137,Fear,Life Trials / Hardship,2
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,10,4,9,Fear,Life Trials / Hardship,2
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,1,2,40,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,2,2,190,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,3,3,102,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,4,5,44,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,5,16,50,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,6,67,12,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,11,5,52,Fear,Relationships / People,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,12,33,39,Fear,Relationships / People,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,13,114,4,Fear,Relationships / People,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,14,113,5,Fear,Relationships / People,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,15,2,2,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,16,8,2,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,17,23,57,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,18,39,9,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,19,55,46,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,20,79,40,Fear,Faith / Spiritual State,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,21,3,173,Fear,Relationships / People,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,22,8,26,Fear,Relationships / People,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,23,9,13,Fear,Relationships / People,1
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,41,21,90,Joy,Life Trials / Hardship,0
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,44,94,5,Joy,Life Trials / Hardship,0
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,50,25,74,Joy,Relationships / People,0
+Q9,I am so afraid of failing these trials and hardships in my life,Fear,Life Trials / Hardship,68,9,40,Sadness,Life Trials / Hardship,0
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,7,2,155,Fear,Life Trials / Hardship,2
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,8,2,214,Fear,Life Trials / Hardship,2
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,9,3,137,Fear,Life Trials / Hardship,2
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,10,4,9,Fear,Life Trials / Hardship,2
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,1,2,40,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,2,2,190,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,3,3,102,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,4,5,44,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,5,16,50,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,6,67,12,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,11,5,52,Fear,Relationships / People,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,12,33,39,Fear,Relationships / People,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,13,114,4,Fear,Relationships / People,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,14,113,5,Fear,Relationships / People,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,15,2,2,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,16,8,2,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,17,23,57,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,18,39,9,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,19,55,46,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,20,79,40,Fear,Faith / Spiritual State,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,21,3,173,Fear,Relationships / People,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,22,8,26,Fear,Relationships / People,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,23,9,13,Fear,Relationships / People,1
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,92,60,1,Anger,Relationships / People,0
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,50,25,74,Joy,Relationships / People,0
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,45,11,10,Joy,Life Trials / Hardship,0
+Q10,The hardships I face make me scared about what comes next,Fear,Life Trials / Hardship,27,9,21,Joy,Faith / Spiritual State,0
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,11,5,52,Fear,Relationships / People,2
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,12,33,39,Fear,Relationships / People,2
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,13,114,4,Fear,Relationships / People,2
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,14,113,5,Fear,Relationships / People,2
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,21,3,173,Fear,Relationships / People,2
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,22,8,26,Fear,Relationships / People,2
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,23,9,13,Fear,Relationships / People,2
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,1,2,40,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,2,2,190,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,3,3,102,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,4,5,44,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,5,16,50,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,6,67,12,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,7,2,155,Fear,Life Trials / Hardship,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,8,2,214,Fear,Life Trials / Hardship,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,9,3,137,Fear,Life Trials / Hardship,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,10,4,9,Fear,Life Trials / Hardship,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,15,2,2,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,16,8,2,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,17,23,57,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,18,39,9,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,19,55,46,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,20,79,40,Fear,Faith / Spiritual State,1
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,89,42,37,Anger,Relationships / People,0
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,82,3,153,Anger,Life Trials / Hardship,0
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,96,2,61,Anger,Faith / Spiritual State,0
+Q11,I am afraid of being hurt again by people I trusted,Fear,Relationships / People,26,3,171,Joy,Faith / Spiritual State,0
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,11,5,52,Fear,Relationships / People,2
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,12,33,39,Fear,Relationships / People,2
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,13,114,4,Fear,Relationships / People,2
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,14,113,5,Fear,Relationships / People,2
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,21,3,173,Fear,Relationships / People,2
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,22,8,26,Fear,Relationships / People,2
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,23,9,13,Fear,Relationships / People,2
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,1,2,40,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,2,2,190,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,3,3,102,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,4,5,44,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,5,16,50,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,6,67,12,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,7,2,155,Fear,Life Trials / Hardship,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,8,2,214,Fear,Life Trials / Hardship,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,9,3,137,Fear,Life Trials / Hardship,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,10,4,9,Fear,Life Trials / Hardship,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,15,2,2,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,16,8,2,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,17,23,57,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,18,39,9,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,19,55,46,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,20,79,40,Fear,Faith / Spiritual State,1
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,47,12,96,Joy,Relationships / People,0
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,41,21,90,Joy,Life Trials / Hardship,0
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,50,25,74,Joy,Relationships / People,0
+Q12,People around me make me anxious and I fear being alone,Fear,Relationships / People,31,22,34,Joy,Faith / Spiritual State,0
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,24,2,25,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,25,3,170,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,26,3,171,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,27,9,21,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,28,10,64,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,29,16,30,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,30,18,107,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,31,22,34,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,32,30,4,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,33,39,17,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,34,39,74,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,35,52,17,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,36,83,24,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,37,98,8,Joy,Faith / Spiritual State,2
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,38,3,139,Joy,Life Trials / Hardship,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,39,9,111,Joy,Life Trials / Hardship,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,40,12,90,Joy,Life Trials / Hardship,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,41,21,90,Joy,Life Trials / Hardship,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,42,28,54,Joy,Life Trials / Hardship,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,43,39,10,Joy,Life Trials / Hardship,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,44,94,5,Joy,Life Trials / Hardship,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,45,11,10,Joy,Life Trials / Hardship,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,46,11,71,Joy,Relationships / People,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,47,12,96,Joy,Relationships / People,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,48,84,9,Joy,Relationships / People,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,49,15,47,Joy,Relationships / People,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,50,25,74,Joy,Relationships / People,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,51,36,55,Joy,Relationships / People,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,52,36,56,Joy,Relationships / People,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,53,43,70,Joy,Relationships / People,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,54,52,21,Joy,Relationships / People,1
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,97,5,64,Anger,Relationships / People,0
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,96,2,61,Anger,Faith / Spiritual State,0
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,61,13,28,Sadness,Faith / Spiritual State,0
+Q13,I feel so grateful and happy because my faith has grown stronger,Joy,Faith / Spiritual State,94,2,34,Anger,Faith / Spiritual State,0
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,24,2,25,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,25,3,170,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,26,3,171,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,27,9,21,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,28,10,64,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,29,16,30,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,30,18,107,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,31,22,34,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,32,30,4,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,33,39,17,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,34,39,74,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,35,52,17,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,36,83,24,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,37,98,8,Joy,Faith / Spiritual State,2
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,38,3,139,Joy,Life Trials / Hardship,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,39,9,111,Joy,Life Trials / Hardship,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,40,12,90,Joy,Life Trials / Hardship,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,41,21,90,Joy,Life Trials / Hardship,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,42,28,54,Joy,Life Trials / Hardship,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,43,39,10,Joy,Life Trials / Hardship,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,44,94,5,Joy,Life Trials / Hardship,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,45,11,10,Joy,Life Trials / Hardship,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,46,11,71,Joy,Relationships / People,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,47,12,96,Joy,Relationships / People,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,48,84,9,Joy,Relationships / People,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,49,15,47,Joy,Relationships / People,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,50,25,74,Joy,Relationships / People,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,51,36,55,Joy,Relationships / People,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,52,36,56,Joy,Relationships / People,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,53,43,70,Joy,Relationships / People,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,54,52,21,Joy,Relationships / People,1
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,90,3,186,Anger,Relationships / People,0
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,88,49,6,Anger,Relationships / People,0
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,7,2,155,Fear,Life Trials / Hardship,0
+Q14,My heart is full of joy knowing Allah is always with me,Joy,Faith / Spiritual State,79,5,58,Anger,Faith / Spiritual State,0
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,38,3,139,Joy,Life Trials / Hardship,2
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,39,9,111,Joy,Life Trials / Hardship,2
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,40,12,90,Joy,Life Trials / Hardship,2
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,41,21,90,Joy,Life Trials / Hardship,2
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,42,28,54,Joy,Life Trials / Hardship,2
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,43,39,10,Joy,Life Trials / Hardship,2
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,44,94,5,Joy,Life Trials / Hardship,2
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,45,11,10,Joy,Life Trials / Hardship,2
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,24,2,25,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,25,3,170,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,26,3,171,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,27,9,21,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,28,10,64,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,29,16,30,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,30,18,107,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,31,22,34,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,32,30,4,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,33,39,17,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,34,39,74,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,35,52,17,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,36,83,24,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,37,98,8,Joy,Faith / Spiritual State,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,46,11,71,Joy,Relationships / People,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,47,12,96,Joy,Relationships / People,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,48,84,9,Joy,Relationships / People,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,49,15,47,Joy,Relationships / People,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,50,25,74,Joy,Relationships / People,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,51,36,55,Joy,Relationships / People,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,52,36,56,Joy,Relationships / People,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,53,43,70,Joy,Relationships / People,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,54,52,21,Joy,Relationships / People,1
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,19,55,46,Fear,Faith / Spiritual State,0
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,65,2,286,Sadness,Life Trials / Hardship,0
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,87,9,30,Anger,Relationships / People,0
+Q15,I feel happy and relieved that my hardships are finally over,Joy,Life Trials / Hardship,96,2,61,Anger,Faith / Spiritual State,0
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,38,3,139,Joy,Life Trials / Hardship,2
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,39,9,111,Joy,Life Trials / Hardship,2
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,40,12,90,Joy,Life Trials / Hardship,2
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,41,21,90,Joy,Life Trials / Hardship,2
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,42,28,54,Joy,Life Trials / Hardship,2
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,43,39,10,Joy,Life Trials / Hardship,2
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,44,94,5,Joy,Life Trials / Hardship,2
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,45,11,10,Joy,Life Trials / Hardship,2
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,24,2,25,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,25,3,170,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,26,3,171,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,27,9,21,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,28,10,64,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,29,16,30,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,30,18,107,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,31,22,34,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,32,30,4,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,33,39,17,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,34,39,74,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,35,52,17,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,36,83,24,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,37,98,8,Joy,Faith / Spiritual State,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,46,11,71,Joy,Relationships / People,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,47,12,96,Joy,Relationships / People,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,48,84,9,Joy,Relationships / People,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,49,15,47,Joy,Relationships / People,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,50,25,74,Joy,Relationships / People,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,51,36,55,Joy,Relationships / People,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,52,36,56,Joy,Relationships / People,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,53,43,70,Joy,Relationships / People,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,54,52,21,Joy,Relationships / People,1
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,83,2,72,Anger,Life Trials / Hardship,0
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,3,3,102,Fear,Faith / Spiritual State,0
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,6,67,12,Fear,Faith / Spiritual State,0
+Q16,After all the struggles I feel joy and peace in my heart,Joy,Life Trials / Hardship,23,9,13,Fear,Relationships / People,0
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,46,11,71,Joy,Relationships / People,2
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,47,12,96,Joy,Relationships / People,2
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,48,84,9,Joy,Relationships / People,2
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,49,15,47,Joy,Relationships / People,2
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,50,25,74,Joy,Relationships / People,2
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,51,36,55,Joy,Relationships / People,2
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,52,36,56,Joy,Relationships / People,2
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,53,43,70,Joy,Relationships / People,2
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,54,52,21,Joy,Relationships / People,2
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,24,2,25,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,25,3,170,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,26,3,171,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,27,9,21,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,28,10,64,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,29,16,30,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,30,18,107,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,31,22,34,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,32,30,4,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,33,39,17,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,34,39,74,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,35,52,17,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,36,83,24,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,37,98,8,Joy,Faith / Spiritual State,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,38,3,139,Joy,Life Trials / Hardship,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,39,9,111,Joy,Life Trials / Hardship,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,40,12,90,Joy,Life Trials / Hardship,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,41,21,90,Joy,Life Trials / Hardship,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,42,28,54,Joy,Life Trials / Hardship,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,43,39,10,Joy,Life Trials / Hardship,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,44,94,5,Joy,Life Trials / Hardship,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,45,11,10,Joy,Life Trials / Hardship,1
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,79,5,58,Anger,Faith / Spiritual State,0
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,22,8,26,Fear,Relationships / People,0
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,92,60,1,Anger,Relationships / People,0
+Q17,I feel blessed and happy because of the good people around me,Joy,Relationships / People,86,4,155,Anger,Relationships / People,0
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,46,11,71,Joy,Relationships / People,2
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,47,12,96,Joy,Relationships / People,2
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,48,84,9,Joy,Relationships / People,2
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,49,15,47,Joy,Relationships / People,2
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,50,25,74,Joy,Relationships / People,2
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,51,36,55,Joy,Relationships / People,2
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,52,36,56,Joy,Relationships / People,2
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,53,43,70,Joy,Relationships / People,2
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,54,52,21,Joy,Relationships / People,2
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,24,2,25,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,25,3,170,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,26,3,171,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,27,9,21,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,28,10,64,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,29,16,30,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,30,18,107,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,31,22,34,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,32,30,4,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,33,39,17,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,34,39,74,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,35,52,17,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,36,83,24,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,37,98,8,Joy,Faith / Spiritual State,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,38,3,139,Joy,Life Trials / Hardship,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,39,9,111,Joy,Life Trials / Hardship,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,40,12,90,Joy,Life Trials / Hardship,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,41,21,90,Joy,Life Trials / Hardship,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,42,28,54,Joy,Life Trials / Hardship,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,43,39,10,Joy,Life Trials / Hardship,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,44,94,5,Joy,Life Trials / Hardship,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,45,11,10,Joy,Life Trials / Hardship,1
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,64,18,6,Sadness,Faith / Spiritual State,0
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,71,12,17,Sadness,Relationships / People,0
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,13,114,4,Fear,Relationships / People,0
+Q18,My relationships bring me so much joy and gratitude,Joy,Relationships / People,80,7,150,Anger,Life Trials / Hardship,0
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,55,35,8,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,56,2,62,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,57,3,139,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,58,3,176,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,59,6,33,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,60,12,86,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,61,13,28,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,62,10,65,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,63,15,88,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,64,18,6,Sadness,Faith / Spiritual State,2
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,65,2,286,Sadness,Life Trials / Hardship,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,66,12,84,Sadness,Life Trials / Hardship,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,67,65,7,Sadness,Life Trials / Hardship,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,68,9,40,Sadness,Life Trials / Hardship,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,69,2,216,Sadness,Life Trials / Hardship,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,70,5,26,Sadness,Relationships / People,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,71,12,17,Sadness,Relationships / People,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,72,9,92,Sadness,Relationships / People,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,73,6,33,Sadness,Relationships / People,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,74,10,65,Sadness,Relationships / People,1
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,39,9,111,Joy,Life Trials / Hardship,0
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,34,39,74,Joy,Faith / Spiritual State,0
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,88,49,6,Anger,Relationships / People,0
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State,92,60,1,Anger,Relationships / People,0
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,55,35,8,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,56,2,62,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,57,3,139,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,58,3,176,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,59,6,33,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,60,12,86,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,61,13,28,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,62,10,65,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,63,15,88,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,64,18,6,Sadness,Faith / Spiritual State,2
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,65,2,286,Sadness,Life Trials / Hardship,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,66,12,84,Sadness,Life Trials / Hardship,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,67,65,7,Sadness,Life Trials / Hardship,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,68,9,40,Sadness,Life Trials / Hardship,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,69,2,216,Sadness,Life Trials / Hardship,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,70,5,26,Sadness,Relationships / People,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,71,12,17,Sadness,Relationships / People,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,72,9,92,Sadness,Relationships / People,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,73,6,33,Sadness,Relationships / People,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,74,10,65,Sadness,Relationships / People,1
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,24,2,25,Joy,Faith / Spiritual State,0
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,39,9,111,Joy,Life Trials / Hardship,0
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,46,11,71,Joy,Relationships / People,0
+Q20,My heart is heavy and I feel sad about my spiritual state,Sadness,Faith / Spiritual State,45,11,10,Joy,Life Trials / Hardship,0
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,65,2,286,Sadness,Life Trials / Hardship,2
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,66,12,84,Sadness,Life Trials / Hardship,2
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,67,65,7,Sadness,Life Trials / Hardship,2
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,68,9,40,Sadness,Life Trials / Hardship,2
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,69,2,216,Sadness,Life Trials / Hardship,2
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,55,35,8,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,56,2,62,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,57,3,139,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,58,3,176,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,59,6,33,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,60,12,86,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,61,13,28,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,62,10,65,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,63,15,88,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,64,18,6,Sadness,Faith / Spiritual State,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,70,5,26,Sadness,Relationships / People,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,71,12,17,Sadness,Relationships / People,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,72,9,92,Sadness,Relationships / People,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,73,6,33,Sadness,Relationships / People,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,74,10,65,Sadness,Relationships / People,1
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,4,5,44,Fear,Faith / Spiritual State,0
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,20,79,40,Fear,Faith / Spiritual State,0
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,15,2,2,Fear,Faith / Spiritual State,0
+Q21,I am so sad going through all these hardships and I feel hopeless,Sadness,Life Trials / Hardship,46,11,71,Joy,Relationships / People,0
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,65,2,286,Sadness,Life Trials / Hardship,2
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,66,12,84,Sadness,Life Trials / Hardship,2
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,67,65,7,Sadness,Life Trials / Hardship,2
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,68,9,40,Sadness,Life Trials / Hardship,2
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,69,2,216,Sadness,Life Trials / Hardship,2
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,55,35,8,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,56,2,62,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,57,3,139,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,58,3,176,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,59,6,33,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,60,12,86,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,61,13,28,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,62,10,65,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,63,15,88,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,64,18,6,Sadness,Faith / Spiritual State,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,70,5,26,Sadness,Relationships / People,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,71,12,17,Sadness,Relationships / People,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,72,9,92,Sadness,Relationships / People,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,73,6,33,Sadness,Relationships / People,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,74,10,65,Sadness,Relationships / People,1
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,29,16,30,Joy,Faith / Spiritual State,0
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,54,52,21,Joy,Relationships / People,0
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,88,49,6,Anger,Relationships / People,0
+Q22,Life has been so hard lately and I feel deeply sad,Sadness,Life Trials / Hardship,77,2,15,Anger,Faith / Spiritual State,0
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,70,5,26,Sadness,Relationships / People,2
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,71,12,17,Sadness,Relationships / People,2
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,72,9,92,Sadness,Relationships / People,2
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,73,6,33,Sadness,Relationships / People,2
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,74,10,65,Sadness,Relationships / People,2
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,55,35,8,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,56,2,62,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,57,3,139,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,58,3,176,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,59,6,33,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,60,12,86,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,61,13,28,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,62,10,65,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,63,15,88,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,64,18,6,Sadness,Faith / Spiritual State,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,65,2,286,Sadness,Life Trials / Hardship,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,66,12,84,Sadness,Life Trials / Hardship,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,67,65,7,Sadness,Life Trials / Hardship,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,68,9,40,Sadness,Life Trials / Hardship,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,69,2,216,Sadness,Life Trials / Hardship,1
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,18,39,9,Fear,Faith / Spiritual State,0
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,24,2,25,Joy,Faith / Spiritual State,0
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,53,43,70,Joy,Relationships / People,0
+Q23,I feel heartbroken because someone I loved hurt me deeply,Sadness,Relationships / People,51,36,55,Joy,Relationships / People,0
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,70,5,26,Sadness,Relationships / People,2
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,71,12,17,Sadness,Relationships / People,2
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,72,9,92,Sadness,Relationships / People,2
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,73,6,33,Sadness,Relationships / People,2
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,74,10,65,Sadness,Relationships / People,2
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,55,35,8,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,56,2,62,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,57,3,139,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,58,3,176,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,59,6,33,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,60,12,86,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,61,13,28,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,62,10,65,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,63,15,88,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,64,18,6,Sadness,Faith / Spiritual State,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,65,2,286,Sadness,Life Trials / Hardship,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,66,12,84,Sadness,Life Trials / Hardship,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,67,65,7,Sadness,Life Trials / Hardship,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,68,9,40,Sadness,Life Trials / Hardship,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,69,2,216,Sadness,Life Trials / Hardship,1
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,84,2,49,Anger,Life Trials / Hardship,0
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,21,3,173,Fear,Relationships / People,0
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,51,36,55,Joy,Relationships / People,0
+Q24,I am so sad because my relationships keep falling apart,Sadness,Relationships / People,39,9,111,Joy,Life Trials / Hardship,0

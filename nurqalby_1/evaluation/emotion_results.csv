@@ -1,0 +1,5 @@
+Emotion,Precision@5,Recall@5,nDCG@5,Queries
+Anger,1.0,0.6085,1.0,6
+Fear,0.9333,0.7103,1.0,6
+Joy,1.0,0.5126,1.0,6
+Sadness,1.0,0.8333,1.0,6

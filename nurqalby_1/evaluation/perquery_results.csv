@@ -1,0 +1,25 @@
+query_id,emotion,cause,P@5,R@5,nDCG@5
+Q1,Anger,Faith / Spiritual State,1.0,0.5556,1.0
+Q2,Anger,Faith / Spiritual State,1.0,0.5556,1.0
+Q3,Anger,Life Trials / Hardship,1.0,0.7143,1.0
+Q4,Anger,Life Trials / Hardship,1.0,0.7143,1.0
+Q5,Anger,Relationships / People,1.0,0.5556,1.0
+Q6,Anger,Relationships / People,1.0,0.5556,1.0
+Q7,Fear,Faith / Spiritual State,1.0,0.4167,1.0
+Q8,Fear,Faith / Spiritual State,1.0,0.4167,1.0
+Q9,Fear,Life Trials / Hardship,0.8,1.0,1.0
+Q10,Fear,Life Trials / Hardship,0.8,1.0,1.0
+Q11,Fear,Relationships / People,1.0,0.7143,1.0
+Q12,Fear,Relationships / People,1.0,0.7143,1.0
+Q13,Joy,Faith / Spiritual State,1.0,0.3571,1.0
+Q14,Joy,Faith / Spiritual State,1.0,0.3571,1.0
+Q15,Joy,Life Trials / Hardship,1.0,0.625,1.0
+Q16,Joy,Life Trials / Hardship,1.0,0.625,1.0
+Q17,Joy,Relationships / People,1.0,0.5556,1.0
+Q18,Joy,Relationships / People,1.0,0.5556,1.0
+Q19,Sadness,Faith / Spiritual State,1.0,0.5,1.0
+Q20,Sadness,Faith / Spiritual State,1.0,0.5,1.0
+Q21,Sadness,Life Trials / Hardship,1.0,1.0,1.0
+Q22,Sadness,Life Trials / Hardship,1.0,1.0,1.0
+Q23,Sadness,Relationships / People,1.0,1.0,1.0
+Q24,Sadness,Relationships / People,1.0,1.0,1.0

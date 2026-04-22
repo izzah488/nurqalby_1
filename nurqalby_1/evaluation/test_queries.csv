@@ -1,0 +1,25 @@
+query_id,text,emotion,cause
+Q1,"I feel so angry when my faith feels weak and I keep making the same mistakes",Anger,Faith / Spiritual State
+Q2,"I am furious at myself for drifting away from Allah",Anger,Faith / Spiritual State
+Q3,"I feel so angry going through these hardships and trials in life",Anger,Life Trials / Hardship
+Q4,"This situation is so unfair, I am angry about everything falling apart",Anger,Life Trials / Hardship
+Q5,"I feel angry and hurt because of how people treated me",Anger,Relationships / People
+Q6,"Someone betrayed my trust and I feel so angry",Anger,Relationships / People
+Q7,"I am scared that my iman is getting weaker and I might stray",Fear,Faith / Spiritual State
+Q8,"I fear that Allah is not pleased with me because of my sins",Fear,Faith / Spiritual State
+Q9,"I am so afraid of failing these trials and hardships in my life",Fear,Life Trials / Hardship
+Q10,"The hardships I face make me scared about what comes next",Fear,Life Trials / Hardship
+Q11,"I am afraid of being hurt again by people I trusted",Fear,Relationships / People
+Q12,"People around me make me anxious and I fear being alone",Fear,Relationships / People
+Q13,"I feel so grateful and happy because my faith has grown stronger",Joy,Faith / Spiritual State
+Q14,"My heart is full of joy knowing Allah is always with me",Joy,Faith / Spiritual State
+Q15,"I feel happy and relieved that my hardships are finally over",Joy,Life Trials / Hardship
+Q16,"After all the struggles I feel joy and peace in my heart",Joy,Life Trials / Hardship
+Q17,"I feel blessed and happy because of the good people around me",Joy,Relationships / People
+Q18,"My relationships bring me so much joy and gratitude",Joy,Relationships / People
+Q19,"I feel so sad and lost in my faith, I feel disconnected from Allah",Sadness,Faith / Spiritual State
+Q20,"My heart is heavy and I feel sad about my spiritual state",Sadness,Faith / Spiritual State
+Q21,"I am so sad going through all these hardships and I feel hopeless",Sadness,Life Trials / Hardship
+Q22,"Life has been so hard lately and I feel deeply sad",Sadness,Life Trials / Hardship
+Q23,"I feel heartbroken because someone I loved hurt me deeply",Sadness,Relationships / People
+Q24,"I am so sad because my relationships keep falling apart",Sadness,Relationships / People
