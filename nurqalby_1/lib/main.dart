@@ -4,6 +4,7 @@ import 'services/notification_service.dart';
 import 'services/location_service.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/mood_history_screen.dart'; // ✅ FIXED: added import
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -42,6 +43,10 @@ class MyApp extends StatelessWidget {
         fontFamily:              'sans-serif',
         scaffoldBackgroundColor: const Color(0xFF0d2016),
       ),
+      // ✅ FIXED: route moved inside MaterialApp where it belongs
+      routes: {
+        '/mood-history': (context) => const MoodHistoryScreen(),
+      },
       home: showWelcome
           ? const WelcomeScreen()
           : const HomeScreen(),

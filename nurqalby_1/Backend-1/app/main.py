@@ -39,8 +39,8 @@ dua_embeddings = model.encode(dua_texts)
 print("Loading emotion classifier...")
 emotion_classifier = pipeline(
     "text-classification",
-    model="j-hartmann/emotion-english-distilroberta-base",  #BERT-based model for better accuracy
-    top_k=1,
+    model="j-hartmann/emotion-english-distilroberta-base",
+    top_k=None,   # ← changed from top_k=1 to return ALL scores
 )
 print("Emotion classifier ready.")
 
@@ -55,17 +55,20 @@ EMOTION_MAP = {
     "neutral":  "sadness",  # neutral  → sadness
 }
 
+# Your 4 target emotions
+TARGET_EMOTIONS = ["anger", "fear", "joy", "sadness"]
+
 
 # ── Pydantic models ────────────────────────────────────────────────────────────
 class UserInput(BaseModel):
     text    : str
     emotion : str
     cause   : str
-    top_k   : int = 3 # Default to 3 results if not specified
+    top_k   : int = 3
 
 
 class TextOnly(BaseModel):
-    text: str  
+    text: str
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -84,14 +87,39 @@ def root():
 
 @app.post("/classify_emotion")
 def classify_emotion(data: TextOnly):
-    result    = emotion_classifier(data.text)[0][0]
-    raw_label = result["label"].lower()
-    score     = round(result["score"], 4)
-    mapped    = EMOTION_MAP.get(raw_label, "sadness")
+    # Get ALL label scores from the model
+    all_results = emotion_classifier(data.text)[0]  # list of {label, score}
+
+    # Aggregate scores into your 4 target emotions
+    aggregated = {e: 0.0 for e in TARGET_EMOTIONS}
+    for item in all_results:
+        raw_label = item["label"].lower()
+        mapped    = EMOTION_MAP.get(raw_label)
+        if mapped:
+            aggregated[mapped] += item["score"]
+
+    # Normalise so all 4 scores sum to 1.0
+    total = sum(aggregated.values())
+    if total > 0:
+        aggregated = {k: round(v / total, 4) for k, v in aggregated.items()}
+
+    # Detected emotion = highest aggregated score
+    detected_emotion = max(aggregated, key=aggregated.get)
+    confidence       = aggregated[detected_emotion]
+
+    # Also get the raw top label for reference
+    top_raw = max(all_results, key=lambda x: x["score"])
+
     return {
-        "detected_emotion": mapped,
-        "confidence":       score,
-        "raw_label":        raw_label,
+        "detected_emotion": detected_emotion,
+        "confidence":       confidence,
+        "raw_label":        top_raw["label"].lower(),
+        "all_scores": {          # ← NEW: all 4 emotion percentages
+            "anger":   aggregated["anger"],
+            "fear":    aggregated["fear"],
+            "joy":     aggregated["joy"],
+            "sadness": aggregated["sadness"],
+        },
     }
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'emotion_screen.dart';
+import 'emotion_analysis_screen.dart';        // ← new screen
+import 'emotion_screen.dart';                  // ← fallback
 import 'notification_settings_screen.dart';
 import '../services/api_service.dart';
 
@@ -12,7 +13,7 @@ class InputScreen extends StatefulWidget {
 
 class _InputScreenState extends State<InputScreen> {
   final TextEditingController _controller = TextEditingController();
-  bool _isLoading = false; // ← declared missing variable
+  bool _isLoading = false;
 
   Future<void> _next() async {
     final text = _controller.text.trim();
@@ -22,31 +23,34 @@ class _InputScreenState extends State<InputScreen> {
       return;
     }
 
-    // Show loading
     setState(() => _isLoading = true);
 
     try {
-      // Auto-classify emotion using BERT
+      // Call BERT classification
       final result = await ApiService.classifyEmotion(text: text);
       final detectedEmotion = result['detected_emotion'] as String;
-      final confidence = result['confidence'] as double;
+      final confidence = (result['confidence'] as num).toDouble();
+
+      // all_scores is a Map<String, double> if the API returns it
+      final allScores = result['all_scores'] as Map<String, double>?;
 
       if (mounted) {
         setState(() => _isLoading = false);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => EmotionScreen(
+            builder: (_) => EmotionAnalysisScreen(   // ← go to new analysis screen
               userText: text,
-              detectedEmotion: detectedEmotion, // ← now accepted by EmotionScreen
+              detectedEmotion: detectedEmotion,
               confidence: confidence,
+              allScores: allScores,
             ),
           ),
         );
       }
     } catch (e) {
       if (mounted) setState(() => _isLoading = false);
-      // Fallback — let user pick manually
+      // Fallback — let user pick manually if API fails
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -183,7 +187,7 @@ class _InputScreenState extends State<InputScreen> {
                               color: Colors.white, strokeWidth: 2.5),
                         )
                       : const Text(
-                          'Select Emotion →',
+                          'Analyse Emotion →',
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,

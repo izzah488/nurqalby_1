@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'input_screen.dart';
 import 'saved_screen.dart';
+import 'mood_history_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,9 +13,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
+  // ✅ FIXED: added MoodHistoryScreen as 3rd tab
   final List<Widget> _screens = [
     const InputScreen(),
     const SavedScreen(),
+    const MoodHistoryScreen(),
   ];
 
   @override
@@ -36,6 +39,11 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon:  Icon(Icons.bookmark_outline_rounded),
             label: 'Saved',
+          ),
+          // ✅ FIXED: IconButton moved here as a proper BottomNavigationBarItem
+          BottomNavigationBarItem(
+            icon:  Icon(Icons.bar_chart_rounded),
+            label: 'Mood',
           ),
         ],
       ),

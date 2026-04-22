@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'cause_screen.dart';
 import 'notification_settings_screen.dart';
+import 'package:nurqalby_1/services/mood_database.dart';
 
 class EmotionScreen extends StatefulWidget {
   final String userText;
@@ -38,7 +39,8 @@ class _EmotionScreenState extends State<EmotionScreen> {
     }
   }
 
-  void _next() {
+  // ✅ FIXED: async + saves mood before navigating
+  Future<void> _next() async {
     if (selectedEmotion == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -48,6 +50,13 @@ class _EmotionScreenState extends State<EmotionScreen> {
       );
       return;
     }
+
+    // Save emotion to mood history database
+    await MoodDatabase.instance.insertMood(
+      emotion: selectedEmotion!,
+    );
+
+    if (!mounted) return;
     Navigator.push(
       context,
       MaterialPageRoute(

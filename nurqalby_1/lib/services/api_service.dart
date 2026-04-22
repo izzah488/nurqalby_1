@@ -52,7 +52,8 @@ class ApiService {
     }
   }
 
-  // ← moved INSIDE the class (was outside before, causing the error)
+  /// Returns detected_emotion, confidence, and all_scores (Map<String, double>).
+  /// all_scores example: { "anger": 0.05, "fear": 0.72, "joy": 0.10, "sadness": 0.13 }
   static Future<Map<String, dynamic>> classifyEmotion({
     required String text,
   }) async {
@@ -63,9 +64,18 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      // Parse all_scores into Map<String, double> if present
+      if (data.containsKey('all_scores')) {
+        final raw = data['all_scores'] as Map<String, dynamic>;
+        data['all_scores'] =
+            raw.map((k, v) => MapEntry(k, (v as num).toDouble()));
+      }
+
+      return data;
     } else {
       throw Exception('Classify error: ${response.statusCode}');
     }
   }
-} // ← single closing brace for the class
+}
