@@ -24,7 +24,7 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
   late AnimationController _animController;
   late List<Animation<double>> _barAnimations;
 
-  // Emotion display config
+  // Emotion display config — bar colors kept distinct per emotion
   final Map<String, Map<String, dynamic>> _emotionConfig = {
     'sadness': {'label': 'Sadness', 'icon': '😔', 'color': Color(0xFF5B8DEF)},
     'fear':    {'label': 'Fear',    'icon': '😨', 'color': Color(0xFFAB6EF5)},
@@ -37,14 +37,10 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
   List<MapEntry<String, double>> get _sortedScores {
     final scores = widget.allScores ??
         {widget.detectedEmotion: widget.confidence};
-
-    // Ensure all 4 emotions exist
     final filled = <String, double>{};
     for (final key in _emotionOrder) {
       filled[key] = scores[key] ?? 0.0;
     }
-
-    // Sort by score descending
     final entries = filled.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return entries;
@@ -68,7 +64,6 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
       );
     }).toList();
 
-    // Start animation after a short delay
     Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) _animController.forward();
     });
@@ -85,11 +80,12 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
     final scores = _sortedScores;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0d2016),
+      backgroundColor: const Color(0xFF0F1E12),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             // ── Header ──────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -102,12 +98,12 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1a3a2a),
+                        color: const Color(0xFF2A4930),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFF2d5a3d)),
+                        border: Border.all(color: const Color(0xFF3D6645)),
                       ),
                       child: const Icon(Icons.arrow_back,
-                          color: Colors.white, size: 20),
+                          color: Color(0xFFFFFDD0), size: 20),
                     ),
                   ),
                   // AI badge
@@ -115,20 +111,20 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1a3a2a),
+                      color: const Color(0xFF2A4930),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                          color: const Color(0xFF4CAF50).withOpacity(0.5)),
+                          color: const Color(0xFF355E3B).withOpacity(0.5)),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.auto_awesome,
-                            color: Color(0xFF4CAF50), size: 13),
+                            color: Color(0xFFB8D4BB), size: 13),
                         SizedBox(width: 6),
                         Text('BERT Analysis',
                             style: TextStyle(
-                                color: Color(0xFF9fd4b0),
+                                color: Color(0xFFB8D4BB),
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600)),
                       ],
@@ -143,7 +139,7 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
               padding: EdgeInsets.fromLTRB(20, 20, 20, 4),
               child: Text('Emotion Analysis',
                   style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xFFFFFDD0),
                       fontSize: 26,
                       fontWeight: FontWeight.w700)),
             ),
@@ -151,8 +147,11 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: Text(
                 'Here\'s what AI detected from your words.',
-                style: TextStyle(
-                    color: Colors.white.withOpacity(0.55), fontSize: 13),
+                style: const Color(0xFFFFFDD0).withOpacity(0.55) != null
+                    ? TextStyle(
+                        color: const Color(0xFFFFFDD0).withOpacity(0.55),
+                        fontSize: 13)
+                    : const TextStyle(fontSize: 13),
               ),
             ),
 
@@ -165,15 +164,15 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF142d1e),
+                  color: const Color(0xFF1B3320),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF2d5a3d)),
+                  border: Border.all(color: const Color(0xFF3D6645)),
                 ),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Icon(Icons.format_quote_rounded,
-                        color: Color(0xFF4CAF50), size: 18),
+                        color: Color(0xFF7FB883), size: 18),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -181,7 +180,7 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            color: Colors.white.withOpacity(0.75),
+                            color: const Color(0xFFFFFDD0).withOpacity(0.75),
                             fontSize: 13,
                             fontStyle: FontStyle.italic),
                       ),
@@ -234,17 +233,17 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     colors: [
-                      const Color(0xFF1a3a2a),
-                      const Color(0xFF0d2016),
+                      Color(0xFF2A4930),
+                      Color(0xFF0F1E12),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                      color: const Color(0xFF4CAF50).withOpacity(0.4)),
+                      color: const Color(0xFF355E3B).withOpacity(0.5)),
                 ),
                 child: Row(
                   children: [
@@ -260,7 +259,7 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
                           Text(
                             'Dominant emotion detected',
                             style: TextStyle(
-                                color: Colors.white.withOpacity(0.5),
+                                color: const Color(0xFFFFFDD0).withOpacity(0.5),
                                 fontSize: 11),
                           ),
                           const SizedBox(height: 2),
@@ -268,7 +267,7 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
                             '${_emotionConfig[widget.detectedEmotion]?['label'] ?? widget.detectedEmotion}'
                             '  •  ${(widget.confidence * 100).toStringAsFixed(1)}% confidence',
                             style: const TextStyle(
-                                color: Colors.white,
+                                color: Color(0xFFFFFDD0),
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600),
                           ),
@@ -301,15 +300,17 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4CAF50),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: const Color(0xFF355E3B),
+                    padding: const EdgeInsets.symmetric(vertical: 17),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
+                    elevation: 4,
+                    shadowColor: const Color(0xFF355E3B).withOpacity(0.4),
                   ),
                   child: const Text(
                     'Select Emotion →',
                     style: TextStyle(
-                        color: Colors.white,
+                        color: Color(0xFFFFFDD0),
                         fontSize: 16,
                         fontWeight: FontWeight.w600),
                   ),
@@ -323,12 +324,12 @@ class _EmotionAnalysisScreenState extends State<EmotionAnalysisScreen>
   }
 }
 
-// ── Reusable emotion bar widget ────────────────────────────────────────────────
+// ── Reusable emotion bar widget ─────────────────────────────────────────────
 class _EmotionBar extends StatelessWidget {
   final String icon;
   final String label;
-  final double percentage;      // 0.0 – 1.0 actual value
-  final double animatedPercentage; // animated value for bar width
+  final double percentage;
+  final double animatedPercentage;
   final Color barColor;
   final bool isTop;
 
@@ -343,7 +344,7 @@ class _EmotionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pct = (percentage * 100).toStringAsFixed(1);
+    final pct    = (percentage * 100).toStringAsFixed(1);
     final animPct = animatedPercentage.clamp(0.0, 1.0);
 
     return Container(
@@ -351,10 +352,10 @@ class _EmotionBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: isTop
             ? barColor.withOpacity(0.12)
-            : const Color(0xFF142d1e),
+            : const Color(0xFF1B3320),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: isTop ? barColor.withOpacity(0.5) : const Color(0xFF2d5a3d),
+          color: isTop ? barColor.withOpacity(0.5) : const Color(0xFF3D6645),
           width: isTop ? 1.5 : 1,
         ),
       ),
@@ -369,21 +370,22 @@ class _EmotionBar extends StatelessWidget {
                 child: Text(
                   label,
                   style: TextStyle(
-                      color: isTop ? Colors.white : Colors.white.withOpacity(0.8),
+                      color: isTop
+                          ? const Color(0xFFFFFDD0)
+                          : const Color(0xFFFFFDD0).withOpacity(0.8),
                       fontSize: 14,
                       fontWeight:
                           isTop ? FontWeight.w600 : FontWeight.w400),
                 ),
               ),
-              // Percentage number
               Text(
                 '$pct%',
                 style: TextStyle(
-                    color: isTop ? barColor : Colors.white.withOpacity(0.6),
+                    color: isTop ? barColor : const Color(0xFFFFFDD0).withOpacity(0.6),
                     fontSize: 14,
                     fontWeight: FontWeight.w700),
               ),
-              if (isTop) ...[ 
+              if (isTop) ...[
                 const SizedBox(width: 6),
                 Container(
                   padding:
@@ -396,25 +398,24 @@ class _EmotionBar extends StatelessWidget {
                   child: Text(
                     'Top',
                     style: TextStyle(
-                        color: barColor, fontSize: 10, fontWeight: FontWeight.w600),
+                        color: barColor,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
             ],
           ),
           const SizedBox(height: 10),
-          // Progress bar track
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
             child: Stack(
               children: [
-                // Background track
                 Container(
                   height: 8,
                   width: double.infinity,
-                  color: Colors.white.withOpacity(0.07),
+                  color: const Color(0xFFFFFDD0).withOpacity(0.07),
                 ),
-                // Animated fill
                 FractionallySizedBox(
                   widthFactor: animPct,
                   child: Container(

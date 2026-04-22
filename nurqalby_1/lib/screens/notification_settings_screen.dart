@@ -51,13 +51,13 @@ class _NotificationSettingsScreenState
 
     if (_notificationsEnabled) {
       await NotificationService.schedulePrayerNotifications(
-        latitude:      3.1390,
-        longitude:     101.6869,
-        fajrEnabled:   _fajrEnabled,
-        dhuhrEnabled:  _dhuhrEnabled,
-        asrEnabled:    _asrEnabled,
+        latitude:       3.1390,
+        longitude:      101.6869,
+        fajrEnabled:    _fajrEnabled,
+        dhuhrEnabled:   _dhuhrEnabled,
+        asrEnabled:     _asrEnabled,
         maghribEnabled: _maghribEnabled,
-        ishaEnabled:   _ishaEnabled,
+        ishaEnabled:    _ishaEnabled,
       );
     } else {
       await NotificationService.cancelAll();
@@ -66,9 +66,9 @@ class _NotificationSettingsScreenState
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Settings saved'),
-          backgroundColor: Color(0xFF1a3a2a),
-          duration: Duration(seconds: 2),
+          content:         Text('Settings saved'),
+          backgroundColor: Color(0xFF2A4930),
+          duration:        Duration(seconds: 2),
         ),
       );
     }
@@ -77,79 +77,80 @@ class _NotificationSettingsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F0),
+      backgroundColor: const Color(0xFFFFFDD0),
       body: SafeArea(
         child: Column(
           children: [
 
             // --- Header ---
-            // In header Row, update to add history button:
-Container(
-  width: double.infinity,
-  color: const Color(0xFF1a3a2a),
-  padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-  child: Row(
-    children: [
-      GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: const Icon(Icons.arrow_back_ios,
-            color: Colors.white, size: 18),
-      ),
-      const SizedBox(width: 12),
-      const Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Reminders',
-                style: TextStyle(
-                    color: Color(0xFF9fd4b0), fontSize: 12)),
-            Text('Notification Settings',
-                style: TextStyle(
-                    color:      Colors.white,
-                    fontSize:   18,
-                    fontWeight: FontWeight.w600)),
-          ],
-        ),
-      ),
+            Container(
+              width:   double.infinity,
+              color:   const Color(0xFF355E3B),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(Icons.arrow_back_ios,
+                        color: Color(0xFFFFFDD0), size: 18),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Reminders',
+                            style: TextStyle(
+                                color: Color(0xFFB8D4BB), fontSize: 12)),
+                        Text('Notification Settings',
+                            style: TextStyle(
+                                color:      Color(0xFFFFFDD0),
+                                fontSize:   18,
+                                fontWeight: FontWeight.w600)),
+                      ],
+                    ),
+                  ),
 
-      // History button
-      GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const NotificationHistoryScreen(),
-          ),
-        ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color:        Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: const Row(
-            children: [
-              Icon(Icons.history_rounded,
-                  color: Colors.white, size: 16),
-              SizedBox(width: 4),
-              Text('History',
-                  style: TextStyle(
-                      color:    Colors.white,
-                      fontSize: 12)),
-            ],
-          ),
-        ),
-      ),
-    ],
-  ),
-),
+                  // History button
+                  GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const NotificationHistoryScreen(),
+                      ),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color:        const Color(0xFFFFFDD0).withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: const Color(0xFFFFFDD0).withOpacity(0.3)),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.history_rounded,
+                              color: Color(0xFFFFFDD0), size: 16),
+                          SizedBox(width: 4),
+                          Text('History',
+                              style: TextStyle(
+                                  color:    Color(0xFFFFFDD0),
+                                  fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
             // --- Body ---
             _isLoading
                 ? const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
-                          color: Color(0xFF1a3a2a)),
+                          color: Color(0xFF355E3B)),
                     ),
                   )
                 : Expanded(
@@ -160,11 +161,11 @@ Container(
                         // Master toggle
                         _SectionCard(
                           child: _ToggleRow(
-                            icon:    Icons.notifications_rounded,
-                            label:   'Prayer Notifications',
-                            subtitle: 'Receive verse reminders before prayers',
-                            value:   _notificationsEnabled,
-                            isMain:  true,
+                            icon:      Icons.notifications_rounded,
+                            label:     'Prayer Notifications',
+                            subtitle:  'Receive verse reminders before prayers',
+                            value:     _notificationsEnabled,
+                            isMain:    true,
                             onChanged: (val) {
                               setState(() => _notificationsEnabled = val);
                               _saveAndApply();
@@ -180,9 +181,9 @@ Container(
                             child: Text(
                               'PRAYER TIMES',
                               style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.grey,
+                                  fontSize:    11,
+                                  fontWeight:  FontWeight.w600,
+                                  color:       Color(0xFF355E3B),
                                   letterSpacing: 0.8),
                             ),
                           ),
@@ -190,10 +191,10 @@ Container(
                             child: Column(
                               children: [
                                 _ToggleRow(
-                                  icon:     Icons.wb_twilight_rounded,
-                                  label:    'Fajr',
-                                  subtitle: '10 min before Fajr',
-                                  value:    _fajrEnabled,
+                                  icon:      Icons.wb_twilight_rounded,
+                                  label:     'Fajr',
+                                  subtitle:  '10 min before Fajr',
+                                  value:     _fajrEnabled,
                                   onChanged: (val) {
                                     setState(() => _fajrEnabled = val);
                                     _saveAndApply();
@@ -201,10 +202,10 @@ Container(
                                 ),
                                 _Divider(),
                                 _ToggleRow(
-                                  icon:     Icons.wb_sunny_rounded,
-                                  label:    'Dhuhr',
-                                  subtitle: '10 min before Dhuhr',
-                                  value:    _dhuhrEnabled,
+                                  icon:      Icons.wb_sunny_rounded,
+                                  label:     'Dhuhr',
+                                  subtitle:  '10 min before Dhuhr',
+                                  value:     _dhuhrEnabled,
                                   onChanged: (val) {
                                     setState(() => _dhuhrEnabled = val);
                                     _saveAndApply();
@@ -212,10 +213,10 @@ Container(
                                 ),
                                 _Divider(),
                                 _ToggleRow(
-                                  icon:     Icons.light_mode_rounded,
-                                  label:    'Asr',
-                                  subtitle: '10 min before Asr',
-                                  value:    _asrEnabled,
+                                  icon:      Icons.light_mode_rounded,
+                                  label:     'Asr',
+                                  subtitle:  '10 min before Asr',
+                                  value:     _asrEnabled,
                                   onChanged: (val) {
                                     setState(() => _asrEnabled = val);
                                     _saveAndApply();
@@ -223,10 +224,10 @@ Container(
                                 ),
                                 _Divider(),
                                 _ToggleRow(
-                                  icon: Icons.wb_cloudy_rounded,
-                                  label:    'Maghrib',
-                                  subtitle: '10 min before Maghrib',
-                                  value:    _maghribEnabled,
+                                  icon:      Icons.wb_cloudy_rounded,
+                                  label:     'Maghrib',
+                                  subtitle:  '10 min before Maghrib',
+                                  value:     _maghribEnabled,
                                   onChanged: (val) {
                                     setState(() => _maghribEnabled = val);
                                     _saveAndApply();
@@ -234,10 +235,10 @@ Container(
                                 ),
                                 _Divider(),
                                 _ToggleRow(
-                                  icon:     Icons.nightlight_round,
-                                  label:    'Isha',
-                                  subtitle: '10 min before Isha',
-                                  value:    _ishaEnabled,
+                                  icon:      Icons.nightlight_round,
+                                  label:     'Isha',
+                                  subtitle:  '10 min before Isha',
+                                  value:     _ishaEnabled,
                                   onChanged: (val) {
                                     setState(() => _ishaEnabled = val);
                                     _saveAndApply();
@@ -252,22 +253,22 @@ Container(
                           Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFf0f7f3),
+                              color: const Color(0xFFF2EDCA),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                  color: const Color(0xFFc8e6d4)),
+                                  color: const Color(0xFF355E3B).withOpacity(0.3)),
                             ),
                             child: const Row(
                               children: [
                                 Icon(Icons.info_outline,
-                                    color: Color(0xFF5a8a6a), size: 18),
+                                    color: Color(0xFF355E3B), size: 18),
                                 SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     'Notifications will show a Quran verse 10 minutes before each selected prayer time.',
                                     style: TextStyle(
                                         fontSize: 12,
-                                        color: Color(0xFF5a8a6a)),
+                                        color:    Color(0xFF355E3B)),
                                   ),
                                 ),
                               ],
@@ -298,7 +299,14 @@ class _SectionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color:        Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
+        border: Border.all(color: const Color(0xFFCDC99A)),
+        boxShadow: [
+          BoxShadow(
+            color:      Colors.black.withOpacity(0.04),
+            blurRadius: 6,
+            offset:     const Offset(0, 2),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -335,11 +343,11 @@ class _ToggleRow extends StatelessWidget {
             width:  36,
             height: 36,
             decoration: BoxDecoration(
-              color:        const Color(0xFFf0f7f3),
+              color:        const Color(0xFFF2EDCA),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon,
-                color: const Color(0xFF1a3a2a),
+                color: const Color(0xFF355E3B),
                 size: isMain ? 20 : 18),
           ),
           const SizedBox(width: 12),
@@ -351,18 +359,19 @@ class _ToggleRow extends StatelessWidget {
                     style: TextStyle(
                         fontSize:   isMain ? 15 : 14,
                         fontWeight: FontWeight.w500,
-                        color:      Colors.black87)),
+                        color:      const Color(0xFF1B3320))),
                 Text(subtitle,
                     style: const TextStyle(
-                        fontSize: 11, color: Colors.grey)),
+                        fontSize: 11,
+                        color:    Color(0xFF5A7A60))),
               ],
             ),
           ),
           Switch(
             value:            value,
             onChanged:        onChanged,
-            activeColor:      const Color(0xFF1a3a2a),
-            activeTrackColor: const Color(0xFFc8e6d4),
+            activeColor:      const Color(0xFF355E3B),
+            activeTrackColor: const Color(0xFFB8D4BB),
           ),
         ],
       ),
@@ -373,6 +382,6 @@ class _ToggleRow extends StatelessWidget {
 class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Divider(height: 1, color: Color(0xFFEEEEEE));
+    return const Divider(height: 1, color: Color(0xFFD4D0A0));
   }
 }

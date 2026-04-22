@@ -46,7 +46,7 @@ class _SavedScreenState extends State<SavedScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content:         Text('Removed from saved'),
-        backgroundColor: Color(0xFF1a3a2a),
+        backgroundColor: Color(0xFF2A4930),
         duration:        Duration(seconds: 2),
       ),
     );
@@ -55,7 +55,7 @@ class _SavedScreenState extends State<SavedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0d2016),
+      backgroundColor: const Color(0xFF0F1E12),
       body: SafeArea(
         child: Column(
           children: [
@@ -64,16 +64,17 @@ class _SavedScreenState extends State<SavedScreen> {
             Container(
               width:   double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              color:   const Color(0xFF1a3a2a),
+              color:   const Color(0xFF2A4930),
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Your Collection',
                       style: TextStyle(
-                          color: Color(0xFF9fd4b0), fontSize: 12)),
+                          color: Color(0xFFB8D4BB), fontSize: 12)),
+                  SizedBox(height: 2),
                   Text('Saved Items',
                       style: TextStyle(
-                          color:      Colors.white,
+                          color:      Color(0xFFFFFDD0),
                           fontSize:   22,
                           fontWeight: FontWeight.w600)),
                 ],
@@ -85,26 +86,25 @@ class _SavedScreenState extends State<SavedScreen> {
               child: isLoading
                   ? const Center(
                       child: CircularProgressIndicator(
-                          color: Color(0xFF4CAF50)))
+                          color: Color(0xFF355E3B)))
                   : savedItems.isEmpty
                       ? Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.bookmark_outline_rounded,
-                                  size:  64,
-                                  color: Colors.white.withOpacity(0.2)),
+                                  size:  72,
+                                  color: const Color(0xFFFFFDD0).withOpacity(0.15)),
                               const SizedBox(height: 16),
                               Text('No saved items yet',
                                   style: TextStyle(
-                                      color: Colors.white
-                                          .withOpacity(0.4),
+                                      color: const Color(0xFFFFFDD0).withOpacity(0.4),
                                       fontSize: 16)),
                               const SizedBox(height: 8),
                               Text(
                                 'Save verses and duas to find them here',
                                 style: TextStyle(
-                                    color: Colors.white.withOpacity(0.3),
+                                    color: const Color(0xFFFFFDD0).withOpacity(0.28),
                                     fontSize: 13),
                               ),
                             ],
@@ -114,83 +114,73 @@ class _SavedScreenState extends State<SavedScreen> {
                           padding: const EdgeInsets.all(16),
                           itemCount: savedItems.length,
                           itemBuilder: (context, index) {
-                            final item  = savedItems[index];
+                            final item    = savedItems[index];
                             final isVerse = item['type'] == 'verse';
                             return GestureDetector(
                               onTap: () => Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => NotificationDetailScreen(
-      arabic:    item['arabic']    ?? '',
-      english:   item['english']   ?? item['translation'] ?? '',
-      title:     item['title']     ?? item['prayerName']  ?? '',
-      reference: item['reference'] ?? '',
-      type:      item['type']      ?? 'dua',
-    ),
-  ),
-).then((_) => _loadSaved()),
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => NotificationDetailScreen(
+                                    arabic:    item['arabic']    ?? '',
+                                    english:   item['english']   ?? item['translation'] ?? '',
+                                    title:     item['title']     ?? item['prayerName']  ?? '',
+                                    reference: item['reference'] ?? '',
+                                    type:      item['type']      ?? 'dua',
+                                  ),
+                                ),
+                              ).then((_) => _loadSaved()),
                               child: Container(
-                                margin: const EdgeInsets.only(
-                                    bottom: 12),
+                                margin:  const EdgeInsets.only(bottom: 12),
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   color: isVerse
-                                      ? const Color(0xFF142d1e)
-                                      : const Color(0xFF1e1428),
-                                  borderRadius:
-                                      BorderRadius.circular(12),
+                                      ? const Color(0xFF1B3320)
+                                      : const Color(0xFF1B2D1F),
+                                  borderRadius: BorderRadius.circular(14),
                                   border: Border.all(
                                     color: isVerse
-                                        ? const Color(0xFF2d5a3d)
-                                        : const Color(0xFF3d2d5a),
+                                        ? const Color(0xFF3D6645)
+                                        : const Color(0xFF2A3D2C),
                                   ),
                                 ),
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
 
                                     // Type badge + delete
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
-                                          padding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 8,
-                                                  vertical: 3),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 4),
                                           decoration: BoxDecoration(
                                             color: isVerse
-                                                ? const Color(
-                                                    0xFF1a3a2a)
-                                                : const Color(
-                                                    0xFF2a1a3a),
+                                                ? const Color(0xFF2A4930)
+                                                : const Color(0xFF1C3320),
                                             borderRadius:
-                                                BorderRadius.circular(
-                                                    10),
+                                                BorderRadius.circular(10),
+                                            border: Border.all(
+                                              color: isVerse
+                                                  ? const Color(0xFF3D6645)
+                                                  : const Color(0xFF3D5A40),
+                                            ),
                                           ),
                                           child: Text(
-                                            isVerse
-                                                ? '📖 Verse'
-                                                : '🤲 Dua',
+                                            isVerse ? '📖 Verse' : '🤲 Dua',
                                             style: TextStyle(
                                                 color: isVerse
-                                                    ? const Color(
-                                                        0xFF9fd4b0)
-                                                    : const Color(
-                                                        0xFFd4b8f0),
+                                                    ? const Color(0xFFB8D4BB)
+                                                    : const Color(0xFFB8D4BB),
                                                 fontSize: 11),
                                           ),
                                         ),
                                         GestureDetector(
-                                          onTap: () =>
-                                              _removeItem(index),
+                                          onTap: () => _removeItem(index),
                                           child: Icon(
                                             Icons.bookmark_remove_rounded,
-                                            color: Colors.white
-                                                .withOpacity(0.3),
+                                            color: const Color(0xFFFFFDD0).withOpacity(0.3),
                                             size: 20,
                                           ),
                                         ),
@@ -202,8 +192,7 @@ class _SavedScreenState extends State<SavedScreen> {
                                     Text(
                                       item['title'] ?? '',
                                       style: TextStyle(
-                                          color: Colors.white
-                                              .withOpacity(0.6),
+                                          color: const Color(0xFFFFFDD0).withOpacity(0.6),
                                           fontSize:  12,
                                           fontStyle: FontStyle.italic),
                                     ),
@@ -215,7 +204,7 @@ class _SavedScreenState extends State<SavedScreen> {
                                       child: Text(
                                         item['arabic'] ?? '',
                                         style: const TextStyle(
-                                            color:      Colors.white,
+                                            color:      Color(0xFFFFFDD0),
                                             fontSize:   16,
                                             fontWeight: FontWeight.w600,
                                             height:     1.6),
@@ -223,40 +212,37 @@ class _SavedScreenState extends State<SavedScreen> {
                                     ),
                                     const SizedBox(height: 6),
 
-                                    // English — handle both field names safely
+                                    // English
                                     Text(
-                                     (item['english'] ?? item['translation'] ?? ''),
+                                      (item['english'] ?? item['translation'] ?? ''),
                                       style: TextStyle(
-                                      color:    Colors.white.withOpacity(0.6),
-                                      fontSize: 12,
-                                      height:   1.4),
-                                    maxLines: 2,
-                                   overflow: TextOverflow.ellipsis,
+                                          color:    const Color(0xFFFFFDD0).withOpacity(0.6),
+                                          fontSize: 12,
+                                          height:   1.4),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 8),
 
                                     // Reference + time
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           item['reference'] ?? '',
                                           style: TextStyle(
-                                              color: Colors.white
-                                                  .withOpacity(0.4),
+                                              color: const Color(0xFFFFFDD0).withOpacity(0.4),
                                               fontSize: 11),
                                         ),
                                         Text(
                                           item['time'] ?? '',
                                           style: TextStyle(
-                                              color: Colors.white
-                                                  .withOpacity(0.3),
+                                              color: const Color(0xFFFFFDD0).withOpacity(0.3),
                                               fontSize: 11),
                                         ),
                                       ],
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),

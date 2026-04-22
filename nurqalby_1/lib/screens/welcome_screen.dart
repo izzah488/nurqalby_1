@@ -43,15 +43,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   void _goToApp() async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setBool('seen_welcome', true);
-  if (mounted) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
-    );
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('seen_welcome', true);
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
+      );
+    }
   }
-}
 
   @override
   void dispose() {
@@ -84,22 +84,22 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 children: [
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 6),
+                        horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1a3a2a).withOpacity(0.8),
+                      color: const Color(0xFF1B3320).withOpacity(0.88),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                          color: const Color(0xFF9fd4b0), width: 1),
+                          color: const Color(0xFFFFFDD0).withOpacity(0.25), width: 1),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.menu_book_rounded,
-                            color: Color(0xFF9fd4b0), size: 14),
+                            color: Color(0xFFB8D4BB), size: 14),
                         SizedBox(width: 6),
                         Text('QURAN GUIDE',
                             style: TextStyle(
-                                color: Color(0xFF9fd4b0),
+                                color: Color(0xFFB8D4BB),
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 0.8)),
@@ -113,14 +113,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       onTap: _goToApp,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
+                            horizontal: 14, vertical: 8),
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color: const Color(0xFFFFFDD0).withOpacity(0.2)),
                         ),
                         child: const Text('Skip',
                             style: TextStyle(
-                                color: Colors.white, fontSize: 13)),
+                                color: Color(0xFFFFFDD0), fontSize: 13)),
                       ),
                     ),
                 ],
@@ -134,14 +136,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             left: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.fromLTRB(28, 32, 28, 48),
+              padding: const EdgeInsets.fromLTRB(28, 36, 28, 52),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end:   Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.85),
+                    const Color(0xFF0F1E12).withOpacity(0.92),
                   ],
                 ),
               ),
@@ -153,7 +155,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   Text(
                     _pages[_currentPage]['title']!,
                     style: const TextStyle(
-                      color:      Colors.white,
+                      color:      Color(0xFFFFFDD0),
                       fontSize:   32,
                       fontWeight: FontWeight.w700,
                       height:     1.2,
@@ -164,13 +166,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   // Subtitle
                   Text(
                     _pages[_currentPage]['subtitle']!,
-                    style: TextStyle(
-                      color:    Colors.white.withOpacity(0.8),
+                    style: const TextStyle(
+                      color:    Color(0xFFFFFDD0),
                       fontSize: 14,
                       height:   1.6,
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 32),
 
                   // Dots + Button row
                   Row(
@@ -183,12 +185,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           (i) => AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.only(right: 6),
-                            width:  _currentPage == i ? 20 : 7,
+                            width:  _currentPage == i ? 22 : 7,
                             height: 7,
                             decoration: BoxDecoration(
                               color: _currentPage == i
-                                  ? const Color(0xFF4CAF50)
-                                  : Colors.white.withOpacity(0.4),
+                                  ? const Color(0xFF355E3B)
+                                  : const Color(0xFFFFFDD0).withOpacity(0.35),
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -201,10 +203,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         onTap: _nextPage,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 28, vertical: 14),
+                              horizontal: 30, vertical: 15),
                           decoration: BoxDecoration(
-                            color:        const Color(0xFF4CAF50),
+                            color:        const Color(0xFF355E3B),
                             borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF355E3B).withOpacity(0.4),
+                                blurRadius: 16,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -214,13 +223,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                     ? 'Get Started'
                                     : 'Next',
                                 style: const TextStyle(
-                                    color:      Colors.white,
+                                    color:      Color(0xFFFFFDD0),
                                     fontSize:   15,
                                     fontWeight: FontWeight.w600),
                               ),
-                              const SizedBox(width: 6),
+                              const SizedBox(width: 8),
                               const Icon(Icons.arrow_forward_rounded,
-                                  color: Colors.white, size: 18),
+                                  color: Color(0xFFFFFDD0), size: 18),
                             ],
                           ),
                         ),
@@ -254,15 +263,15 @@ class _OnboardingPage extends StatelessWidget {
           data['image']!,
           fit: BoxFit.cover,
         ),
-        // Dark overlay
+        // Dark + green tinted overlay
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end:   Alignment.bottomCenter,
               colors: [
-                Colors.black.withOpacity(0.2),
-                Colors.black.withOpacity(0.6),
+                const Color(0xFF0F1E12).withOpacity(0.18),
+                const Color(0xFF0F1E12).withOpacity(0.55),
               ],
             ),
           ),

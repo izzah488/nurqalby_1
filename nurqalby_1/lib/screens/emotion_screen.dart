@@ -23,35 +23,32 @@ class _EmotionScreenState extends State<EmotionScreen> {
   String? selectedEmotion;
 
   final List<Map<String, dynamic>> emotions = [
-    {'label': 'Sadness', 'icon': '😔', 'value': 'sadness'},
-    {'label': 'Fear',    'icon': '😨', 'value': 'fear'},
-    {'label': 'Anger',   'icon': '😠', 'value': 'anger'},
-    {'label': 'Joy',     'icon': '😊', 'value': 'joy'},
+    {'label': 'Sadness', 'icon': '😔', 'value': 'sadness', 'accentColor': Color(0xFF64B5F6)},
+    {'label': 'Fear',    'icon': '😨', 'value': 'fear',    'accentColor': Color(0xFFAB47BC)},
+    {'label': 'Anger',   'icon': '😠', 'value': 'anger',   'accentColor': Color(0xFFEF5350)},
+    {'label': 'Joy',     'icon': '😊', 'value': 'joy',     'accentColor': Color(0xFFFFD54F)},
   ];
 
   @override
   void initState() {
     super.initState();
-    // Pre-select the BERT-detected emotion if provided and valid
     if (widget.detectedEmotion != null) {
       final match = emotions.any((e) => e['value'] == widget.detectedEmotion);
       if (match) selectedEmotion = widget.detectedEmotion;
     }
   }
 
-  // ✅ FIXED: async + saves mood before navigating
   Future<void> _next() async {
     if (selectedEmotion == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select an emotion.'),
-          backgroundColor: Color(0xFF1a3a2a),
+          backgroundColor: Color(0xFF2A4930),
         ),
       );
       return;
     }
 
-    // Save emotion to mood history database
     await MoodDatabase.instance.insertMood(
       emotion: selectedEmotion!,
     );
@@ -71,7 +68,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0d2016),
+      backgroundColor: const Color(0xFF0F1E12),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,8 +87,17 @@ class _EmotionScreenState extends State<EmotionScreen> {
                     children: [
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: const Icon(Icons.arrow_back,
-                            color: Colors.white, size: 24),
+                        child: Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2A4930),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFF3D6645)),
+                          ),
+                          child: const Icon(Icons.arrow_back,
+                              color: Color(0xFFFFFDD0), size: 20),
+                        ),
                       ),
                       GestureDetector(
                         onTap: () => Navigator.push(
@@ -104,13 +110,13 @@ class _EmotionScreenState extends State<EmotionScreen> {
                           width: 42,
                           height: 42,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF1a3a2a),
+                            color: const Color(0xFF2A4930),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFF2d5a3d)),
+                            border: Border.all(color: const Color(0xFF3D6645)),
                           ),
                           child: const Icon(
                             Icons.notifications_outlined,
-                            color: Color(0xFF4CAF50),
+                            color: Color(0xFFB8D4BB),
                             size: 22,
                           ),
                         ),
@@ -118,10 +124,36 @@ class _EmotionScreenState extends State<EmotionScreen> {
                     ],
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 18),
+
+                  // Step indicator
+                  Row(
+                    children: List.generate(3, (i) => Expanded(
+                      child: Container(
+                        height: 3,
+                        margin: EdgeInsets.only(right: i < 2 ? 6 : 0),
+                        decoration: BoxDecoration(
+                          color: i <= 1
+                              ? const Color(0xFF355E3B)
+                              : const Color(0xFF2A4930),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    )),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Step 2 of 3  •  Confirm your emotion',
+                    style: TextStyle(
+                        color: Color(0xFFB8D4BB),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500),
+                  ),
+
+                  const SizedBox(height: 16),
                   const Text('Select Emotion',
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Color(0xFFFFFDD0),
                           fontSize: 22,
                           fontWeight: FontWeight.w700)),
                   const SizedBox(height: 4),
@@ -129,26 +161,26 @@ class _EmotionScreenState extends State<EmotionScreen> {
                     widget.detectedEmotion != null
                         ? 'We detected your emotion — feel free to change it.'
                         : 'Select one emotion to find guidance.',
-                    style: TextStyle(
-                        color: Colors.white.withOpacity(0.6), fontSize: 13),
+                    style: const TextStyle(
+                        color: Color(0xFFFFFDD0), fontSize: 13),
                   ),
 
                   // BERT confidence badge
                   if (widget.detectedEmotion != null) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF1a3a2a),
+                        color: const Color(0xFF2A4930),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                            color: const Color(0xFF4CAF50).withOpacity(0.5)),
+                            color: const Color(0xFF355E3B).withOpacity(0.5)),
                       ),
                       child: Row(
                         children: [
                           const Icon(Icons.auto_awesome,
-                              color: Color(0xFF4CAF50), size: 14),
+                              color: Color(0xFFB8D4BB), size: 14),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -157,17 +189,17 @@ class _EmotionScreenState extends State<EmotionScreen> {
                               '${widget.detectedEmotion!.substring(1)}'
                               ' (${((widget.confidence ?? 0) * 100).toStringAsFixed(0)}% confidence)',
                               style: const TextStyle(
-                                  color: Color(0xFF9fd4b0), fontSize: 11),
+                                  color: Color(0xFFB8D4BB), fontSize: 11),
                             ),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    const Text(
                       'You can change it below if needed.',
                       style: TextStyle(
-                          color: Colors.white.withOpacity(0.4), fontSize: 11),
+                          color: Color(0xFFFFFDD0), fontSize: 11),
                     ),
                   ],
                 ],
@@ -184,12 +216,13 @@ class _EmotionScreenState extends State<EmotionScreen> {
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
-                    childAspectRatio: 1.2,
+                    childAspectRatio: 1.15,
                   ),
                   itemCount: emotions.length,
                   itemBuilder: (context, index) {
                     final e = emotions[index];
                     final isSelected = selectedEmotion == e['value'];
+                    final accent = e['accentColor'] as Color;
                     return GestureDetector(
                       onTap: () =>
                           setState(() => selectedEmotion = e['value']),
@@ -197,35 +230,51 @@ class _EmotionScreenState extends State<EmotionScreen> {
                         duration: const Duration(milliseconds: 200),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? const Color(0xFF1a3a2a)
-                              : const Color(0xFF142d1e),
-                          borderRadius: BorderRadius.circular(16),
+                              ? accent.withOpacity(0.12)
+                              : const Color(0xFF1B3320),
+                          borderRadius: BorderRadius.circular(18),
                           border: Border.all(
                             color: isSelected
-                                ? const Color(0xFF4CAF50)
-                                : const Color(0xFF2d5a3d),
+                                ? accent.withOpacity(0.65)
+                                : const Color(0xFF3D6645),
                             width: isSelected ? 2 : 1,
                           ),
+                          boxShadow: isSelected ? [
+                            BoxShadow(
+                              color: accent.withOpacity(0.18),
+                              blurRadius: 16,
+                              offset: const Offset(0, 4),
+                            ),
+                          ] : [],
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(e['icon'],
-                                style: const TextStyle(fontSize: 32)),
-                            const SizedBox(height: 8),
+                                style: const TextStyle(fontSize: 36)),
+                            const SizedBox(height: 10),
                             Text(e['label'],
                                 style: TextStyle(
                                     color: isSelected
-                                        ? Colors.white
-                                        : Colors.white.withOpacity(0.8),
+                                        ? const Color(0xFFFFFDD0)
+                                        : const Color(0xFFFFFDD0).withOpacity(0.8),
                                     fontSize: 14,
-                                    fontWeight: FontWeight.w500)),
+                                    fontWeight: FontWeight.w600)),
                             if (isSelected) ...[
                               const SizedBox(height: 4),
-                              const Text('Selected',
-                                  style: TextStyle(
-                                      color: Color(0xFF4CAF50),
-                                      fontSize: 11)),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: accent.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text('Selected ✓',
+                                    style: TextStyle(
+                                        color: accent,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w600)),
+                              ),
                             ],
                           ],
                         ),
@@ -244,14 +293,16 @@ class _EmotionScreenState extends State<EmotionScreen> {
                 child: ElevatedButton(
                   onPressed: _next,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4CAF50),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: const Color(0xFF355E3B),
+                    padding: const EdgeInsets.symmetric(vertical: 17),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
+                    elevation: 4,
+                    shadowColor: const Color(0xFF355E3B).withOpacity(0.4),
                   ),
                   child: const Text('Select Cause →',
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Color(0xFFFFFDD0),
                           fontSize: 16,
                           fontWeight: FontWeight.w600)),
                 ),

@@ -13,7 +13,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
-  // ✅ FIXED: added MoodHistoryScreen as 3rd tab
   final List<Widget> _screens = [
     const InputScreen(),
     const SavedScreen(),
@@ -24,28 +23,40 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex:        _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        backgroundColor:     const Color(0xFF0d2016),
-        selectedItemColor:   const Color(0xFF4CAF50),
-        unselectedItemColor: Colors.white.withOpacity(0.4),
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon:  Icon(Icons.home_rounded),
-            label: 'Home',
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Color(0xFF3D6645), width: 0.5),
           ),
-          BottomNavigationBarItem(
-            icon:  Icon(Icons.bookmark_outline_rounded),
-            label: 'Saved',
+        ),
+        child: BottomNavigationBar(
+          currentIndex:        _currentIndex,
+          onTap: (index) => setState(() => _currentIndex = index),
+          backgroundColor:     const Color(0xFF0F1E12),
+          selectedItemColor:   const Color(0xFFFFFDD0),
+          unselectedItemColor: const Color(0xFFFFFDD0).withOpacity(0.35),
+          type: BottomNavigationBarType.fixed,
+          selectedLabelStyle: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 11,
           ),
-          // ✅ FIXED: IconButton moved here as a proper BottomNavigationBarItem
-          BottomNavigationBarItem(
-            icon:  Icon(Icons.bar_chart_rounded),
-            label: 'Mood',
-          ),
-        ],
+          unselectedLabelStyle: const TextStyle(fontSize: 11),
+          items: const [
+            BottomNavigationBarItem(
+              icon:  Icon(Icons.home_rounded),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon:  Icon(Icons.bookmark_outline_rounded),
+              activeIcon: Icon(Icons.bookmark_rounded),
+              label: 'Saved',
+            ),
+            BottomNavigationBarItem(
+              icon:  Icon(Icons.bar_chart_rounded),
+              label: 'Mood',
+            ),
+          ],
+        ),
       ),
     );
   }

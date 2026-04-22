@@ -45,7 +45,7 @@ class _CauseScreenState extends State<CauseScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:         Text('Please select a cause.'),
-          backgroundColor: Color(0xFF1a3a2a),
+          backgroundColor: Color(0xFF2A4930),
         ),
       );
       return;
@@ -65,7 +65,7 @@ class _CauseScreenState extends State<CauseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0d2016),
+      backgroundColor: const Color(0xFF0F1E12),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,8 +84,17 @@ class _CauseScreenState extends State<CauseScreen> {
                     children: [
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: const Icon(Icons.arrow_back,
-                            color: Colors.white, size: 24),
+                        child: Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF2A4930),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFF3D6645)),
+                          ),
+                          child: const Icon(Icons.arrow_back,
+                              color: Color(0xFFFFFDD0), size: 20),
+                        ),
                       ),
 
                       // Notification button
@@ -93,22 +102,20 @@ class _CauseScreenState extends State<CauseScreen> {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) =>
-                                const NotificationSettingsScreen(),
+                            builder: (_) => const NotificationSettingsScreen(),
                           ),
                         ),
                         child: Container(
                           width:  42,
                           height: 42,
                           decoration: BoxDecoration(
-                            color:        const Color(0xFF1a3a2a),
+                            color:        const Color(0xFF2A4930),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                                color: const Color(0xFF2d5a3d)),
+                            border: Border.all(color: const Color(0xFF3D6645)),
                           ),
                           child: const Icon(
                             Icons.notifications_outlined,
-                            color: Color(0xFF4CAF50),
+                            color: Color(0xFFB8D4BB),
                             size:  22,
                           ),
                         ),
@@ -116,17 +123,41 @@ class _CauseScreenState extends State<CauseScreen> {
                     ],
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 18),
+
+                  // Step indicator
+                  Row(
+                    children: List.generate(3, (i) => Expanded(
+                      child: Container(
+                        height: 3,
+                        margin: EdgeInsets.only(right: i < 2 ? 6 : 0),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF355E3B),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    )),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Step 3 of 3  •  Select the cause',
+                    style: TextStyle(
+                        color: Color(0xFFB8D4BB),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500),
+                  ),
+
+                  const SizedBox(height: 16),
                   const Text('Cause Selection',
                       style: TextStyle(
-                          color:      Colors.white,
+                          color:      Color(0xFFFFFDD0),
                           fontSize:   22,
                           fontWeight: FontWeight.w700)),
                   const SizedBox(height: 4),
-                  Text(
+                  const Text(
                     'What is causing this feeling?',
                     style: TextStyle(
-                        color:    Colors.white.withOpacity(0.6),
+                        color: Color(0xFFFFFDD0),
                         fontSize: 13),
                   ),
                   const SizedBox(height: 4),
@@ -136,14 +167,14 @@ class _CauseScreenState extends State<CauseScreen> {
                         TextSpan(
                           text: 'Refining results for ',
                           style: TextStyle(
-                              color:    Colors.white.withOpacity(0.5),
+                              color:    const Color(0xFFFFFDD0).withOpacity(0.5),
                               fontSize: 12),
                         ),
                         TextSpan(
                           text: widget.emotion[0].toUpperCase() +
                               widget.emotion.substring(1),
                           style: const TextStyle(
-                              color:      Color(0xFF4CAF50),
+                              color:      Color(0xFF7FB883),
                               fontSize:   12,
                               fontWeight: FontWeight.w600),
                         ),
@@ -168,58 +199,61 @@ class _CauseScreenState extends State<CauseScreen> {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       margin:   const EdgeInsets.only(bottom: 12),
-                      padding:  const EdgeInsets.all(16),
+                      padding:  const EdgeInsets.all(18),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color(0xFF1a3a2a)
-                            : const Color(0xFF142d1e),
-                        borderRadius: BorderRadius.circular(14),
+                            ? const Color(0xFF2A4930)
+                            : const Color(0xFF1B3320),
+                        borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: isSelected
-                              ? const Color(0xFF4CAF50)
-                              : const Color(0xFF2d5a3d),
+                              ? const Color(0xFF355E3B)
+                              : const Color(0xFF3D6645),
                           width: isSelected ? 2 : 1,
                         ),
+                        boxShadow: isSelected ? [
+                          BoxShadow(
+                            color: const Color(0xFF355E3B).withOpacity(0.2),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
+                          ),
+                        ] : [],
                       ),
                       child: Row(
                         children: [
                           Container(
-                            width:  44,
-                            height: 44,
+                            width:  48,
+                            height: 48,
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFF4CAF50)
-                                      .withOpacity(0.2)
-                                  : const Color(0xFF2d5a3d),
-                              borderRadius: BorderRadius.circular(10),
+                                  ? const Color(0xFF355E3B)
+                                  : const Color(0xFF2A4930),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
                               c['icon'] as IconData,
                               color: isSelected
-                                  ? const Color(0xFF4CAF50)
-                                  : Colors.white.withOpacity(0.6),
+                                  ? const Color(0xFFFFFDD0)
+                                  : const Color(0xFFB8D4BB),
                               size: 22,
                             ),
                           ),
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 16),
                           Expanded(
                             child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(c['label'],
                                     style: TextStyle(
                                         color: isSelected
-                                            ? Colors.white
-                                            : Colors.white
-                                                .withOpacity(0.85),
+                                            ? const Color(0xFFFFFDD0)
+                                            : const Color(0xFFFFFDD0).withOpacity(0.85),
                                         fontSize:   14,
                                         fontWeight: FontWeight.w600)),
-                                const SizedBox(height: 2),
+                                const SizedBox(height: 3),
                                 Text(c['subtitle'],
                                     style: TextStyle(
-                                        color: Colors.white
-                                            .withOpacity(0.4),
+                                        color: const Color(0xFFFFFDD0).withOpacity(0.45),
                                         fontSize: 12)),
                               ],
                             ),
@@ -229,12 +263,11 @@ class _CauseScreenState extends State<CauseScreen> {
                             groupValue: selectedCause,
                             onChanged:  (val) =>
                                 setState(() => selectedCause = val),
-                            activeColor: const Color(0xFF4CAF50),
+                            activeColor: const Color(0xFF355E3B),
                             fillColor: WidgetStateProperty.resolveWith(
-                              (states) => states.contains(
-                                      WidgetState.selected)
-                                  ? const Color(0xFF4CAF50)
-                                  : Colors.white.withOpacity(0.3),
+                              (states) => states.contains(WidgetState.selected)
+                                  ? const Color(0xFF355E3B)
+                                  : const Color(0xFFFFFDD0).withOpacity(0.3),
                             ),
                           ),
                         ],
@@ -253,14 +286,16 @@ class _CauseScreenState extends State<CauseScreen> {
                 child: ElevatedButton(
                   onPressed: _findVerses,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4CAF50),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: const Color(0xFF355E3B),
+                    padding: const EdgeInsets.symmetric(vertical: 17),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
+                    elevation: 4,
+                    shadowColor: const Color(0xFF355E3B).withOpacity(0.4),
                   ),
                   child: const Text('Find Verses →',
                       style: TextStyle(
-                          color:      Colors.white,
+                          color:      Color(0xFFFFFDD0),
                           fontSize:   16,
                           fontWeight: FontWeight.w600)),
                 ),

@@ -38,10 +38,7 @@ class _NotificationDetailScreenState
   Future<void> _checkIfSaved() async {
     final prefs   = await SharedPreferences.getInstance();
     final saved   = prefs.getStringList('saved_items') ?? [];
-    
-    // Made the key dynamic based on whether it's a verse or a dua
     final thisKey = '${widget.type}_${widget.arabic}';
-    
     setState(() {
       isSaved = saved.any((s) {
         final map = jsonDecode(s);
@@ -64,24 +61,24 @@ class _NotificationDetailScreenState
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:         Text('Removed from saved'),
-          backgroundColor: Color(0xFF1a3a2a),
+          backgroundColor: Color(0xFF2A4930),
           duration:        Duration(seconds: 2),
         ),
       );
     } else {
       saved.add(jsonEncode({
         'key':       thisKey,
-        'type':      widget.type,        // Uses dynamic type
-        'title':     widget.title,       // Fixed: was widget.prayerName
+        'type':      widget.type,
+        'title':     widget.title,
         'arabic':    widget.arabic,
-        'english':   widget.english,     // Fixed: was widget.translation
-        'reference': widget.reference,   // Fixed: was empty
+        'english':   widget.english,
+        'reference': widget.reference,
       }));
       setState(() => isSaved = true);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:         Text('Saved successfully'),
-          backgroundColor: Color(0xFF1a3a2a),
+          backgroundColor: Color(0xFF2A4930),
           duration:        Duration(seconds: 2),
         ),
       );
@@ -102,7 +99,7 @@ class _NotificationDetailScreenState
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content:         Text('Copied to clipboard'),
-        backgroundColor: Color(0xFF1a3a2a),
+        backgroundColor: Color(0xFF2A4930),
         duration:        Duration(seconds: 2),
       ),
     );
@@ -111,7 +108,7 @@ class _NotificationDetailScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0d2016),
+      backgroundColor: const Color(0xFF0F1E12),
       body: SafeArea(
         child: Column(
           children: [
@@ -124,20 +121,29 @@ class _NotificationDetailScreenState
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back,
-                        color: Colors.white, size: 24),
+                    child: Container(
+                      width: 42, height: 42,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF2A4930),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: const Color(0xFF3D6645)),
+                      ),
+                      child: const Icon(Icons.arrow_back,
+                          color: Color(0xFFFFFDD0), size: 20),
+                    ),
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 4),
+                        horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color:        const Color(0xFF1a3a2a),
+                      color:        const Color(0xFF2A4930),
                       borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: const Color(0xFF3D6645)),
                     ),
                     child: Text(
                       widget.type == 'verse' ? '📖 Verse' : '🤲 Dua',
                       style: const TextStyle(
-                          color:    Color(0xFF9fd4b0),
+                          color:    Color(0xFFB8D4BB),
                           fontSize: 12),
                     ),
                   ),
@@ -148,8 +154,8 @@ class _NotificationDetailScreenState
                           ? Icons.bookmark_rounded
                           : Icons.bookmark_outline_rounded,
                       color: isSaved
-                          ? const Color(0xFF4CAF50)
-                          : Colors.white,
+                          ? const Color(0xFF7FB883)
+                          : const Color(0xFFFFFDD0),
                       size: 24,
                     ),
                   ),
@@ -158,7 +164,7 @@ class _NotificationDetailScreenState
             ),
             const SizedBox(height: 24),
 
-            // Card
+            // Content
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -170,9 +176,9 @@ class _NotificationDetailScreenState
                       widget.title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          color:      Colors.white.withOpacity(0.7),
-                          fontSize:   13,
-                          fontStyle:  FontStyle.italic),
+                          color:     const Color(0xFFFFFDD0).withOpacity(0.7),
+                          fontSize:  13,
+                          fontStyle: FontStyle.italic),
                     ),
                     const SizedBox(height: 20),
 
@@ -181,10 +187,16 @@ class _NotificationDetailScreenState
                       width:   double.infinity,
                       padding: const EdgeInsets.all(28),
                       decoration: BoxDecoration(
-                        color:        const Color(0xFF142d1e),
+                        color:        const Color(0xFF1B3320),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: const Color(0xFF2d5a3d)),
+                        border: Border.all(color: const Color(0xFF3D6645)),
+                        boxShadow: [
+                          BoxShadow(
+                            color:      const Color(0xFF355E3B).withOpacity(0.1),
+                            blurRadius: 14,
+                            offset:     const Offset(0, 4),
+                          ),
+                        ],
                       ),
                       child: Column(
                         children: [
@@ -195,13 +207,13 @@ class _NotificationDetailScreenState
                             textAlign:     TextAlign.center,
                             textDirection: TextDirection.rtl,
                             style: const TextStyle(
-                                color:      Colors.white,
+                                color:      Color(0xFFFFFDD0),
                                 fontSize:   22,
                                 fontWeight: FontWeight.w600,
                                 height:     1.8),
                           ),
                           const SizedBox(height: 20),
-                          const Divider(color: Color(0xFF2d5a3d)),
+                          const Divider(color: Color(0xFF3D6645)),
                           const SizedBox(height: 20),
 
                           // English
@@ -209,7 +221,7 @@ class _NotificationDetailScreenState
                             '"${widget.english}"',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                color:     Colors.white.withOpacity(0.85),
+                                color:     const Color(0xFFFFFDD0).withOpacity(0.85),
                                 fontSize:  15,
                                 height:    1.7,
                                 fontStyle: FontStyle.italic),
@@ -220,7 +232,7 @@ class _NotificationDetailScreenState
                           Text(
                             '— ${widget.reference}',
                             style: TextStyle(
-                                color:    Colors.white.withOpacity(0.4),
+                                color:    const Color(0xFFFFFDD0).withOpacity(0.4),
                                 fontSize: 12),
                           ),
                         ],
@@ -244,12 +256,12 @@ class _NotificationDetailScreenState
                         ),
                         const SizedBox(width: 12),
                         _ActionBtn(
-                          icon:  isSaved
+                          icon: isSaved
                               ? Icons.bookmark_rounded
                               : Icons.bookmark_outline_rounded,
-                          label: isSaved ? 'Saved' : 'Save',
-                          onTap:       _toggleSave,
-                          isActive:    isSaved,
+                          label:    isSaved ? 'Saved' : 'Save',
+                          onTap:    _toggleSave,
+                          isActive: isSaved,
                         ),
                       ],
                     ),
@@ -287,22 +299,22 @@ class _ActionBtn extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 14),
           decoration: BoxDecoration(
             color: isActive
-                ? const Color(0xFF1a3a2a)
-                : const Color(0xFF142d1e),
+                ? const Color(0xFF2A4930)
+                : const Color(0xFF1B3320),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isActive
-                  ? const Color(0xFF4CAF50)
-                  : const Color(0xFF2d5a3d),
+                  ? const Color(0xFF355E3B)
+                  : const Color(0xFF3D6645),
             ),
           ),
           child: Column(
             children: [
-              Icon(icon, color: const Color(0xFF4CAF50), size: 22),
+              Icon(icon, color: const Color(0xFF7FB883), size: 22),
               const SizedBox(height: 6),
               Text(label,
                   style: const TextStyle(
-                      color: Colors.white, fontSize: 12)),
+                      color: Color(0xFFFFFDD0), fontSize: 12)),
             ],
           ),
         ),

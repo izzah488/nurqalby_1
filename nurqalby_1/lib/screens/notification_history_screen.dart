@@ -30,7 +30,6 @@ class _NotificationHistoryScreenState
     setState(() {
       history = list
           .map((s) => Map<String, dynamic>.from(jsonDecode(s)))
-          // IMPORTANT: Only show notifications whose time has already passed!
           .where((map) => DateTime.parse(map['time']).isBefore(now))
           .toList()
           .reversed
@@ -51,19 +50,16 @@ class _NotificationHistoryScreenState
     return '${dt.day}/${dt.month}/${dt.year}';
   }
 
-  // Add a way to manually clear history
   Future<void> _clearHistory() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('notification_history');
-    setState(() {
-      history.clear();
-    });
+    setState(() => history.clear());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0d2016),
+      backgroundColor: const Color(0xFF0F1E12),
       body: SafeArea(
         child: Column(
           children: [
@@ -72,7 +68,7 @@ class _NotificationHistoryScreenState
             Container(
               width:   double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              color:   const Color(0xFF1a3a2a),
+              color:   const Color(0xFF2A4930),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -81,7 +77,7 @@ class _NotificationHistoryScreenState
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: const Icon(Icons.arrow_back_ios,
-                            color: Colors.white, size: 18),
+                            color: Color(0xFFFFFDD0), size: 18),
                       ),
                       const SizedBox(width: 12),
                       const Column(
@@ -89,23 +85,21 @@ class _NotificationHistoryScreenState
                         children: [
                           Text('Your Reminders',
                               style: TextStyle(
-                                  color: Color(0xFF9fd4b0),
-                                  fontSize: 12)),
+                                  color: Color(0xFFB8D4BB), fontSize: 12)),
                           Text('Notification History',
                               style: TextStyle(
-                                  color:      Colors.white,
+                                  color:      Color(0xFFFFFDD0),
                                   fontSize:   18,
                                   fontWeight: FontWeight.w600)),
                         ],
                       ),
                     ],
                   ),
-                  // Clear button
                   if (history.isNotEmpty)
                     GestureDetector(
                       onTap: _clearHistory,
                       child: const Icon(Icons.delete_outline,
-                          color: Color(0xFF4CAF50), size: 22),
+                          color: Color(0xFF7FB883), size: 22),
                     ),
                 ],
               ),
@@ -116,20 +110,19 @@ class _NotificationHistoryScreenState
               child: isLoading
                   ? const Center(
                       child: CircularProgressIndicator(
-                          color: Color(0xFF4CAF50)))
+                          color: Color(0xFF355E3B)))
                   : history.isEmpty
                       ? Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.notifications_none_rounded,
-                                  size:  64,
-                                  color: Colors.white.withOpacity(0.2)),
+                                  size:  72,
+                                  color: const Color(0xFFFFFDD0).withOpacity(0.15)),
                               const SizedBox(height: 16),
                               Text('No notifications yet',
                                   style: TextStyle(
-                                      color: Colors.white
-                                          .withOpacity(0.4),
+                                      color: const Color(0xFFFFFDD0).withOpacity(0.4),
                                       fontSize: 16)),
                             ],
                           ),
@@ -145,25 +138,22 @@ class _NotificationHistoryScreenState
                                 MaterialPageRoute(
                                   builder: (_) =>
                                       NotificationDetailScreen(
-                                    arabic:    item['arabic'] ?? '',
-                                    english:   item['english'] ?? '',
-                                    title:     item['title'] ?? '',
+                                    arabic:    item['arabic']    ?? '',
+                                    english:   item['english']   ?? '',
+                                    title:     item['title']     ?? '',
                                     reference: item['reference'] ?? '',
-                                    type:      item['type'] ?? 'dua',
+                                    type:      item['type']      ?? 'dua',
                                   ),
                                 ),
                               ),
                               child: Container(
-                                margin: const EdgeInsets.only(
-                                    bottom: 10),
+                                margin:  const EdgeInsets.only(bottom: 10),
                                 padding: const EdgeInsets.all(14),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF142d1e),
-                                  borderRadius:
-                                      BorderRadius.circular(12),
+                                  color:        const Color(0xFF1B3320),
+                                  borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                      color:
-                                          const Color(0xFF2d5a3d)),
+                                      color: const Color(0xFF3D6645)),
                                 ),
                                 child: Row(
                                   children: [
@@ -171,15 +161,12 @@ class _NotificationHistoryScreenState
                                       width:  44,
                                       height: 44,
                                       decoration: BoxDecoration(
-                                        color: const Color(
-                                            0xFF1a3a2a),
-                                        borderRadius:
-                                            BorderRadius.circular(
-                                                10),
+                                        color:        const Color(0xFF2A4930),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: const Icon(
                                         Icons.notifications_rounded,
-                                        color: Color(0xFF4CAF50),
+                                        color: Color(0xFF7FB883),
                                         size:  22,
                                       ),
                                     ),
@@ -192,34 +179,30 @@ class _NotificationHistoryScreenState
                                           Text(
                                             item['title'] ?? '',
                                             style: const TextStyle(
-                                                color:      Colors.white,
+                                                color:      Color(0xFFFFFDD0),
                                                 fontSize:   13,
-                                                fontWeight:
-                                                    FontWeight.w500),
+                                                fontWeight: FontWeight.w500),
                                             maxLines: 1,
-                                            overflow:
-                                                TextOverflow.ellipsis,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
                                             item['english'] ?? '',
                                             style: TextStyle(
-                                                color: Colors.white
+                                                color: const Color(0xFFFFFDD0)
                                                     .withOpacity(0.5),
                                                 fontSize: 11),
                                             maxLines: 1,
-                                            overflow:
-                                                TextOverflow.ellipsis,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ],
                                       ),
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
-                                      _formatTime(
-                                          item['time'] ?? ''),
+                                      _formatTime(item['time'] ?? ''),
                                       style: TextStyle(
-                                          color: Colors.white
+                                          color: const Color(0xFFFFFDD0)
                                               .withOpacity(0.3),
                                           fontSize: 11),
                                     ),
