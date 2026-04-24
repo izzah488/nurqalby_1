@@ -69,7 +69,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content:         Text(isFavourite ? 'Saved successfully' : 'Removed from saved'),
-        backgroundColor: const Color(0xFF2A4930),
+        backgroundColor: const Color(0xFFEDE5F8),
         duration:        const Duration(seconds: 2),
       ),
     );
@@ -88,7 +88,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content:         Text('Doa copied to clipboard'),
-        backgroundColor: Color(0xFF2A4930),
+        backgroundColor: Color(0xFFEDE5F8),
         duration:        Duration(seconds: 2),
       ),
     );
@@ -97,7 +97,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1E12),
+      backgroundColor: const Color(0xFFF8F8FF),
       body: SafeArea(
         child: Column(
           children: [
@@ -113,18 +113,18 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                     child: Container(
                       width: 42, height: 42,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2A4930),
+                        color: const Color(0xFFEDE5F8),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFF3D6645)),
+                        border: Border.all(color: const Color(0xFFD4B8E8)),
                       ),
                       child: const Icon(Icons.arrow_back,
-                          color: Color(0xFFFFFDD0), size: 20),
+                          color: Color(0xFF2D1B4E), size: 20),
                     ),
                   ),
                   Text(
                     '${widget.prayerName[0].toUpperCase()}${widget.prayerName.substring(1)} Doa',
                     style: const TextStyle(
-                        color:      Color(0xFFFFFDD0),
+                        color:      Color(0xFF2D1B4E),
                         fontSize:   17,
                         fontWeight: FontWeight.w600),
                   ),
@@ -136,7 +136,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                           : Icons.bookmark_outline_rounded,
                       color: isFavourite
                           ? const Color(0xFF7FB883)
-                          : const Color(0xFFFFFDD0),
+                          : const Color(0xFF2D1B4E),
                       size: 24,
                     ),
                   ),
@@ -156,12 +156,12 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                       width:   double.infinity,
                       padding: const EdgeInsets.all(28),
                       decoration: BoxDecoration(
-                        color:        const Color(0xFF1B3320),
+                        color:        const Color(0xFFEDE5F8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFF3D6645)),
+                        border: Border.all(color: const Color(0xFFD4B8E8)),
                         boxShadow: [
                           BoxShadow(
-                            color:      const Color(0xFF355E3B).withOpacity(0.1),
+                            color:      const Color(0xFF9966CC).withOpacity(0.1),
                             blurRadius: 16,
                             offset:     const Offset(0, 4),
                           ),
@@ -176,14 +176,14 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                             textAlign:     TextAlign.center,
                             textDirection: TextDirection.rtl,
                             style: const TextStyle(
-                                color:      Color(0xFFFFFDD0),
+                                color:      Color(0xFF2D1B4E),
                                 fontSize:   24,
                                 fontWeight: FontWeight.w600,
                                 height:     1.8),
                           ),
                           const SizedBox(height: 20),
 
-                          const Divider(color: Color(0xFF3D6645)),
+                          const Divider(color: Color(0xFFD4B8E8)),
                           const SizedBox(height: 20),
 
                           // Translation
@@ -191,7 +191,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                             '"${widget.translation}"',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                color:     const Color(0xFFFFFDD0).withOpacity(0.8),
+                                color:     const Color(0xFF2D1B4E).withOpacity(0.8),
                                 fontSize:  15,
                                 height:    1.6,
                                 fontStyle: FontStyle.italic),
@@ -212,9 +212,9 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               decoration: BoxDecoration(
-                                color:        const Color(0xFF1B3320),
+                                color:        const Color(0xFFEDE5F8),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: const Color(0xFF3D6645)),
+                                border: Border.all(color: const Color(0xFFD4B8E8)),
                               ),
                               child: const Column(
                                 children: [
@@ -223,7 +223,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                                   SizedBox(height: 6),
                                   Text('Copy',
                                       style: TextStyle(
-                                          color: Color(0xFFFFFDD0), fontSize: 12)),
+                                          color: Color(0xFF2D1B4E), fontSize: 12)),
                                 ],
                               ),
                             ),
@@ -238,9 +238,9 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               decoration: BoxDecoration(
-                                color:        const Color(0xFF1B3320),
+                                color:        const Color(0xFFEDE5F8),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: const Color(0xFF3D6645)),
+                                border: Border.all(color: const Color(0xFFD4B8E8)),
                               ),
                               child: const Column(
                                 children: [
@@ -249,7 +249,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                                   SizedBox(height: 6),
                                   Text('Share',
                                       style: TextStyle(
-                                          color: Color(0xFFFFFDD0), fontSize: 12)),
+                                          color: Color(0xFF2D1B4E), fontSize: 12)),
                                 ],
                               ),
                             ),
@@ -265,13 +265,13 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               decoration: BoxDecoration(
                                 color: isFavourite
-                                    ? const Color(0xFF2A4930)
-                                    : const Color(0xFF1B3320),
+                                    ? const Color(0xFFEDE5F8)
+                                    : const Color(0xFFEDE5F8),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: isFavourite
-                                      ? const Color(0xFF355E3B)
-                                      : const Color(0xFF3D6645),
+                                      ? const Color(0xFF9966CC)
+                                      : const Color(0xFFD4B8E8),
                                 ),
                               ),
                               child: Column(
@@ -287,7 +287,7 @@ class _DoaDetailScreenState extends State<DoaDetailScreen> {
                                   Text(
                                     isFavourite ? 'Saved' : 'Save',
                                     style: const TextStyle(
-                                        color: Color(0xFFFFFDD0), fontSize: 12)),
+                                        color: Color(0xFF2D1B4E), fontSize: 12)),
                                 ],
                               ),
                             ),

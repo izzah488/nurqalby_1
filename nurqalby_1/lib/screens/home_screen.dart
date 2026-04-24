@@ -26,15 +26,15 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           border: Border(
-            top: BorderSide(color: Color(0xFF3D6645), width: 0.5),
+            top: BorderSide(color: Color(0xFFD4B8E8), width: 0.5),
           ),
         ),
         child: BottomNavigationBar(
           currentIndex:        _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
-          backgroundColor:     const Color(0xFF0F1E12),
-          selectedItemColor:   const Color(0xFFFFFDD0),
-          unselectedItemColor: const Color(0xFFFFFDD0).withOpacity(0.35),
+          backgroundColor:     const Color(0xFFF8F8FF),
+          selectedItemColor:   const Color(0xFF2D1B4E),
+          unselectedItemColor: const Color(0xFF2D1B4E).withOpacity(0.35),
           type: BottomNavigationBarType.fixed,
           selectedLabelStyle: const TextStyle(
             fontWeight: FontWeight.w600,

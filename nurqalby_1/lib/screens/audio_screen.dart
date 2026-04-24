@@ -77,7 +77,7 @@ class _AudioScreenState extends State<AudioScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content:         Text(isLooping ? 'Repeat ON' : 'Repeat OFF'),
-        backgroundColor: const Color(0xFF2A4930),
+        backgroundColor: const Color(0xFFEDE5F8),
         duration:        const Duration(seconds: 1),
       ),
     );
@@ -114,26 +114,26 @@ class _AudioScreenState extends State<AudioScreen> {
     final verse = widget.verses[currentIndex];
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1E12),
+      backgroundColor: const Color(0xFFF8F8FF),
       body: SafeArea(
         child: Column(
           children: [
 
             // ── Fixed top bar ─────────────────────────────────
             Container(
-              color:   const Color(0xFF2A4930),
+              color:   const Color(0xFFEDE5F8),
               padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
               child: Row(
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: const Icon(Icons.arrow_back_ios,
-                        color: Color(0xFFB8D4BB), size: 18),
+                        color: Color(0xFF7B5EA7), size: 18),
                   ),
                   const SizedBox(width: 12),
                   const Text('Now playing',
                       style: TextStyle(
-                          color:      Color(0xFFB8D4BB),
+                          color:      Color(0xFF7B5EA7),
                           fontSize:   13,
                           fontWeight: FontWeight.w500)),
                 ],
@@ -152,9 +152,9 @@ class _AudioScreenState extends State<AudioScreen> {
                       width:   double.infinity,
                       padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
-                        color:        const Color(0xFF1B3320),
+                        color:        const Color(0xFFEDE5F8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFF3D6645)),
+                        border: Border.all(color: const Color(0xFFD4B8E8)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +164,7 @@ class _AudioScreenState extends State<AudioScreen> {
                           Text(
                             verse['verse_text'] ?? '',
                             style: const TextStyle(
-                                color:      Color(0xFFFFFDD0),
+                                color:      Color(0xFF2D1B4E),
                                 fontSize:   15,
                                 fontWeight: FontWeight.w600,
                                 height:     1.6),
@@ -175,7 +175,7 @@ class _AudioScreenState extends State<AudioScreen> {
                             decoration: const BoxDecoration(
                               gradient: LinearGradient(colors: [
                                 Colors.transparent,
-                                Color(0xFF355E3B),
+                                Color(0xFF9966CC),
                                 Colors.transparent,
                               ]),
                             ),
@@ -188,7 +188,7 @@ class _AudioScreenState extends State<AudioScreen> {
                             child: Text(
                               verse['arabic_text'] ?? '',
                               style: const TextStyle(
-                                  color:    Color(0xFFB8D4BB),
+                                  color:    Color(0xFF7B5EA7),
                                   fontSize: 18,
                                   height:   1.9),
                             ),
@@ -213,9 +213,9 @@ class _AudioScreenState extends State<AudioScreen> {
                       width:   double.infinity,
                       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
                       decoration: BoxDecoration(
-                        color:        const Color(0xFF1B3320),
+                        color:        const Color(0xFFEDE5F8),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFF3D6645)),
+                        border: Border.all(color: const Color(0xFFD4B8E8)),
                       ),
                       child: Column(
                         children: [
@@ -223,9 +223,9 @@ class _AudioScreenState extends State<AudioScreen> {
                           // Progress slider
                           SliderTheme(
                             data: SliderTheme.of(context).copyWith(
-                              activeTrackColor:   const Color(0xFF355E3B),
-                              inactiveTrackColor: const Color(0xFF3D6645),
-                              thumbColor:         const Color(0xFF355E3B),
+                              activeTrackColor:   const Color(0xFF9966CC),
+                              inactiveTrackColor: const Color(0xFFD4B8E8),
+                              thumbColor:         const Color(0xFF9966CC),
                               trackHeight: 4,
                               thumbShape: const RoundSliderThumbShape(
                                   enabledThumbRadius: 6),
@@ -255,10 +255,10 @@ class _AudioScreenState extends State<AudioScreen> {
                               children: [
                                 Text(_formatDuration(position),
                                     style: const TextStyle(
-                                        fontSize: 12, color: Color(0xFFB8D4BB))),
+                                        fontSize: 12, color: Color(0xFF7B5EA7))),
                                 Text(_formatDuration(duration),
                                     style: const TextStyle(
-                                        fontSize: 12, color: Color(0xFFB8D4BB))),
+                                        fontSize: 12, color: Color(0xFF7B5EA7))),
                               ],
                             ),
                           ),
@@ -273,8 +273,8 @@ class _AudioScreenState extends State<AudioScreen> {
                                 icon: Icon(Icons.skip_previous_rounded,
                                   size:  36,
                                   color: currentIndex > 0
-                                      ? const Color(0xFFFFFDD0)
-                                      : const Color(0xFFFFFDD0).withOpacity(0.2)),
+                                      ? const Color(0xFF2D1B4E)
+                                      : const Color(0xFF2D1B4E).withOpacity(0.2)),
                               ),
                               const SizedBox(width: 12),
                               GestureDetector(
@@ -282,11 +282,11 @@ class _AudioScreenState extends State<AudioScreen> {
                                 child: Container(
                                   width: 68, height: 68,
                                   decoration: BoxDecoration(
-                                    color:  const Color(0xFF355E3B),
+                                    color:  const Color(0xFF9966CC),
                                     shape:  BoxShape.circle,
                                     boxShadow: [
                                       BoxShadow(
-                                        color:      const Color(0xFF355E3B).withOpacity(0.45),
+                                        color:      const Color(0xFF9966CC).withOpacity(0.45),
                                         blurRadius: 20,
                                         offset:     const Offset(0, 6),
                                       ),
@@ -296,7 +296,7 @@ class _AudioScreenState extends State<AudioScreen> {
                                     isPlaying
                                         ? Icons.pause_rounded
                                         : Icons.play_arrow_rounded,
-                                    color: const Color(0xFFFFFDD0), size: 36,
+                                    color: const Color(0xFF2D1B4E), size: 36,
                                   ),
                                 ),
                               ),
@@ -308,8 +308,8 @@ class _AudioScreenState extends State<AudioScreen> {
                                 icon: Icon(Icons.skip_next_rounded,
                                   size:  36,
                                   color: currentIndex < widget.verses.length - 1
-                                      ? const Color(0xFFFFFDD0)
-                                      : const Color(0xFFFFFDD0).withOpacity(0.2)),
+                                      ? const Color(0xFF2D1B4E)
+                                      : const Color(0xFF2D1B4E).withOpacity(0.2)),
                               ),
                             ],
                           ),
@@ -323,7 +323,7 @@ class _AudioScreenState extends State<AudioScreen> {
                                 'Verse ${currentIndex + 1} of ${widget.verses.length}',
                                 style: TextStyle(
                                     fontSize: 12,
-                                    color:    const Color(0xFFFFFDD0).withOpacity(0.4)),
+                                    color:    const Color(0xFF2D1B4E).withOpacity(0.4)),
                               ),
                               GestureDetector(
                                 onTap: _toggleLoop,
@@ -333,13 +333,13 @@ class _AudioScreenState extends State<AudioScreen> {
                                       horizontal: 12, vertical: 6),
                                   decoration: BoxDecoration(
                                     color: isLooping
-                                        ? const Color(0xFF355E3B).withOpacity(0.2)
+                                        ? const Color(0xFF9966CC).withOpacity(0.2)
                                         : Colors.transparent,
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                       color: isLooping
-                                          ? const Color(0xFF355E3B)
-                                          : const Color(0xFFFFFDD0).withOpacity(0.2),
+                                          ? const Color(0xFF9966CC)
+                                          : const Color(0xFF2D1B4E).withOpacity(0.2),
                                     ),
                                   ),
                                   child: Row(
@@ -349,7 +349,7 @@ class _AudioScreenState extends State<AudioScreen> {
                                         size:  16,
                                         color: isLooping
                                             ? const Color(0xFF7FB883)
-                                            : const Color(0xFFFFFDD0).withOpacity(0.4)),
+                                            : const Color(0xFF2D1B4E).withOpacity(0.4)),
                                       const SizedBox(width: 5),
                                       Text(
                                         isLooping ? 'Repeat ON' : 'Repeat',
@@ -360,7 +360,7 @@ class _AudioScreenState extends State<AudioScreen> {
                                               : FontWeight.normal,
                                           color: isLooping
                                               ? const Color(0xFF7FB883)
-                                              : const Color(0xFFFFFDD0).withOpacity(0.4),
+                                              : const Color(0xFF2D1B4E).withOpacity(0.4),
                                         ),
                                       ),
                                     ],
@@ -381,7 +381,7 @@ class _AudioScreenState extends State<AudioScreen> {
                         onPressed: () =>
                             Navigator.popUntil(context, (r) => r.isFirst),
                         style: OutlinedButton.styleFrom(
-                          side:    const BorderSide(color: Color(0xFF355E3B)),
+                          side:    const BorderSide(color: Color(0xFF9966CC)),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape:   RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),

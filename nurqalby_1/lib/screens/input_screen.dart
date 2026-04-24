@@ -59,7 +59,7 @@ class _InputScreenState extends State<InputScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1E12),
+      backgroundColor: const Color(0xFFF8F8FF),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -78,19 +78,19 @@ class _InputScreenState extends State<InputScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 14, vertical: 7),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2A4930),
+                      color: const Color(0xFFEDE5F8),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFF3D6645)),
+                      border: Border.all(color: const Color(0xFFD4B8E8)),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.menu_book_rounded,
-                            color: Color(0xFFB8D4BB), size: 14),
+                            color: Color(0xFF7B5EA7), size: 14),
                         SizedBox(width: 6),
                         Text('NurQalby',
                             style: TextStyle(
-                                color: Color(0xFFB8D4BB),
+                                color: Color(0xFF7B5EA7),
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600)),
                       ],
@@ -109,13 +109,13 @@ class _InputScreenState extends State<InputScreen> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF2A4930),
+                        color: const Color(0xFFEDE5F8),
                         borderRadius: BorderRadius.circular(13),
-                        border: Border.all(color: const Color(0xFF3D6645)),
+                        border: Border.all(color: const Color(0xFFD4B8E8)),
                       ),
                       child: const Icon(
                         Icons.notifications_outlined,
-                        color: Color(0xFFB8D4BB),
+                        color: Color(0xFF7B5EA7),
                         size: 22,
                       ),
                     ),
@@ -133,8 +133,8 @@ class _InputScreenState extends State<InputScreen> {
                     margin: EdgeInsets.only(right: i < 2 ? 6 : 0),
                     decoration: BoxDecoration(
                       color: i == 0
-                          ? const Color(0xFF355E3B)
-                          : const Color(0xFF2A4930),
+                          ? const Color(0xFF9966CC)
+                          : const Color(0xFFEDE5F8),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -144,7 +144,7 @@ class _InputScreenState extends State<InputScreen> {
               const Text(
                 'Step 1 of 3  •  Tell us how you feel',
                 style: TextStyle(
-                    color: Color(0xFFB8D4BB),
+                    color: Color(0xFF7B5EA7),
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                     letterSpacing: 0.3),
@@ -157,7 +157,7 @@ class _InputScreenState extends State<InputScreen> {
               const SizedBox(height: 12),
               const Text('How is your',
                   style: TextStyle(
-                      color: Color(0xFFFFFDD0),
+                      color: Color(0xFF2D1B4E),
                       fontSize: 32,
                       fontWeight: FontWeight.w700)),
               const Text('heart feeling?',
@@ -169,7 +169,7 @@ class _InputScreenState extends State<InputScreen> {
               const Text(
                 'Share what is on your mind — we will find the guidance you need.',
                 style: TextStyle(
-                    color: Color(0xFFFFFDD0),
+                    color: Color(0xFF2D1B4E),
                     fontSize: 14,
                     height: 1.5),
               ),
@@ -178,12 +178,12 @@ class _InputScreenState extends State<InputScreen> {
               // --- Text field ---
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1B3320),
+                  color: const Color(0xFFEDE5F8),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF3D6645)),
+                  border: Border.all(color: const Color(0xFFD4B8E8)),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF355E3B).withOpacity(0.12),
+                      color: const Color(0xFF9966CC).withOpacity(0.12),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -193,18 +193,18 @@ class _InputScreenState extends State<InputScreen> {
                   controller: _controller,
                   maxLines: 5,
                   style: const TextStyle(
-                    color: Color(0xFFFFFDD0),
+                    color: Color(0xFF2D1B4E),
                     fontSize: 15,
                     height: 1.6,
                   ),
                   decoration: InputDecoration(
                     hintText: 'e.g. I feel anxious about my future...',
                     hintStyle: const TextStyle(
-                        color: Color(0xFFFFFDD0), fontSize: 14),
+                        color: Color(0xFF2D1B4E), fontSize: 14),
                     prefixIcon: const Padding(
                       padding: EdgeInsets.only(top: 14, left: 4),
                       child: Icon(Icons.edit_note_rounded,
-                          color: Color(0xFFB8D4BB), size: 22),
+                          color: Color(0xFF7B5EA7), size: 22),
                     ),
                     prefixIconConstraints: const BoxConstraints(
                         minWidth: 42, minHeight: 42),
@@ -221,25 +221,25 @@ class _InputScreenState extends State<InputScreen> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _next,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF355E3B),
-                    disabledBackgroundColor: const Color(0xFF355E3B).withOpacity(0.5),
+                    backgroundColor: const Color(0xFF9966CC),
+                    disabledBackgroundColor: const Color(0xFF9966CC).withOpacity(0.5),
                     padding: const EdgeInsets.symmetric(vertical: 17),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     elevation: 4,
-                    shadowColor: const Color(0xFF355E3B).withOpacity(0.4),
+                    shadowColor: const Color(0xFF9966CC).withOpacity(0.4),
                   ),
                   child: _isLoading
                       ? const SizedBox(
                           width: 22,
                           height: 22,
                           child: CircularProgressIndicator(
-                              color: Color(0xFFFFFDD0), strokeWidth: 2.5),
+                              color: Color(0xFF2D1B4E), strokeWidth: 2.5),
                         )
                       : const Text(
                           'Analyse Emotion →',
                           style: TextStyle(
-                              color: Color(0xFFFFFDD0),
+                              color: Color(0xFF2D1B4E),
                               fontSize: 16,
                               fontWeight: FontWeight.w600),
                         ),

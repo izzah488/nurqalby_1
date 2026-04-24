@@ -66,8 +66,15 @@ class _NotificationSettingsScreenState
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content:         Text('Settings saved'),
-          backgroundColor: Color(0xFF2A4930),
+          content: Text(
+            'Settings saved',
+            style: TextStyle(
+              color:      Colors.black,
+              fontSize:   14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          backgroundColor: Color(0xFFEDE5F8),
           duration:        Duration(seconds: 2),
         ),
       );
@@ -77,7 +84,7 @@ class _NotificationSettingsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFDD0),
+      backgroundColor: const Color(0xFFF8F8FF), // Ghost White
       body: SafeArea(
         child: Column(
           children: [
@@ -85,14 +92,14 @@ class _NotificationSettingsScreenState
             // --- Header ---
             Container(
               width:   double.infinity,
-              color:   const Color(0xFF355E3B),
+              color:   const Color(0xFF9966CC),
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
               child: Row(
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
                     child: const Icon(Icons.arrow_back_ios,
-                        color: Color(0xFFFFFDD0), size: 18),
+                        color: Colors.white, size: 18),
                   ),
                   const SizedBox(width: 12),
                   const Expanded(
@@ -101,10 +108,10 @@ class _NotificationSettingsScreenState
                       children: [
                         Text('Reminders',
                             style: TextStyle(
-                                color: Color(0xFFB8D4BB), fontSize: 12)),
+                                color: Colors.white70, fontSize: 12)),
                         Text('Notification Settings',
                             style: TextStyle(
-                                color:      Color(0xFFFFFDD0),
+                                color:      Colors.white,
                                 fontSize:   18,
                                 fontWeight: FontWeight.w600)),
                       ],
@@ -123,19 +130,19 @@ class _NotificationSettingsScreenState
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color:        const Color(0xFFFFFDD0).withOpacity(0.15),
+                        color:        Colors.white.withOpacity(0.20),
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(
-                            color: const Color(0xFFFFFDD0).withOpacity(0.3)),
+                            color: Colors.white.withOpacity(0.40)),
                       ),
                       child: const Row(
                         children: [
                           Icon(Icons.history_rounded,
-                              color: Color(0xFFFFFDD0), size: 16),
+                              color: Colors.white, size: 16),
                           SizedBox(width: 4),
                           Text('History',
                               style: TextStyle(
-                                  color:    Color(0xFFFFFDD0),
+                                  color:    Colors.white,
                                   fontSize: 12)),
                         ],
                       ),
@@ -150,7 +157,7 @@ class _NotificationSettingsScreenState
                 ? const Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
-                          color: Color(0xFF355E3B)),
+                          color: Color(0xFF9966CC)),
                     ),
                   )
                 : Expanded(
@@ -181,9 +188,9 @@ class _NotificationSettingsScreenState
                             child: Text(
                               'PRAYER TIMES',
                               style: TextStyle(
-                                  fontSize:    11,
-                                  fontWeight:  FontWeight.w600,
-                                  color:       Color(0xFF355E3B),
+                                  fontSize:      11,
+                                  fontWeight:    FontWeight.w600,
+                                  color:         Colors.black,
                                   letterSpacing: 0.8),
                             ),
                           ),
@@ -253,22 +260,22 @@ class _NotificationSettingsScreenState
                           Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF2EDCA),
+                              color: const Color(0xFFEDE5F8),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                  color: const Color(0xFF355E3B).withOpacity(0.3)),
+                                  color: const Color(0xFF9966CC).withOpacity(0.3)),
                             ),
                             child: const Row(
                               children: [
                                 Icon(Icons.info_outline,
-                                    color: Color(0xFF355E3B), size: 18),
+                                    color: Color(0xFF9966CC), size: 18),
                                 SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     'Notifications will show a Quran verse 10 minutes before each selected prayer time.',
                                     style: TextStyle(
                                         fontSize: 12,
-                                        color:    Color(0xFF355E3B)),
+                                        color:    Colors.black),
                                   ),
                                 ),
                               ],
@@ -299,7 +306,7 @@ class _SectionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color:        Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFCDC99A)),
+        border: Border.all(color: const Color(0xFFD4B8E8)),
         boxShadow: [
           BoxShadow(
             color:      Colors.black.withOpacity(0.04),
@@ -343,11 +350,11 @@ class _ToggleRow extends StatelessWidget {
             width:  36,
             height: 36,
             decoration: BoxDecoration(
-              color:        const Color(0xFFF2EDCA),
+              color:        const Color(0xFFEDE5F8),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon,
-                color: const Color(0xFF355E3B),
+                color: const Color(0xFF9966CC),
                 size: isMain ? 20 : 18),
           ),
           const SizedBox(width: 12),
@@ -359,19 +366,19 @@ class _ToggleRow extends StatelessWidget {
                     style: TextStyle(
                         fontSize:   isMain ? 15 : 14,
                         fontWeight: FontWeight.w500,
-                        color:      const Color(0xFF1B3320))),
+                        color:      Colors.black)),
                 Text(subtitle,
                     style: const TextStyle(
                         fontSize: 11,
-                        color:    Color(0xFF5A7A60))),
+                        color:    Colors.black54)),
               ],
             ),
           ),
           Switch(
             value:            value,
             onChanged:        onChanged,
-            activeColor:      const Color(0xFF355E3B),
-            activeTrackColor: const Color(0xFFB8D4BB),
+            activeColor:      const Color(0xFF9966CC),
+            activeTrackColor: const Color(0xFF7B5EA7),
           ),
         ],
       ),
@@ -382,6 +389,6 @@ class _ToggleRow extends StatelessWidget {
 class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Divider(height: 1, color: Color(0xFFD4D0A0));
+    return const Divider(height: 1, color: Color(0xFFD4B8E8));
   }
 }

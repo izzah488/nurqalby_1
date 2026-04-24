@@ -45,7 +45,7 @@ class _CauseScreenState extends State<CauseScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content:         Text('Please select a cause.'),
-          backgroundColor: Color(0xFF2A4930),
+          backgroundColor: Color(0xFFEDE5F8),
         ),
       );
       return;
@@ -65,7 +65,7 @@ class _CauseScreenState extends State<CauseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1E12),
+      backgroundColor: const Color(0xFFF8F8FF),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,12 +88,12 @@ class _CauseScreenState extends State<CauseScreen> {
                           width: 42,
                           height: 42,
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2A4930),
+                            color: const Color(0xFFEDE5F8),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFF3D6645)),
+                            border: Border.all(color: const Color(0xFFD4B8E8)),
                           ),
                           child: const Icon(Icons.arrow_back,
-                              color: Color(0xFFFFFDD0), size: 20),
+                              color: Color(0xFF2D1B4E), size: 20),
                         ),
                       ),
 
@@ -109,13 +109,13 @@ class _CauseScreenState extends State<CauseScreen> {
                           width:  42,
                           height: 42,
                           decoration: BoxDecoration(
-                            color:        const Color(0xFF2A4930),
+                            color:        const Color(0xFFEDE5F8),
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFF3D6645)),
+                            border: Border.all(color: const Color(0xFFD4B8E8)),
                           ),
                           child: const Icon(
                             Icons.notifications_outlined,
-                            color: Color(0xFFB8D4BB),
+                            color: Color(0xFF7B5EA7),
                             size:  22,
                           ),
                         ),
@@ -132,7 +132,7 @@ class _CauseScreenState extends State<CauseScreen> {
                         height: 3,
                         margin: EdgeInsets.only(right: i < 2 ? 6 : 0),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF355E3B),
+                          color: const Color(0xFF9966CC),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -142,7 +142,7 @@ class _CauseScreenState extends State<CauseScreen> {
                   const Text(
                     'Step 3 of 3  •  Select the cause',
                     style: TextStyle(
-                        color: Color(0xFFB8D4BB),
+                        color: Color(0xFF7B5EA7),
                         fontSize: 11,
                         fontWeight: FontWeight.w500),
                   ),
@@ -150,14 +150,14 @@ class _CauseScreenState extends State<CauseScreen> {
                   const SizedBox(height: 16),
                   const Text('Cause Selection',
                       style: TextStyle(
-                          color:      Color(0xFFFFFDD0),
+                          color:      Color(0xFF2D1B4E),
                           fontSize:   22,
                           fontWeight: FontWeight.w700)),
                   const SizedBox(height: 4),
                   const Text(
                     'What is causing this feeling?',
                     style: TextStyle(
-                        color: Color(0xFFFFFDD0),
+                        color: Color(0xFF2D1B4E),
                         fontSize: 13),
                   ),
                   const SizedBox(height: 4),
@@ -167,7 +167,7 @@ class _CauseScreenState extends State<CauseScreen> {
                         TextSpan(
                           text: 'Refining results for ',
                           style: TextStyle(
-                              color:    const Color(0xFFFFFDD0).withOpacity(0.5),
+                              color:    const Color(0xFF2D1B4E).withOpacity(0.5),
                               fontSize: 12),
                         ),
                         TextSpan(
@@ -202,18 +202,18 @@ class _CauseScreenState extends State<CauseScreen> {
                       padding:  const EdgeInsets.all(18),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color(0xFF2A4930)
-                            : const Color(0xFF1B3320),
+                            ? const Color(0xFFEDE5F8)
+                            : const Color(0xFFEDE5F8),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: isSelected
-                              ? const Color(0xFF355E3B)
-                              : const Color(0xFF3D6645),
+                              ? const Color(0xFF9966CC)
+                              : const Color(0xFFD4B8E8),
                           width: isSelected ? 2 : 1,
                         ),
                         boxShadow: isSelected ? [
                           BoxShadow(
-                            color: const Color(0xFF355E3B).withOpacity(0.2),
+                            color: const Color(0xFF9966CC).withOpacity(0.2),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
@@ -226,15 +226,15 @@ class _CauseScreenState extends State<CauseScreen> {
                             height: 48,
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? const Color(0xFF355E3B)
-                                  : const Color(0xFF2A4930),
+                                  ? const Color(0xFF9966CC)
+                                  : const Color(0xFFEDE5F8),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
                               c['icon'] as IconData,
                               color: isSelected
-                                  ? const Color(0xFFFFFDD0)
-                                  : const Color(0xFFB8D4BB),
+                                  ? const Color(0xFF2D1B4E)
+                                  : const Color(0xFF7B5EA7),
                               size: 22,
                             ),
                           ),
@@ -246,14 +246,14 @@ class _CauseScreenState extends State<CauseScreen> {
                                 Text(c['label'],
                                     style: TextStyle(
                                         color: isSelected
-                                            ? const Color(0xFFFFFDD0)
-                                            : const Color(0xFFFFFDD0).withOpacity(0.85),
+                                            ? const Color(0xFF2D1B4E)
+                                            : const Color(0xFF2D1B4E).withOpacity(0.85),
                                         fontSize:   14,
                                         fontWeight: FontWeight.w600)),
                                 const SizedBox(height: 3),
                                 Text(c['subtitle'],
                                     style: TextStyle(
-                                        color: const Color(0xFFFFFDD0).withOpacity(0.45),
+                                        color: const Color(0xFF2D1B4E).withOpacity(0.45),
                                         fontSize: 12)),
                               ],
                             ),
@@ -263,11 +263,11 @@ class _CauseScreenState extends State<CauseScreen> {
                             groupValue: selectedCause,
                             onChanged:  (val) =>
                                 setState(() => selectedCause = val),
-                            activeColor: const Color(0xFF355E3B),
+                            activeColor: const Color(0xFF9966CC),
                             fillColor: WidgetStateProperty.resolveWith(
                               (states) => states.contains(WidgetState.selected)
-                                  ? const Color(0xFF355E3B)
-                                  : const Color(0xFFFFFDD0).withOpacity(0.3),
+                                  ? const Color(0xFF9966CC)
+                                  : const Color(0xFF2D1B4E).withOpacity(0.3),
                             ),
                           ),
                         ],
@@ -286,16 +286,16 @@ class _CauseScreenState extends State<CauseScreen> {
                 child: ElevatedButton(
                   onPressed: _findVerses,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF355E3B),
+                    backgroundColor: const Color(0xFF9966CC),
                     padding: const EdgeInsets.symmetric(vertical: 17),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)),
                     elevation: 4,
-                    shadowColor: const Color(0xFF355E3B).withOpacity(0.4),
+                    shadowColor: const Color(0xFF9966CC).withOpacity(0.4),
                   ),
                   child: const Text('Find Verses →',
                       style: TextStyle(
-                          color:      Color(0xFFFFFDD0),
+                          color:      Color(0xFF2D1B4E),
                           fontSize:   16,
                           fontWeight: FontWeight.w600)),
                 ),

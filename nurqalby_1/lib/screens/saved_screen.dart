@@ -36,7 +36,7 @@ class _SavedScreenState extends State<SavedScreen> {
   Future<void> _removeItem(int index) async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getStringList('saved_items') ?? [];
-    final key   = savedItems[index]['key'];
+    final key = savedItems[index]['key'];
     saved.removeWhere((s) {
       final map = jsonDecode(s);
       return map['key'] == key;
@@ -45,9 +45,12 @@ class _SavedScreenState extends State<SavedScreen> {
     setState(() => savedItems.removeAt(index));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content:         Text('Removed from saved'),
-        backgroundColor: Color(0xFF2A4930),
-        duration:        Duration(seconds: 2),
+        content: Text(
+          'Removed from saved',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Color(0xFFEDE5F8),
+        duration: Duration(seconds: 2),
       ),
     );
   }
@@ -55,56 +58,57 @@ class _SavedScreenState extends State<SavedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1E12),
+      backgroundColor: const Color(0xFFF8F8FF),
       body: SafeArea(
         child: Column(
           children: [
 
-            // Header
+            // ── Header ──────────────────────────────────────────────────────
             Container(
-              width:   double.infinity,
+              width: double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              color:   const Color(0xFF2A4930),
+              color: const Color(0xFFEDE5F8),
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Your Collection',
-                      style: TextStyle(
-                          color: Color(0xFFB8D4BB), fontSize: 12)),
+                      style: TextStyle(color: Color(0xFF7B5EA7), fontSize: 12)),
                   SizedBox(height: 2),
                   Text('Saved Items',
                       style: TextStyle(
-                          color:      Color(0xFFFFFDD0),
-                          fontSize:   22,
+                          color: Color(0xFF2D1B4E),
+                          fontSize: 22,
                           fontWeight: FontWeight.w600)),
                 ],
               ),
             ),
 
-            // Body
+            // ── Body ────────────────────────────────────────────────────────
             Expanded(
               child: isLoading
                   ? const Center(
-                      child: CircularProgressIndicator(
-                          color: Color(0xFF355E3B)))
+                      child: CircularProgressIndicator(color: Color(0xFF9966CC)))
                   : savedItems.isEmpty
                       ? Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.bookmark_outline_rounded,
-                                  size:  72,
-                                  color: const Color(0xFFFFFDD0).withOpacity(0.15)),
+                                  size: 72,
+                                  color:
+                                      const Color(0xFF2D1B4E).withOpacity(0.15)),
                               const SizedBox(height: 16),
                               Text('No saved items yet',
                                   style: TextStyle(
-                                      color: const Color(0xFFFFFDD0).withOpacity(0.4),
+                                      color: const Color(0xFF2D1B4E)
+                                          .withOpacity(0.4),
                                       fontSize: 16)),
                               const SizedBox(height: 8),
                               Text(
                                 'Save verses and duas to find them here',
                                 style: TextStyle(
-                                    color: const Color(0xFFFFFDD0).withOpacity(0.28),
+                                    color: const Color(0xFF2D1B4E)
+                                        .withOpacity(0.28),
                                     fontSize: 13),
                               ),
                             ],
@@ -114,137 +118,30 @@ class _SavedScreenState extends State<SavedScreen> {
                           padding: const EdgeInsets.all(16),
                           itemCount: savedItems.length,
                           itemBuilder: (context, index) {
-                            final item    = savedItems[index];
+                            final item = savedItems[index];
                             final isVerse = item['type'] == 'verse';
+
                             return GestureDetector(
                               onTap: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => NotificationDetailScreen(
-                                    arabic:    item['arabic']    ?? '',
-                                    english:   item['english']   ?? item['translation'] ?? '',
-                                    title:     item['title']     ?? item['prayerName']  ?? '',
+                                    arabic: item['arabic'] ?? '',
+                                    english: item['english'] ??
+                                        item['translation'] ??
+                                        '',
+                                    title: item['title'] ??
+                                        item['prayerName'] ??
+                                        '',
                                     reference: item['reference'] ?? '',
-                                    type:      item['type']      ?? 'dua',
+                                    type: item['type'] ?? 'dua',
                                   ),
                                 ),
                               ).then((_) => _loadSaved()),
-                              child: Container(
-                                margin:  const EdgeInsets.only(bottom: 12),
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: isVerse
-                                      ? const Color(0xFF1B3320)
-                                      : const Color(0xFF1B2D1F),
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: isVerse
-                                        ? const Color(0xFF3D6645)
-                                        : const Color(0xFF2A3D2C),
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-
-                                    // Type badge + delete
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: isVerse
-                                                ? const Color(0xFF2A4930)
-                                                : const Color(0xFF1C3320),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            border: Border.all(
-                                              color: isVerse
-                                                  ? const Color(0xFF3D6645)
-                                                  : const Color(0xFF3D5A40),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            isVerse ? '📖 Verse' : '🤲 Dua',
-                                            style: TextStyle(
-                                                color: isVerse
-                                                    ? const Color(0xFFB8D4BB)
-                                                    : const Color(0xFFB8D4BB),
-                                                fontSize: 11),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () => _removeItem(index),
-                                          child: Icon(
-                                            Icons.bookmark_remove_rounded,
-                                            color: const Color(0xFFFFFDD0).withOpacity(0.3),
-                                            size: 20,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 10),
-
-                                    // Title
-                                    Text(
-                                      item['title'] ?? '',
-                                      style: TextStyle(
-                                          color: const Color(0xFFFFFDD0).withOpacity(0.6),
-                                          fontSize:  12,
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                    const SizedBox(height: 8),
-
-                                    // Arabic
-                                    Directionality(
-                                      textDirection: TextDirection.rtl,
-                                      child: Text(
-                                        item['arabic'] ?? '',
-                                        style: const TextStyle(
-                                            color:      Color(0xFFFFFDD0),
-                                            fontSize:   16,
-                                            fontWeight: FontWeight.w600,
-                                            height:     1.6),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-
-                                    // English
-                                    Text(
-                                      (item['english'] ?? item['translation'] ?? ''),
-                                      style: TextStyle(
-                                          color:    const Color(0xFFFFFDD0).withOpacity(0.6),
-                                          fontSize: 12,
-                                          height:   1.4),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 8),
-
-                                    // Reference + time
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          item['reference'] ?? '',
-                                          style: TextStyle(
-                                              color: const Color(0xFFFFFDD0).withOpacity(0.4),
-                                              fontSize: 11),
-                                        ),
-                                        Text(
-                                          item['time'] ?? '',
-                                          style: TextStyle(
-                                              color: const Color(0xFFFFFDD0).withOpacity(0.3),
-                                              fontSize: 11),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                              child: _SavedCard(
+                                item: item,
+                                isVerse: isVerse,
+                                onRemove: () => _removeItem(index),
                               ),
                             );
                           },
@@ -252,6 +149,140 @@ class _SavedScreenState extends State<SavedScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// ── Shared card widget — same style for both Verse and Dua ─────────────────
+class _SavedCard extends StatelessWidget {
+  final Map<String, dynamic> item;
+  final bool isVerse;
+  final VoidCallback onRemove;
+
+  const _SavedCard({
+    required this.item,
+    required this.isVerse,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEDE5F8),          // ← same for both
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFD4B8E8)), // ← same for both
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          // ── Coloured top accent bar (verse = amethyst, dua = teal-purple) ──
+          Container(
+            height: 4,
+            decoration: BoxDecoration(
+              color: isVerse
+                  ? const Color(0xFF9966CC)       // amethyst for verse
+                  : const Color(0xFF7B5EA7),       // medium purple for dua
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                // ── Badge row ───────────────────────────────────────────────
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF8F8FF),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFD4B8E8)),
+                      ),
+                      child: Text(
+                        isVerse ? '📖 Verse' : '🤲 Dua',
+                        style: const TextStyle(
+                            color: Color(0xFF7B5EA7), fontSize: 11),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: onRemove,
+                      child: Icon(
+                        Icons.bookmark_remove_rounded,
+                        color: const Color(0xFF2D1B4E).withOpacity(0.3),
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // ── Title ────────────────────────────────────────────────────
+                Text(
+                  item['title'] ?? '',
+                  style: const TextStyle(
+                      color: Color(0xFF7B5EA7),
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic),
+                ),
+                const SizedBox(height: 8),
+
+                // ── Arabic ───────────────────────────────────────────────────
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Text(
+                    item['arabic'] ?? '',
+                    style: const TextStyle(
+                        color: Color(0xFF2D1B4E),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        height: 1.6),
+                  ),
+                ),
+                const SizedBox(height: 6),
+
+                // ── English ──────────────────────────────────────────────────
+                Text(
+                  item['english'] ?? item['translation'] ?? '',
+                  style: TextStyle(
+                      color: const Color(0xFF2D1B4E).withOpacity(0.6),
+                      fontSize: 12,
+                      height: 1.4),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+
+                // ── Reference + time ─────────────────────────────────────────
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      item['reference'] ?? '',
+                      style: const TextStyle(
+                          color: Color(0xFF9966CC), fontSize: 11),
+                    ),
+                    Text(
+                      item['time'] ?? '',
+                      style: TextStyle(
+                          color: const Color(0xFF2D1B4E).withOpacity(0.3),
+                          fontSize: 11),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

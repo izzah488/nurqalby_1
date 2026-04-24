@@ -59,7 +59,7 @@ class _NotificationHistoryScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1E12),
+      backgroundColor: const Color(0xFFF8F8FF),
       body: SafeArea(
         child: Column(
           children: [
@@ -68,7 +68,7 @@ class _NotificationHistoryScreenState
             Container(
               width:   double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              color:   const Color(0xFF2A4930),
+              color:   const Color(0xFFEDE5F8),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -77,7 +77,7 @@ class _NotificationHistoryScreenState
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
                         child: const Icon(Icons.arrow_back_ios,
-                            color: Color(0xFFFFFDD0), size: 18),
+                            color: Color(0xFF2D1B4E), size: 18),
                       ),
                       const SizedBox(width: 12),
                       const Column(
@@ -85,10 +85,10 @@ class _NotificationHistoryScreenState
                         children: [
                           Text('Your Reminders',
                               style: TextStyle(
-                                  color: Color(0xFFB8D4BB), fontSize: 12)),
+                                  color: Color(0xFF7B5EA7), fontSize: 12)),
                           Text('Notification History',
                               style: TextStyle(
-                                  color:      Color(0xFFFFFDD0),
+                                  color:      Color(0xFF2D1B4E),
                                   fontSize:   18,
                                   fontWeight: FontWeight.w600)),
                         ],
@@ -110,7 +110,7 @@ class _NotificationHistoryScreenState
               child: isLoading
                   ? const Center(
                       child: CircularProgressIndicator(
-                          color: Color(0xFF355E3B)))
+                          color: Color(0xFF9966CC)))
                   : history.isEmpty
                       ? Center(
                           child: Column(
@@ -118,11 +118,11 @@ class _NotificationHistoryScreenState
                             children: [
                               Icon(Icons.notifications_none_rounded,
                                   size:  72,
-                                  color: const Color(0xFFFFFDD0).withOpacity(0.15)),
+                                  color: const Color(0xFF2D1B4E).withOpacity(0.15)),
                               const SizedBox(height: 16),
                               Text('No notifications yet',
                                   style: TextStyle(
-                                      color: const Color(0xFFFFFDD0).withOpacity(0.4),
+                                      color: const Color(0xFF2D1B4E).withOpacity(0.4),
                                       fontSize: 16)),
                             ],
                           ),
@@ -150,10 +150,10 @@ class _NotificationHistoryScreenState
                                 margin:  const EdgeInsets.only(bottom: 10),
                                 padding: const EdgeInsets.all(14),
                                 decoration: BoxDecoration(
-                                  color:        const Color(0xFF1B3320),
+                                  color:        const Color(0xFFEDE5F8),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                      color: const Color(0xFF3D6645)),
+                                      color: const Color(0xFFD4B8E8)),
                                 ),
                                 child: Row(
                                   children: [
@@ -161,7 +161,7 @@ class _NotificationHistoryScreenState
                                       width:  44,
                                       height: 44,
                                       decoration: BoxDecoration(
-                                        color:        const Color(0xFF2A4930),
+                                        color:        const Color(0xFFEDE5F8),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: const Icon(
@@ -179,7 +179,7 @@ class _NotificationHistoryScreenState
                                           Text(
                                             item['title'] ?? '',
                                             style: const TextStyle(
-                                                color:      Color(0xFFFFFDD0),
+                                                color:      Color(0xFF2D1B4E),
                                                 fontSize:   13,
                                                 fontWeight: FontWeight.w500),
                                             maxLines: 1,
@@ -189,7 +189,7 @@ class _NotificationHistoryScreenState
                                           Text(
                                             item['english'] ?? '',
                                             style: TextStyle(
-                                                color: const Color(0xFFFFFDD0)
+                                                color: const Color(0xFF2D1B4E)
                                                     .withOpacity(0.5),
                                                 fontSize: 11),
                                             maxLines: 1,
@@ -202,7 +202,7 @@ class _NotificationHistoryScreenState
                                     Text(
                                       _formatTime(item['time'] ?? ''),
                                       style: TextStyle(
-                                          color: const Color(0xFFFFFDD0)
+                                          color: const Color(0xFF2D1B4E)
                                               .withOpacity(0.3),
                                           fontSize: 11),
                                     ),

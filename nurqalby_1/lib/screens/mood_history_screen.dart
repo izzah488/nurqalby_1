@@ -15,10 +15,10 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
 
   // Emotion colours kept distinctive
   final Map<String, Color> _emotionColors = {
-    'joy':     const Color(0xFFFFD54F),
-    'sadness': const Color(0xFF64B5F6),
-    'anger':   const Color(0xFFEF5350),
-    'fear':    const Color(0xFFAB47BC),
+    'joy':     const Color(0xFFE8A020),
+    'sadness': const Color(0xFF2979B8),
+    'anger':   const Color(0xFFD32F2F),
+    'fear':    const Color(0xFF455A64),
   };
 
   final Map<String, String> _emotionEmoji = {
@@ -59,7 +59,7 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
     final total  = counts.values.fold(0, (a, b) => a + b);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F1E12),
+      backgroundColor: const Color(0xFFF8F8FF),
       body: SafeArea(
         child: Column(
           children: [
@@ -68,24 +68,18 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
             Container(
               width:   double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              color:   const Color(0xFF2A4930),
+              color:   const Color(0xFFEDE5F8),
               child: Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back_ios,
-                        color: Color(0xFFFFFDD0), size: 18),
-                  ),
-                  const SizedBox(width: 12),
-                  const Column(
+                                    const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('Insights',
                           style: TextStyle(
-                              color: Color(0xFFB8D4BB), fontSize: 12)),
+                              color: Color(0xFF7B5EA7), fontSize: 12)),
                       Text('My Mood Journey 🌙',
                           style: TextStyle(
-                              color:      Color(0xFFFFFDD0),
+                              color:      Color(0xFF2D1B4E),
                               fontSize:   18,
                               fontWeight: FontWeight.w600)),
                     ],
@@ -99,9 +93,9 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
               padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
               child: Container(
                 decoration: BoxDecoration(
-                  color:        const Color(0xFF1B3320),
+                  color:        const Color(0xFFEDE5F8),
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: const Color(0xFF3D6645)),
+                  border: Border.all(color: const Color(0xFFD4B8E8)),
                 ),
                 child: Row(
                   children: [
@@ -123,7 +117,7 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
               _isWeekView ? 'Last 7 Days' : 'Today',
               style: TextStyle(
                   fontSize: 13,
-                  color:    const Color(0xFFFFFDD0).withOpacity(0.5),
+                  color:    const Color(0xFF2D1B4E).withOpacity(0.5),
                   fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 8),
@@ -143,7 +137,7 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
                             : 'No moods recorded today.',
                         style: TextStyle(
                             fontSize: 15,
-                            color:    const Color(0xFFFFFDD0).withOpacity(0.5)),
+                            color:    const Color(0xFF2D1B4E).withOpacity(0.5)),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 6),
@@ -151,7 +145,7 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
                         'Start by entering how you feel!',
                         style: TextStyle(
                             fontSize: 13,
-                            color: const Color(0xFFFFFDD0).withOpacity(0.35)),
+                            color: const Color(0xFF2D1B4E).withOpacity(0.35)),
                       ),
                     ],
                   ),
@@ -194,13 +188,13 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
                           style: const TextStyle(
                               fontSize:   28,
                               fontWeight: FontWeight.bold,
-                              color:      Color(0xFFFFFDD0)),
+                              color:      Color(0xFF2D1B4E)),
                         ),
                         Text(
                           'sessions',
                           style: TextStyle(
                               fontSize: 12,
-                              color: const Color(0xFFFFFDD0).withOpacity(0.5)),
+                              color: const Color(0xFF2D1B4E).withOpacity(0.5)),
                         ),
                       ],
                     ),
@@ -233,7 +227,7 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
               ),
 
               const SizedBox(height: 16),
-              Divider(height: 1, color: const Color(0xFF3D6645)),
+              Divider(height: 1, color: const Color(0xFFD4B8E8)),
 
               // Recent sessions header
               const Padding(
@@ -245,7 +239,7 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize:   15,
-                        color:      Color(0xFFFFFDD0)),
+                        color:      Color(0xFF2D1B4E)),
                   ),
                 ),
               ),
@@ -290,7 +284,7 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
           duration: const Duration(milliseconds: 200),
           padding:  const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color:        selected ? const Color(0xFF355E3B) : Colors.transparent,
+            color:        selected ? const Color(0xFF9966CC) : Colors.transparent,
             borderRadius: BorderRadius.circular(30),
           ),
           child: Text(
@@ -300,8 +294,8 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
               fontWeight: FontWeight.w600,
               fontSize:   14,
               color: selected
-                  ? const Color(0xFFFFFDD0)
-                  : const Color(0xFFFFFDD0).withOpacity(0.4),
+                  ? const Color(0xFF2D1B4E)
+                  : const Color(0xFF2D1B4E).withOpacity(0.4),
             ),
           ),
         ),
@@ -328,7 +322,7 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
           '$emoji ${label[0].toUpperCase()}${label.substring(1)}  $count ($percent%)',
           style: TextStyle(
               fontSize: 13,
-              color:    const Color(0xFFFFFDD0).withOpacity(0.8)),
+              color:    const Color(0xFF2D1B4E).withOpacity(0.8)),
         ),
       ],
     );
@@ -347,9 +341,9 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 4),
           decoration: BoxDecoration(
-            color:        const Color(0xFF1B3320),
+            color:        const Color(0xFFEDE5F8),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFF3D6645)),
+            border: Border.all(color: const Color(0xFFD4B8E8)),
           ),
           child: ListTile(
             leading: CircleAvatar(
@@ -365,14 +359,14 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
               style: const TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize:   14,
-                  color:      Color(0xFFFFFDD0)),
+                  color:      Color(0xFF2D1B4E)),
             ),
             subtitle: Text(
               '${_dayName(dt.weekday)}, ${dt.day}/${dt.month}/${dt.year}  '
               '${dt.hour}:${dt.minute.toString().padLeft(2, '0')}',
               style: TextStyle(
                   fontSize: 12,
-                  color:    const Color(0xFFFFFDD0).withOpacity(0.4)),
+                  color:    const Color(0xFF2D1B4E).withOpacity(0.4)),
             ),
             trailing: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

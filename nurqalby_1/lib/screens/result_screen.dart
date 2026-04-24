@@ -54,7 +54,7 @@ class _ResultScreenState extends State<ResultScreen> {
       BuildContext context, GlobalKey key, String textToShare) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF1B3320),
+      backgroundColor: const Color(0xFFEDE5F8),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -67,16 +67,16 @@ class _ResultScreenState extends State<ResultScreen> {
               Container(
                 width: 40, height: 4,
                 decoration: BoxDecoration(
-                  color:        const Color(0xFFFFFDD0).withOpacity(0.2),
+                  color:        const Color(0xFF2D1B4E).withOpacity(0.2),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
               const SizedBox(height: 24),
               ListTile(
-                leading: const Icon(Icons.image_rounded, color: Color(0xFF7FB883)),
+                leading: const Icon(Icons.image_rounded, color: Color(0xFF9966CC)),
                 title: const Text('Share as Image',
                     style: TextStyle(
-                        color:      Color(0xFFFFFDD0),
+                        color:      Color(0xFF2D1B4E),
                         fontWeight: FontWeight.w500)),
                 onTap: () {
                   Navigator.pop(context);
@@ -85,10 +85,10 @@ class _ResultScreenState extends State<ResultScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.text_fields_rounded,
-                    color: Color(0xFF7FB883)),
+                    color: Color(0xFF9966CC)),
                 title: const Text('Share as Text',
                     style: TextStyle(
-                        color:      Color(0xFFFFFDD0),
+                        color:      Color(0xFF2D1B4E),
                         fontWeight: FontWeight.w500)),
                 onTap: () {
                   Navigator.pop(context);
@@ -143,20 +143,20 @@ class _ResultScreenState extends State<ResultScreen> {
         cause:   widget.cause,
       ),
       child: Scaffold(
-        backgroundColor: const Color(0xFF0F1E12),
+        backgroundColor: const Color(0xFFF8F8FF),
         body: SafeArea(
           child: Column(
             children: [
-              // Header
+              // ── Header ──────────────────────────────────────────────────
               Container(
-                color:   const Color(0xFF2A4930),
+                color:   const Color(0xFFEDE5F8),
                 padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
                 child: Row(
                   children: [
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: const Icon(Icons.arrow_back_ios,
-                          color: Color(0xFFFFFDD0), size: 18),
+                          color: Color(0xFF2D1B4E), size: 18),
                     ),
                     const SizedBox(width: 12),
                     const Expanded(
@@ -165,10 +165,10 @@ class _ResultScreenState extends State<ResultScreen> {
                         children: [
                           Text('Recommended for you',
                               style: TextStyle(
-                                  color: Color(0xFFB8D4BB), fontSize: 12)),
+                                  color: Color(0xFF7B5EA7), fontSize: 12)),
                           Text('Your Results',
                               style: TextStyle(
-                                  color:      Color(0xFFFFFDD0),
+                                  color:      Color(0xFF2D1B4E),
                                   fontSize:   18,
                                   fontWeight: FontWeight.w600)),
                         ],
@@ -184,20 +184,20 @@ class _ResultScreenState extends State<ResultScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color:        const Color(0xFFFFFDD0).withOpacity(0.12),
+                          color:        const Color(0xFF2D1B4E).withOpacity(0.12),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(Icons.home_rounded,
-                            color: Color(0xFFFFFDD0), size: 20),
+                            color: Color(0xFF2D1B4E), size: 20),
                       ),
                     ),
                   ],
                 ),
               ),
 
-              // Tabs
+              // ── Tabs ────────────────────────────────────────────────────
               Container(
-                color:   const Color(0xFF2A4930),
+                color:   const Color(0xFFEDE5F8),
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                 child: Row(
                   children: [
@@ -225,11 +225,11 @@ class _ResultScreenState extends State<ResultScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             CircularProgressIndicator(
-                                color: Color(0xFF355E3B)),
+                                color: Color(0xFF9966CC)),
                             SizedBox(height: 16),
                             Text('Finding your results...',
                                 style: TextStyle(
-                                    color: Color(0xFFB8D4BB))),
+                                    color: Color(0xFF7B5EA7))),
                           ],
                         ),
                       );
@@ -244,12 +244,12 @@ class _ResultScreenState extends State<ResultScreen> {
                             children: [
                               Icon(Icons.wifi_off,
                                   size:  56,
-                                  color: const Color(0xFFFFFDD0).withOpacity(0.3)),
+                                  color: const Color(0xFF2D1B4E).withOpacity(0.3)),
                               const SizedBox(height: 16),
                               Text(state.message,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      color: const Color(0xFFFFFDD0)
+                                      color: const Color(0xFF2D1B4E)
                                           .withOpacity(0.5))),
                               const SizedBox(height: 20),
                               ElevatedButton(
@@ -261,10 +261,10 @@ class _ResultScreenState extends State<ResultScreen> {
                                     ),
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor:
-                                        const Color(0xFF355E3B)),
+                                        const Color(0xFF9966CC)),
                                 child: const Text('Retry',
                                     style: TextStyle(
-                                        color: Color(0xFFFFFDD0))),
+                                        color: Color(0xFFF8F8FF))),
                               ),
                             ],
                           ),
@@ -280,7 +280,7 @@ class _ResultScreenState extends State<ResultScreen> {
                         children: [
                           const SizedBox(height: 20),
 
-                          // Swipe cards
+                          // ── Swipe cards ──────────────────────────────────
                           Expanded(
                             child: PageView.builder(
                               controller: _pageController,
@@ -288,9 +288,9 @@ class _ResultScreenState extends State<ResultScreen> {
                               onPageChanged: (i) =>
                                   setState(() => _currentIndex = i),
                               itemBuilder: (context, index) {
-                                final item     = items[index] as Map<String, dynamic>;
+                                final item      = items[index] as Map<String, dynamic>;
                                 final isFocused = index == _currentIndex;
-                                final cardKey  = _keyFor(index);
+                                final cardKey   = _keyFor(index);
 
                                 return AnimatedScale(
                                   scale:    isFocused ? 1.0 : 0.88,
@@ -316,6 +316,7 @@ class _ResultScreenState extends State<ResultScreen> {
                                           : _DuaCard(
                                               dua:       item,
                                               isFocused: isFocused,
+                                              rank:      index + 1,
                                               onShare:   () {
                                                 final text =
                                                     '${item['arabic'] ?? ''}\n\n"${item['translation'] ?? ''}"\n\n— ${item['reference'] ?? ''}\n\nShared via NurQalby 🌿';
@@ -332,7 +333,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
                           const SizedBox(height: 16),
 
-                          // Page dots
+                          // ── Page dots ────────────────────────────────────
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: List.generate(
@@ -345,8 +346,8 @@ class _ResultScreenState extends State<ResultScreen> {
                                 height: 6,
                                 decoration: BoxDecoration(
                                   color: i == _currentIndex
-                                      ? const Color(0xFF355E3B)
-                                      : const Color(0xFFFFFDD0).withOpacity(0.2),
+                                      ? const Color(0xFF9966CC)
+                                      : const Color(0xFF2D1B4E).withOpacity(0.2),
                                   borderRadius: BorderRadius.circular(3),
                                 ),
                               ),
@@ -354,7 +355,7 @@ class _ResultScreenState extends State<ResultScreen> {
                           ),
                           const SizedBox(height: 20),
 
-                          // Bottom actions
+                          // ── Bottom actions ───────────────────────────────
                           _BottomActions(
                             verses:       state.verses,
                             duas:         duas,
@@ -386,7 +387,7 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 }
 
-// ── Tab button ───────────────────────────────────────────────────────────────
+// ── Tab button ────────────────────────────────────────────────────────────────
 class _TabButton extends StatelessWidget {
   final String label;
   final bool   isSelected;
@@ -405,8 +406,8 @@ class _TabButton extends StatelessWidget {
           padding:  const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: isSelected
-                ? const Color(0xFFFFFDD0)
-                : const Color(0xFFFFFDD0).withOpacity(0.1),
+                ? const Color(0xFF2D1B4E)
+                : const Color(0xFF2D1B4E).withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
@@ -416,8 +417,8 @@ class _TabButton extends StatelessWidget {
               fontSize:   13,
               fontWeight: FontWeight.w600,
               color: isSelected
-                  ? const Color(0xFF355E3B)
-                  : const Color(0xFFFFFDD0).withOpacity(0.6),
+                  ? const Color(0xFF9966CC)
+                  : const Color(0xFF2D1B4E).withOpacity(0.6),
             ),
           ),
         ),
@@ -426,7 +427,7 @@ class _TabButton extends StatelessWidget {
   }
 }
 
-// ── Verse card ───────────────────────────────────────────────────────────────
+// ── Verse card ────────────────────────────────────────────────────────────────
 class _VerseCard extends StatelessWidget {
   final Map<String, dynamic> verse;
   final bool isFocused;
@@ -442,144 +443,71 @@ class _VerseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color:        const Color(0xFF1B3320),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isFocused
-              ? const Color(0xFF355E3B).withOpacity(0.7)
-              : const Color(0xFF3D6645),
-          width: isFocused ? 1.5 : 1,
-        ),
-        boxShadow: isFocused
-            ? [
-                BoxShadow(
-                  color:      const Color(0xFF355E3B).withOpacity(0.2),
-                  blurRadius: 30,
-                  offset:     const Offset(0, 10),
-                ),
-              ]
-            : [],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _Chip(
-                    label: rank == 1 ? 'RANK 1 · BEST' : 'RANK $rank',
-                    isDua: false),
-                if (verse['score'] != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color:        const Color(0xFF355E3B).withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: const Color(0xFF355E3B).withOpacity(0.3)),
-                    ),
-                    child: Text('${verse['score']}',
-                        style: const TextStyle(
-                            color:      Color(0xFF7FB883),
-                            fontSize:   10,
-                            fontWeight: FontWeight.w600)),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Text(
-                    verse['arabic_text'] ?? '',
-                    textAlign:     TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style: const TextStyle(
-                        color:      Color(0xFFFFFDD0),
-                        fontSize:   20,
-                        fontWeight: FontWeight.w600,
-                        height:     1.9),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            const _GradientDivider(color: Color(0xFF3D6645)),
-            const SizedBox(height: 12),
-            Text(
-              '"${verse['verse_text'] ?? ''}"',
-              textAlign: TextAlign.center,
-              maxLines:  4,
-              overflow:  TextOverflow.ellipsis,
-              style: TextStyle(
-                  color:     const Color(0xFFFFFDD0).withOpacity(0.8),
-                  fontSize:  13,
-                  height:    1.6,
-                  fontStyle: FontStyle.italic),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              'SURAH ${verse['surah']}  •  AYAH ${verse['ayah']}',
-              style: const TextStyle(
-                  color:      Color(0xFF7FB883),
-                  fontSize:   10,
-                  letterSpacing: 1.0,
-                  fontWeight: FontWeight.w600),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            // Share button
-            GestureDetector(
-              onTap: onShare,
-              child: Container(
-                width:   double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color:        const Color(0xFFFFFDD0).withOpacity(0.06),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: const Color(0xFFFFFDD0).withOpacity(0.12)),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.share_rounded,
-                        color: const Color(0xFFFFFDD0).withOpacity(0.9),
-                        size:  18),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Share',
-                      style: TextStyle(
-                          color:      const Color(0xFFFFFDD0).withOpacity(0.9),
-                          fontSize:   13,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return _ContentCard(
+      isFocused:  isFocused,
+      chipLabel:  rank == 1 ? 'RANK 1 · BEST' : 'RANK $rank',
+      chipIcon:   null,
+      chipEmoji:  null,
+      score:      verse['score']?.toString(),
+      arabicText: verse['arabic_text'] ?? '',
+      bodyText:   '"${verse['verse_text'] ?? ''}"',
+      refText:    'SURAH ${verse['surah']}  •  AYAH ${verse['ayah']}',
+      onShare:    onShare,
     );
   }
 }
 
-// ── Dua card ─────────────────────────────────────────────────────────────────
+// ── Dua card ──────────────────────────────────────────────────────────────────
 class _DuaCard extends StatelessWidget {
   final Map<String, dynamic> dua;
   final bool isFocused;
+  final int  rank;
   final VoidCallback onShare;
 
   const _DuaCard({
     required this.dua,
     required this.isFocused,
+    required this.rank,
+    required this.onShare,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _ContentCard(
+      isFocused:  isFocused,
+      chipLabel:  'DUA ${rank > 1 ? '· $rank' : ''}',
+      chipIcon:   null,
+      chipEmoji:  '🤲',
+      score:      null,
+      arabicText: dua['arabic'] ?? '',
+      bodyText:   '"${dua['translation'] ?? ''}"',
+      refText:    dua['reference'] ?? '',
+      onShare:    onShare,
+    );
+  }
+}
+
+// ── Shared card widget (Verse & Dua look identical) ───────────────────────────
+class _ContentCard extends StatelessWidget {
+  final bool    isFocused;
+  final String  chipLabel;
+  final String? chipEmoji;
+  final IconData? chipIcon;
+  final String? score;
+  final String  arabicText;
+  final String  bodyText;
+  final String  refText;
+  final VoidCallback onShare;
+
+  const _ContentCard({
+    required this.isFocused,
+    required this.chipLabel,
+    required this.chipEmoji,
+    required this.chipIcon,
+    required this.score,
+    required this.arabicText,
+    required this.bodyText,
+    required this.refText,
     required this.onShare,
   });
 
@@ -588,18 +516,18 @@ class _DuaCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color:        const Color(0xFF1B2D1F),
+        color:        const Color(0xFFEDE5F8),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isFocused
-              ? const Color(0xFFB8D4BB).withOpacity(0.5)
-              : const Color(0xFF2A3D2C),
+              ? const Color(0xFF9966CC).withOpacity(0.7)
+              : const Color(0xFFD4B8E8),
           width: isFocused ? 1.5 : 1,
         ),
         boxShadow: isFocused
             ? [
                 BoxShadow(
-                  color:      const Color(0xFF355E3B).withOpacity(0.18),
+                  color:      const Color(0xFF9966CC).withOpacity(0.2),
                   blurRadius: 30,
                   offset:     const Offset(0, 10),
                 ),
@@ -611,74 +539,104 @@ class _DuaCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Row(
-              children: [_Chip(label: 'DUA', isDua: true)],
+            // ── Chip row ─────────────────────────────────────────────────
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _Chip(label: chipLabel, emoji: chipEmoji),
+                if (score != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color:        const Color(0xFF9966CC).withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: const Color(0xFF9966CC).withOpacity(0.3)),
+                    ),
+                    child: Text(score!,
+                        style: const TextStyle(
+                            color:      Color(0xFF9966CC),
+                            fontSize:   10,
+                            fontWeight: FontWeight.w600)),
+                  ),
+              ],
             ),
+
             const SizedBox(height: 16),
+
+            // ── Arabic text ──────────────────────────────────────────────
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
                   child: Text(
-                    dua['arabic'] ?? '',
+                    arabicText,
                     textAlign:     TextAlign.center,
                     textDirection: TextDirection.rtl,
                     style: const TextStyle(
-                        color:      Color(0xFFFFFDD0),
-                        fontSize:   18,
+                        color:      Color(0xFF2D1B4E),
+                        fontSize:   20,
                         fontWeight: FontWeight.w600,
                         height:     1.9),
                   ),
                 ),
               ),
             ),
+
             const SizedBox(height: 12),
-            const _GradientDivider(color: Color(0xFF3D6645)),
+            const _GradientDivider(color: Color(0xFFD4B8E8)),
             const SizedBox(height: 12),
+
+            // ── Translation / body ───────────────────────────────────────
             Text(
-              '"${dua['translation'] ?? ''}"',
+              bodyText,
               textAlign: TextAlign.center,
               maxLines:  4,
               overflow:  TextOverflow.ellipsis,
               style: TextStyle(
-                  color:     const Color(0xFFFFFDD0).withOpacity(0.75),
-                  fontSize:  12,
+                  color:     const Color(0xFF2D1B4E).withOpacity(0.8),
+                  fontSize:  13,
                   height:    1.6,
                   fontStyle: FontStyle.italic),
             ),
+
             const SizedBox(height: 14),
+
+            // ── Reference ────────────────────────────────────────────────
             Text(
-              dua['reference'] ?? '',
+              refText,
               style: const TextStyle(
-                  color:         Color(0xFFB8D4BB),
+                  color:         Color(0xFF9966CC),
                   fontSize:      10,
-                  letterSpacing: 0.8,
+                  letterSpacing: 1.0,
                   fontWeight:    FontWeight.w600),
               textAlign: TextAlign.center,
             ),
+
             const SizedBox(height: 20),
-            // Share button
+
+            // ── Share button ─────────────────────────────────────────────
             GestureDetector(
               onTap: onShare,
               child: Container(
                 width:   double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
-                  color:        const Color(0xFFFFFDD0).withOpacity(0.06),
+                  color:        const Color(0xFF9966CC).withOpacity(0.08),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                      color: const Color(0xFFFFFDD0).withOpacity(0.12)),
+                      color: const Color(0xFF9966CC).withOpacity(0.25)),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.share_rounded,
-                        color: const Color(0xFFFFFDD0).withOpacity(0.9),
-                        size:  18),
-                    const SizedBox(width: 8),
+                        color: Color(0xFF9966CC), size: 18),
+                    SizedBox(width: 8),
                     Text(
                       'Share',
                       style: TextStyle(
-                          color:      const Color(0xFFFFFDD0).withOpacity(0.9),
+                          color:      Color(0xFF9966CC),
                           fontSize:   13,
                           fontWeight: FontWeight.w600),
                     ),
@@ -775,9 +733,11 @@ class _BottomActionsState extends State<_BottomActions> {
     await prefs.setStringList('saved_items', saved);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content:         Text(_isSaved ? 'Saved ✓' : 'Removed'),
-        backgroundColor: const Color(0xFF2A4930),
-        duration:        const Duration(seconds: 2),
+        content: Text(_isSaved ? 'Saved ✓' : 'Removed'),
+        backgroundColor: const Color(0xFF9966CC),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        duration: const Duration(seconds: 2),
       ));
     }
   }
@@ -796,23 +756,21 @@ class _BottomActionsState extends State<_BottomActions> {
                 : Icons.bookmark_outline_rounded,
             label:   'SAVE',
             color:   _isSaved
-                ? const Color(0xFF7FB883)
-                : const Color(0xFFFFFDD0).withOpacity(0.4),
-            bgColor: _isSaved
-                ? const Color(0xFF2A4930)
-                : const Color(0xFF1B3320),
+                ? const Color(0xFF9966CC)
+                : const Color(0xFF2D1B4E).withOpacity(0.4),
+            bgColor: const Color(0xFFEDE5F8),
             border:  _isSaved
-                ? const Color(0xFF355E3B)
-                : const Color(0xFF3D6645),
-            onTap: _toggleSave,
+                ? const Color(0xFF9966CC)
+                : const Color(0xFFD4B8E8),
+            onTap:   _toggleSave,
           ),
           _Btn(
             icon:    Icons.play_arrow_rounded,
             label:   isVerse ? 'PLAY' : '—',
-            color:   const Color(0xFFFFFDD0),
+            color:   const Color(0xFFF8F8FF),
             bgColor: isVerse
-                ? const Color(0xFF355E3B)
-                : const Color(0xFFFFFDD0).withOpacity(0.1),
+                ? const Color(0xFF9966CC)
+                : const Color(0xFF9966CC).withOpacity(0.3),
             border:  Colors.transparent,
             size:    64,
             isMain:  true,
@@ -823,9 +781,9 @@ class _BottomActionsState extends State<_BottomActions> {
                 ? Icons.volunteer_activism_rounded
                 : Icons.menu_book_rounded,
             label:   isVerse ? 'DUA' : 'VERSE',
-            color:   const Color(0xFFFFFDD0).withOpacity(0.4),
-            bgColor: const Color(0xFF1B2D1F),
-            border:  const Color(0xFF2A3D2C),
+            color:   const Color(0xFF2D1B4E).withOpacity(0.5),
+            bgColor: const Color(0xFFEDE5F8),
+            border:  const Color(0xFFD4B8E8),
             onTap:   () => widget.onSwitchTab(isVerse ? 1 : 0),
           ),
         ],
@@ -834,40 +792,34 @@ class _BottomActionsState extends State<_BottomActions> {
   }
 }
 
-// ── Micro widgets ─────────────────────────────────────────────────────────────
+// ── Micro widgets ──────────────────────────────────────────────────────────────
 class _Chip extends StatelessWidget {
-  final String label;
-  final bool   isDua;
-  const _Chip({required this.label, required this.isDua});
+  final String  label;
+  final String? emoji;
+
+  const _Chip({required this.label, required this.emoji});
 
   @override
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
     decoration: BoxDecoration(
-      color: isDua
-          ? const Color(0xFF1B2D1F)
-          : const Color(0xFF2A4930),
+      color:        const Color(0xFF9966CC).withOpacity(0.12),
       borderRadius: BorderRadius.circular(20),
-      border: Border.all(
-          color: isDua
-              ? const Color(0xFF2A3D2C)
-              : const Color(0xFF3D6645)),
+      border: Border.all(color: const Color(0xFF9966CC).withOpacity(0.3)),
     ),
     child: Row(mainAxisSize: MainAxisSize.min, children: [
-      if (isDua)
-        const Text('🤲', style: TextStyle(fontSize: 10))
+      if (emoji != null)
+        Text(emoji!, style: const TextStyle(fontSize: 10))
       else
         Container(
           width:  6, height: 6,
           decoration: const BoxDecoration(
-              color: Color(0xFF7FB883), shape: BoxShape.circle),
+              color: Color(0xFF9966CC), shape: BoxShape.circle),
         ),
       const SizedBox(width: 6),
       Text(label,
-          style: TextStyle(
-              color:         isDua
-                  ? const Color(0xFFB8D4BB)
-                  : const Color(0xFFB8D4BB),
+          style: const TextStyle(
+              color:         Color(0xFF9966CC),
               fontSize:      9,
               fontWeight:    FontWeight.w700,
               letterSpacing: 0.6)),
@@ -890,12 +842,12 @@ class _GradientDivider extends StatelessWidget {
 }
 
 class _Btn extends StatelessWidget {
-  final IconData     icon;
-  final String       label;
-  final Color        color, bgColor, border;
-  final double       size;
+  final IconData      icon;
+  final String        label;
+  final Color         color, bgColor, border;
+  final double        size;
   final VoidCallback? onTap;
-  final bool         isMain;
+  final bool          isMain;
 
   const _Btn({
     required this.icon,
@@ -918,11 +870,11 @@ class _Btn extends StatelessWidget {
         decoration: BoxDecoration(
           color:        bgColor,
           borderRadius: BorderRadius.circular(isMain ? 20 : 16),
-          border: Border.all(color: border),
+          border:       Border.all(color: border),
           boxShadow: isMain
               ? [
                   BoxShadow(
-                    color:      const Color(0xFF355E3B).withOpacity(0.4),
+                    color:      const Color(0xFF9966CC).withOpacity(0.4),
                     blurRadius: 20,
                     offset:     const Offset(0, 6),
                   ),
@@ -934,10 +886,10 @@ class _Btn extends StatelessWidget {
       const SizedBox(height: 6),
       Text(label,
           style: TextStyle(
-              color:      const Color(0xFFFFFDD0).withOpacity(0.4),
-              fontSize:   9,
+              color:         const Color(0xFF2D1B4E).withOpacity(0.4),
+              fontSize:      9,
               letterSpacing: 0.6,
-              fontWeight: FontWeight.w600)),
+              fontWeight:    FontWeight.w600)),
     ]),
   );
 }
