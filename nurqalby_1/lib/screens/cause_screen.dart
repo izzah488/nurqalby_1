@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'result_screen.dart';
 import 'notification_settings_screen.dart';
+import 'package:nurqalby_1/services/mood_database.dart';
 
 class CauseScreen extends StatefulWidget {
   final String userText;
@@ -40,16 +41,27 @@ class _CauseScreenState extends State<CauseScreen> {
     },
   ];
 
-  void _findVerses() {
+  Future<void> _findVerses() async {
     if (selectedCause == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content:         Text('Please select a cause.'),
+          content: Text(
+            'Please select a cause.',
+            style: TextStyle(color: Colors.black),
+          ),
           backgroundColor: Color(0xFFEDE5F8),
         ),
       );
       return;
     }
+
+    // Save mood log now that both emotion AND cause are known
+    await MoodDatabase.instance.insertMood(
+      widget.emotion,
+      selectedCause!,
+    );
+
+    if (!mounted) return;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -174,7 +186,7 @@ class _CauseScreenState extends State<CauseScreen> {
                           text: widget.emotion[0].toUpperCase() +
                               widget.emotion.substring(1),
                           style: const TextStyle(
-                              color:      Color(0xFF7FB883),
+                              color:      Color(0xFF9966CC),
                               fontSize:   12,
                               fontWeight: FontWeight.w600),
                         ),

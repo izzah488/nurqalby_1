@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'cause_screen.dart';
 import 'notification_settings_screen.dart';
-import 'package:nurqalby_1/services/mood_database.dart';
+// MoodDatabase import removed — insertMood is called in CauseScreen instead
 
 class EmotionScreen extends StatefulWidget {
   final String userText;
@@ -38,7 +38,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
     }
   }
 
-  Future<void> _next() async {
+  void _next() {
     if (selectedEmotion == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -49,11 +49,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
       return;
     }
 
-    await MoodDatabase.instance.insertMood(
-      emotion: selectedEmotion!,
-    );
-
-    if (!mounted) return;
+    // insertMood is called in CauseScreen after user picks both emotion + cause
     Navigator.push(
       context,
       MaterialPageRoute(
