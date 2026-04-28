@@ -1,30 +1,113 @@
-import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/mood_database.dart';
+import '../services/dua_service.dart';
 
 class WeeklySummaryHelper {
-  static const String _baseUrl = 'http://10.186.181.134:8000';
+  // ─── Local Verses by Emotion ──────────────────────────────────────────────
+  // These are sourced from the local verses database — no internet needed.
+  static const Map<String, List<Map<String, String>>> _verses = {
+    'joy': [
+      {
+        'text': 'And your Lord is going to give you, and you will be satisfied.',
+        'ref':  'Quran 93:5',
+      },
+      {
+        'text': 'So remember Me; I will remember you. And be grateful to Me and do not deny Me.',
+        'ref':  'Quran 2:152',
+      },
+      {
+        'text': 'And He found you lost and guided you.',
+        'ref':  'Quran 93:7',
+      },
+    ],
+    'sadness': [
+      {
+        'text': 'For indeed, with hardship will be ease. Indeed, with hardship will be ease.',
+        'ref':  'Quran 94:5–6',
+      },
+      {
+        'text': 'Allah does not burden a soul beyond that it can bear.',
+        'ref':  'Quran 2:286',
+      },
+      {
+        'text': 'Unquestionably, by the remembrance of Allah hearts are assured.',
+        'ref':  'Quran 13:28',
+      },
+    ],
+    'anger': [
+      {
+        'text': 'And those who restrain anger and who pardon the people — and Allah loves the doers of good.',
+        'ref':  'Quran 3:134',
+      },
+      {
+        'text': 'And if an evil suggestion comes to you from Satan, then seek refuge in Allah. Indeed, He is Hearing and Knowing.',
+        'ref':  'Quran 7:200',
+      },
+      {
+        'text': 'The strong is not the one who overcomes people; the strong is the one who controls themselves while in anger.',
+        'ref':  'Hadith — Bukhari',
+      },
+    ],
+    'fear': [
+      {
+        'text': 'And He is with you wherever you are. And Allah, of what you do, is Seeing.',
+        'ref':  'Quran 57:4',
+      },
+      {
+        'text': 'Allah is sufficient for us, and He is the best Disposer of affairs.',
+        'ref':  'Quran 3:173',
+      },
+      {
+        'text': 'Do not despair of the mercy of Allah. Indeed, Allah forgives all sins.',
+        'ref':  'Quran 39:53',
+      },
+    ],
+  };
 
+  // ─── Emotion-Specific Messages ────────────────────────────────────────────
+  static const Map<String, Map<String, dynamic>> _emotionInfo = {
+    'joy': {
+      'icon':    '🌟',
+      'title':   'Alhamdulillah — A Joyful Week!',
+      'message': 'Your heart has been glowing with happiness this week. Continue to be grateful — joy shared with Allah grows even more.',
+      'color':   Color(0xFFE8A020),
+    },
+    'sadness': {
+      'icon':    '💙',
+      'title':   'Your Heart is Heard',
+      'message': 'It seems your heart has been heavy this week. Remember, after every hardship comes ease — twice promised by Allah in Surah 94.',
+      'color':   Color(0xFF2979B8),
+    },
+    'anger': {
+      'icon':    '🍃',
+      'title':   'Take a Breath, Find Peace',
+      'message': 'Strong emotions remind us of our humanity. Seek refuge in Allah and allow His peace to settle in your heart.',
+      'color':   Color(0xFF7B5EA7),
+    },
+    'fear': {
+      'icon':    '🤍',
+      'title':   'You Are Not Alone',
+      'message': 'Allah is always with you — in every worry, every uncertainty. Trust in His plan. He knows what you do not know.',
+      'color':   Color(0xFF558B2F),
+    },
+  };
+
+  // ─── Public Entry Point ───────────────────────────────────────────────────
   /// Call this from MoodHistoryScreen's initState.
   /// Shows the popup only on Sundays, once per week.
   static Future<void> checkAndShowSundayPopup(BuildContext context) async {
     final now = DateTime.now();
     if (now.weekday != DateTime.sunday) return;
 
-    // Check if already shown this week
-    final prefs = await SharedPreferences.getInstance();
+    final prefs   = await SharedPreferences.getInstance();
     final weekKey = _getWeekKey(now);
-    final alreadyShown = prefs.getBool('weekly_popup_$weekKey') ?? false;
-    if (alreadyShown) return;
+    if (prefs.getBool('weekly_popup_$weekKey') ?? false) return;
 
-    // Get this week's moods
+    // Get this week's moods only — no cross-week comparison
     final thisMoods = await MoodDatabase.instance.getWeeklyMoods();
     if (thisMoods.isEmpty) return;
-
-    // Get last week's moods for trend comparison
-    final lastMoods = await MoodDatabase.instance.getLastWeekMoods();
 
     // Count emotions this week
     final Map<String, int> counts = {};
@@ -33,91 +116,31 @@ class WeeklySummaryHelper {
       counts[e] = (counts[e] ?? 0) + 1;
     }
 
-    // Dominant emotion
+    // Find the dominant emotion
     final dominant = counts.entries
         .reduce((a, b) => a.value > b.value ? a : b)
-        .key;
+        .key
+        .toLowerCase();
 
-    // Trend: compare joy% this week vs last week
-    final trend = _calculateTrend(thisMoods, lastMoods);
+    // Pick a local verse and dua based on dominant emotion
+    final rng      = Random();
+    final verseList = _verses[dominant] ?? _verses['sadness']!;
+    final verse     = verseList[rng.nextInt(verseList.length)];
+    final duaList   = DuaService.getDuasByEmotion(dominant);
+    final dua       = duaList[rng.nextInt(duaList.length)];
 
-    // Fetch a verse from backend based on dominant emotion
-    String verseText = '';
-    String verseRef = '';
-    try {
-      final resp = await http.post(
-        Uri.parse('$_baseUrl/recommend'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'text': dominant,
-          'emotion': dominant,
-          'cause': 'general',
-        }),
-      ).timeout(const Duration(seconds: 6));
-
-      if (resp.statusCode == 200) {
-        final data = jsonDecode(resp.body);
-        final results = data['results'] as List?;
-        if (results != null && results.isNotEmpty) {
-          verseText = results[0]['verse'] ?? results[0]['text'] ?? '';
-          verseRef  = results[0]['reference'] ?? results[0]['surah'] ?? '';
-        }
-      }
-    } catch (_) {
-      // Offline fallback verses
-      final fallback = {
-        'joy':     ['Verily, with every difficulty comes ease.', 'Quran 94:5'],
-        'sadness': ['Allah does not burden a soul beyond that it can bear.', 'Quran 2:286'],
-        'anger':   ['The strong is not the one who overcomes people; the strong is the one who controls themselves.', 'Hadith — Bukhari'],
-        'fear':    ['And He is with you wherever you are.', 'Quran 57:4'],
-      };
-      verseText = fallback[dominant]?[0] ?? '';
-      verseRef  = fallback[dominant]?[1] ?? '';
-    }
-
-    // Mark as shown for this week
+    // Mark shown for this week
     await prefs.setBool('weekly_popup_$weekKey', true);
 
-    // Show the popup
     if (context.mounted) {
-      _showPopup(context, dominant, trend, verseText, verseRef, counts, thisMoods.length);
+      _showPopup(context, dominant, verse, dua, counts, thisMoods.length);
     }
   }
 
-  // ─── Trend Calculation ────────────────────────────────────────────────────
-  // Wellness score = joy% − average(sadness%, anger%, fear%)
-  // Considers ALL 4 emotions. More joy = higher score.
-  // More sadness/anger/fear = lower score.
-  static double _wellnessScore(List<Map<String, dynamic>> moods) {
-    if (moods.isEmpty) return 0;
-    final total = moods.length;
-    final joy     = moods.where((m) => m['emotion'] == 'joy').length     / total;
-    final sadness = moods.where((m) => m['emotion'] == 'sadness').length / total;
-    final anger   = moods.where((m) => m['emotion'] == 'anger').length   / total;
-    final fear    = moods.where((m) => m['emotion'] == 'fear').length    / total;
-    // Joy is positive, negative emotions pull the score down
-    return joy - ((sadness + anger + fear) / 3);
-  }
-
-  static String _calculateTrend(
-    List<Map<String, dynamic>> thisWeek,
-    List<Map<String, dynamic>> lastWeek,
-  ) {
-    if (lastWeek.isEmpty) return 'stable';
-
-    final scoreThis = _wellnessScore(thisWeek);
-    final scoreLast = _wellnessScore(lastWeek);
-    final diff = scoreThis - scoreLast;
-
-    if (diff > 0.10) return 'improving';
-    if (diff < -0.10) return 'worsening';
-    return 'stable';
-  }
-
-  // ─── Week Key (e.g. "2025_17") ────────────────────────────────────────────
+  // ─── Week Key Helper ──────────────────────────────────────────────────────
   static String _getWeekKey(DateTime date) {
     final startOfYear = DateTime(date.year, 1, 1);
-    final weekNum = ((date.difference(startOfYear).inDays) / 7).floor();
+    final weekNum     = ((date.difference(startOfYear).inDays) / 7).floor();
     return '${date.year}_$weekNum';
   }
 
@@ -125,9 +148,8 @@ class WeeklySummaryHelper {
   static void _showPopup(
     BuildContext context,
     String dominant,
-    String trend,
-    String verse,
-    String reference,
+    Map<String, String> verse,
+    Map<String, String> dua,
     Map<String, int> counts,
     int total,
   ) {
@@ -136,83 +158,72 @@ class WeeklySummaryHelper {
       'sadness': '😢',
       'anger':   '😠',
       'fear':    '😰',
+      'disgust': '🤢',
+      'surprise':'😲',
+      'neutral': '😐',
     };
     const emotionColor = {
-      'joy':     Color(0xFFFFC107),
-      'sadness': Color(0xFF42A5F5),
-      'anger':   Color(0xFFEF5350),
-      'fear':    Color(0xFFAB47BC),
+      'joy':     Color(0xFFE8A020),
+      'sadness': Color(0xFF2979B8),
+      'anger':   Color(0xFFD32F2F),
+      'fear':    Color(0xFF455A64),
+      'disgust': Color(0xFF558B2F),
+      'surprise':Color(0xFF00897B),
+      'neutral': Color(0xFF78909C),
     };
 
-    final trendInfo = {
-      'improving': {
-        'icon':    '🌟',
-        'label':   'Improving',
-        'color':   const Color(0xFF4CAF50),
-        'message': 'You are making good emotional progress this week. Keep going!',
-      },
-      'stable': {
-        'icon':    '🌿',
-        'label':   'Stable',
-        'color':   const Color(0xFF29B6F6),
-        'message': 'Your emotions remain consistent this week. Stay grounded.',
-      },
-      'worsening': {
-        'icon':    '💙',
-        'label':   'Take care',
-        'color':   const Color(0xFF7E57C2),
-        'message': 'Take some time to care for yourself — support is always here.',
-      },
-    }[trend]!;
+    final info = _emotionInfo[dominant] ?? _emotionInfo['sadness']!;
+    final accentColor = info['color'] as Color;
 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        backgroundColor: const Color(0xFF1A1A2E),
+        backgroundColor: const Color(0xFFF8F8FF),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ── Header ──
+
+              // ── Header ──────────────────────────────────────────────────
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF16213E),
+                  color:        const Color(0xFFEDE5F8),
                   borderRadius: BorderRadius.circular(30),
+                  border:       Border.all(color: const Color(0xFFD4B8E8)),
                 ),
                 child: const Text(
                   '🌙  Weekly Mood Summary',
                   style: TextStyle(
-                    color: Colors.white,
+                    color:      Color(0xFF2D1B4E),
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize:   16,
                   ),
                 ),
               ),
               const SizedBox(height: 4),
-              Text(
+              const Text(
                 'End of the week reflection',
-                style: TextStyle(color: Colors.white54, fontSize: 12),
+                style: TextStyle(color: Color(0xFF7B5EA7), fontSize: 12),
               ),
               const SizedBox(height: 20),
 
-              // ── Trend Banner ──
+              // ── Emotion Banner ───────────────────────────────────────────
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
-                  color: (trendInfo['color'] as Color).withOpacity(0.15),
+                  color:        accentColor.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: (trendInfo['color'] as Color).withOpacity(0.4),
-                  ),
+                  border:       Border.all(color: accentColor.withOpacity(0.3)),
                 ),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(trendInfo['icon'] as String,
+                    Text(info['icon'] as String,
                         style: const TextStyle(fontSize: 28)),
                     const SizedBox(width: 12),
                     Expanded(
@@ -220,19 +231,20 @@ class WeeklySummaryHelper {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            trendInfo['label'] as String,
+                            info['title'] as String,
                             style: TextStyle(
-                              color: trendInfo['color'] as Color,
+                              color:      accentColor,
                               fontWeight: FontWeight.bold,
-                              fontSize: 15,
+                              fontSize:   14,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          const SizedBox(height: 4),
                           Text(
-                            trendInfo['message'] as String,
+                            info['message'] as String,
                             style: const TextStyle(
-                              color: Colors.white70,
+                              color:    Color(0xFF2D1B4E),
                               fontSize: 12,
+                              height:   1.5,
                             ),
                           ),
                         ],
@@ -243,22 +255,22 @@ class WeeklySummaryHelper {
               ),
               const SizedBox(height: 20),
 
-              // ── Emotion Breakdown ──
+              // ── Emotion Breakdown ────────────────────────────────────────
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   'This week ($total sessions)',
                   style: const TextStyle(
-                    color: Colors.white54,
-                    fontSize: 12,
+                    color:      Color(0xFF7B5EA7),
+                    fontSize:   12,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
               const SizedBox(height: 8),
               ...counts.entries.map((e) {
-                final pct = (e.value / total * 100).round();
-                final color = emotionColor[e.key] ?? Colors.grey;
+                final pct   = (e.value / total * 100).round();
+                final color = emotionColor[e.key] ?? const Color(0xFF9966CC);
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Row(
@@ -276,15 +288,16 @@ class WeeklySummaryHelper {
                                 Text(
                                   e.key[0].toUpperCase() + e.key.substring(1),
                                   style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 13,
+                                    color:      Color(0xFF2D1B4E),
+                                    fontSize:   13,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 Text(
                                   '$pct%  (${e.value})',
                                   style: TextStyle(
-                                    color: color,
-                                    fontSize: 12,
+                                    color:      color,
+                                    fontSize:   12,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -294,10 +307,10 @@ class WeeklySummaryHelper {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(4),
                               child: LinearProgressIndicator(
-                                value: e.value / total,
-                                minHeight: 6,
-                                backgroundColor: Colors.white12,
-                                valueColor: AlwaysStoppedAnimation(color),
+                                value:            e.value / total,
+                                minHeight:        6,
+                                backgroundColor:  const Color(0xFFEDE5F8),
+                                valueColor:       AlwaysStoppedAnimation(color),
                               ),
                             ),
                           ],
@@ -310,61 +323,113 @@ class WeeklySummaryHelper {
 
               const SizedBox(height: 20),
 
-              // ── Verse ──
-              if (verse.isNotEmpty) ...[
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF16213E),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.white12),
-                  ),
-                  child: Column(
-                    children: [
-                      const Text(
-                        '✨  Verse for You',
-                        style: TextStyle(
-                          color: Color(0xFFD4A017),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '"$verse"',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontStyle: FontStyle.italic,
-                          height: 1.5,
-                        ),
-                      ),
-                      if (reference.isNotEmpty) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          '— $reference',
-                          style: const TextStyle(
-                            color: Color(0xFFD4A017),
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+              // ── Verse (from local database) ──────────────────────────────
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color:        const Color(0xFFEDE5F8),
+                  borderRadius: BorderRadius.circular(14),
+                  border:       Border.all(color: const Color(0xFFD4B8E8)),
                 ),
-                const SizedBox(height: 20),
-              ],
+                child: Column(
+                  children: [
+                    const Text(
+                      '✨  Verse for You',
+                      style: TextStyle(
+                        color:      Color(0xFF9966CC),
+                        fontWeight: FontWeight.bold,
+                        fontSize:   13,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '"${verse['text']}"',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color:     Color(0xFF2D1B4E),
+                        fontSize:  13,
+                        fontStyle: FontStyle.italic,
+                        height:    1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      '— ${verse['ref']}',
+                      style: const TextStyle(
+                        color:      Color(0xFF7B5EA7),
+                        fontSize:   12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
 
-              // ── Close Button ──
+              // ── Dua ─────────────────────────────────────────────────────
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color:        const Color(0xFFEDE5F8),
+                  borderRadius: BorderRadius.circular(14),
+                  border:       Border.all(color: const Color(0xFFD4B8E8)),
+                ),
+                child: Column(
+                  children: [
+                    const Text(
+                      '🤲  Dua for You',
+                      style: TextStyle(
+                        color:      Color(0xFF9966CC),
+                        fontWeight: FontWeight.bold,
+                        fontSize:   13,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      dua['arabic'] ?? '',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color:    Color(0xFF2D1B4E),
+                        fontSize: 16,
+                        height:   1.8,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      '"${dua['translation']}"',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color:     Color(0xFF7B5EA7),
+                        fontSize:  12,
+                        fontStyle: FontStyle.italic,
+                        height:    1.5,
+                      ),
+                    ),
+                    if ((dua['reference'] ?? '').isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        '— ${dua['reference']}',
+                        style: const TextStyle(
+                          color:    Color(0xFF9966CC),
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // ── Close Button ─────────────────────────────────────────────
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFD4A017),
-                    foregroundColor: Colors.black,
+                    backgroundColor: const Color(0xFF9966CC),
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

@@ -24,8 +24,8 @@ class _NotificationHistoryScreenState
 
   Future<void> _loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    final list  = prefs.getStringList('notification_history') ?? [];
-    final now   = DateTime.now();
+    final list = prefs.getStringList('notification_history') ?? [];
+    final now = DateTime.now();
 
     setState(() {
       history = list
@@ -38,183 +38,331 @@ class _NotificationHistoryScreenState
     });
   }
 
-  String _formatTime(String isoString) {
-    final dt   = DateTime.parse(isoString);
-    final now  = DateTime.now();
-    final diff = now.difference(dt);
-
-    if (diff.inMinutes < 1)  return 'Just now';
-    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
-    if (diff.inHours < 24)   return '${diff.inHours}h ago';
-    if (diff.inDays < 7)     return '${diff.inDays}d ago';
-    return '${dt.day}/${dt.month}/${dt.year}';
+  Future<void> _saveHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    final list = history.map((e) => jsonEncode(e)).toList().reversed.toList();
+    await prefs.setStringList('notification_history', list);
   }
 
-  Future<void> _clearHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('notification_history');
-    setState(() => history.clear());
+  void _deleteItem(int index, Map<String, dynamic> item) {
+    setState(() {
+      history.removeAt(index);
+    });
+    _saveHistory();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Notification deleted"), duration: Duration(seconds: 1)),
+    );
+  }
+
+  void _toggleRead(int index) {
+    setState(() {
+      history[index]['isRead'] = !(history[index]['isRead'] ?? false);
+    });
+    _saveHistory();
+  }
+
+  Map<String, List<Map<String, dynamic>>> _groupHistory() {
+    final Map<String, List<Map<String, dynamic>>> groups = {
+      'Today': [],
+      'Yesterday': [],
+      'This Week': [],
+      'Older': [],
+    };
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(const Duration(days: 1));
+    final thisWeek = today.subtract(Duration(days: now.weekday));
+
+    for (var item in history) {
+      final date = DateTime.parse(item['time']);
+      final compareDate = DateTime(date.year, date.month, date.day);
+
+      if (compareDate == today) {
+        groups['Today']!.add(item);
+      } else if (compareDate == yesterday) {
+        groups['Yesterday']!.add(item);
+      } else if (compareDate.isAfter(thisWeek)) {
+        groups['This Week']!.add(item);
+      } else {
+        groups['Older']!.add(item);
+      }
+    }
+    // Remove empty groups
+    groups.removeWhere((key, value) => value.isEmpty);
+    return groups;
+  }
+
+  String _formatTime(String isoString) {
+    final dt = DateTime.parse(isoString);
+    final now = DateTime.now();
+    final diff = now.difference(dt);
+
+    if (diff.inMinutes < 1) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    return '${dt.day}/${dt.month}';
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FF),
-      body: SafeArea(
-        child: Column(
-          children: [
+    final groupedData = _groupHistory();
+    final groupKeys = groupedData.keys.toList();
 
-            // Header
-            Container(
-              width:   double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              color:   const Color(0xFFEDE5F8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: const Icon(Icons.arrow_back_ios,
-                            color: Color(0xFF2D1B4E), size: 18),
-                      ),
-                      const SizedBox(width: 12),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Your Reminders',
-                              style: TextStyle(
-                                  color: Color(0xFF7B5EA7), fontSize: 12)),
-                          Text('Notification History',
-                              style: TextStyle(
-                                  color:      Color(0xFF2D1B4E),
-                                  fontSize:   18,
-                                  fontWeight: FontWeight.w600)),
-                        ],
-                      ),
-                    ],
-                  ),
-                  if (history.isNotEmpty)
-                    GestureDetector(
-                      onTap: _clearHistory,
-                      child: const Icon(Icons.delete_outline,
-                          color: Color(0xFF7FB883), size: 22),
-                    ),
-                ],
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F5FB),
+      body: Column(
+        children: [
+          // 2.1 Premium Gradient Header
+          Container(
+            padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 25),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF9966CC), Color(0xFFB388EB)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF9966CC).withOpacity(0.3),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                )
+              ],
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
             ),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                  ),
+                ),
+                const SizedBox(width: 15),
+                const Text(
+                  "History",
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const Spacer(),
+                if (history.isNotEmpty)
+                  IconButton(
+                    icon: const Icon(Icons.delete_sweep_outlined, color: Colors.white),
+                    onPressed: () {
+                      setState(() => history.clear());
+                      _saveHistory();
+                    },
+                  )
+              ],
+            ),
+          ),
 
-            // Body
-            Expanded(
-              child: isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                          color: Color(0xFF9966CC)))
-                  : history.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
+          // Notification List
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator(color: Color(0xFF9966CC)))
+                : history.isEmpty
+                    ? _buildEmptyState()
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        itemCount: groupKeys.length,
+                        itemBuilder: (context, gIndex) {
+                          final groupName = groupKeys[gIndex];
+                          final items = groupedData[groupName]!;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.notifications_none_rounded,
-                                  size:  72,
-                                  color: const Color(0xFF2D1B4E).withOpacity(0.15)),
-                              const SizedBox(height: 16),
-                              Text('No notifications yet',
+                              // Group Header
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(24, 8, 24, 12),
+                                child: Text(
+                                  groupName,
                                   style: TextStyle(
-                                      color: const Color(0xFF2D1B4E).withOpacity(0.4),
-                                      fontSize: 16)),
-                            ],
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: history.length,
-                          itemBuilder: (context, index) {
-                            final item = history[index];
-                            return GestureDetector(
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      NotificationDetailScreen(
-                                    arabic:    item['arabic']    ?? '',
-                                    english:   item['english']   ?? '',
-                                    title:     item['title']     ?? '',
-                                    reference: item['reference'] ?? '',
-                                    type:      item['type']      ?? 'dua',
+                                    color: const Color(0xFF2D1B4E).withOpacity(0.6),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                    letterSpacing: 1.2,
                                   ),
                                 ),
                               ),
-                              child: Container(
-                                margin:  const EdgeInsets.only(bottom: 10),
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color:        const Color(0xFFEDE5F8),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                      color: const Color(0xFFD4B8E8)),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width:  44,
-                                      height: 44,
-                                      decoration: BoxDecoration(
-                                        color:        const Color(0xFFEDE5F8),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: const Icon(
-                                        Icons.notifications_rounded,
-                                        color: Color(0xFF7FB883),
-                                        size:  22,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item['title'] ?? '',
-                                            style: const TextStyle(
-                                                color:      Color(0xFF2D1B4E),
-                                                fontSize:   13,
-                                                fontWeight: FontWeight.w500),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            item['english'] ?? '',
-                                            style: TextStyle(
-                                                color: const Color(0xFF2D1B4E)
-                                                    .withOpacity(0.5),
-                                                fontSize: 11),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      _formatTime(item['time'] ?? ''),
-                                      style: TextStyle(
-                                          color: const Color(0xFF2D1B4E)
-                                              .withOpacity(0.3),
-                                          fontSize: 11),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                              ...items.map((item) {
+                                final originalIndex = history.indexOf(item);
+                                return _buildNotificationCard(item, originalIndex);
+                              }).toList(),
+                              const SizedBox(height: 12),
+                            ],
+                          );
+                        },
+                      ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNotificationCard(Map<String, dynamic> item, int index) {
+    final bool isRead = item['isRead'] ?? false;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Dismissible(
+        key: Key(item['time'] + index.toString()),
+        direction: DismissDirection.horizontal,
+        background: _swipeActionBackground(Icons.mark_email_read, Colors.blue, Alignment.centerLeft),
+        secondaryBackground: _swipeActionBackground(Icons.delete_outline, Colors.red, Alignment.centerRight),
+        onDismissed: (direction) {
+          if (direction == DismissDirection.endToStart) {
+            _deleteItem(index, item);
+          }
+        },
+        confirmDismiss: (direction) async {
+          if (direction == DismissDirection.startToEnd) {
+            _toggleRead(index);
+            return false; // Don't actually remove the widget
+          }
+          return true;
+        },
+        child: GestureDetector(
+          onTap: () {
+            if (!isRead) _toggleRead(index);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => NotificationDetailScreen(
+                  arabic: item['arabic'] ?? '',
+                  english: item['english'] ?? '',
+                  title: item['title'] ?? 'Notification',
+                  reference: item['reference'] ?? '',
+                  type: item['type'] ?? 'verse',
+                ),
+              ),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isRead ? Colors.white.withOpacity(0.7) : Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              // 2.2 Modern Shadow and Style
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(isRead ? 0.02 : 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                )
+              ],
             ),
-          ],
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Icon Container
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: (item['type'] == 'verse' ? const Color(0xFFEDE5F8) : const Color(0xFFE8F5E9)),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    item['type'] == 'verse' ? Icons.auto_stories : Icons.favorite,
+                    color: item['type'] == 'verse' ? const Color(0xFF9966CC) : Colors.green,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                // Text Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              item['title'] ?? 'Islamic Reminder',
+                              style: TextStyle(
+                                // 1.4 Unread Bold/Brighter logic
+                                fontWeight: isRead ? FontWeight.w500 : FontWeight.w700,
+                                fontSize: 15,
+                                color: isRead ? const Color(0xFF2D1B4E).withOpacity(0.5) : const Color(0xFF2D1B4E),
+                              ),
+                            ),
+                          ),
+                          Text(
+                            _formatTime(item['time'] ?? ''),
+                            style: TextStyle(
+                              color: const Color(0xFF2D1B4E).withOpacity(0.4),
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        item['english'] ?? '',
+                        style: TextStyle(
+                          color: const Color(0xFF2D1B4E).withOpacity(isRead ? 0.3 : 0.6),
+                          fontSize: 13,
+                          height: 1.3,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                if (!isRead)
+                  Container(
+                    margin: const EdgeInsets.only(left: 8, top: 4),
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF9966CC),
+                      shape: BoxShape.circle,
+                    ),
+                  )
+              ],
+            ),
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _swipeActionBackground(IconData icon, Color color, Alignment alignment) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 25),
+      alignment: alignment,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Icon(icon, color: Colors.white),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.notifications_none_outlined, size: 80, color: const Color(0xFF2D1B4E).withOpacity(0.1)),
+          const SizedBox(height: 16),
+          Text(
+            "No notifications yet",
+            style: TextStyle(color: const Color(0xFF2D1B4E).withOpacity(0.4), fontSize: 16),
+          ),
+        ],
       ),
     );
   }

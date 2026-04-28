@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../services/notification_service.dart';
+import '../services/notification_service.dart'; // ✅ ADDED: to reschedule on save
 import 'notification_history_screen.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
@@ -14,12 +14,13 @@ class NotificationSettingsScreen extends StatefulWidget {
 class _NotificationSettingsScreenState
     extends State<NotificationSettingsScreen> {
   bool _notificationsEnabled = true;
-  bool _fajrEnabled          = true;
-  bool _dhuhrEnabled         = true;
-  bool _asrEnabled           = true;
-  bool _maghribEnabled       = true;
-  bool _ishaEnabled          = true;
-  bool _isLoading            = true;
+  bool _fajrEnabled    = true;
+  bool _dhuhrEnabled   = true;
+  bool _asrEnabled     = true;
+  bool _maghribEnabled = true;
+  bool _ishaEnabled    = true;
+  bool _isLoading      = true;
+  bool _isSaving       = false;
 
   @override
   void initState() {
@@ -30,365 +31,233 @@ class _NotificationSettingsScreenState
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _notificationsEnabled = prefs.getBool('notif_enabled')  ?? true;
-      _fajrEnabled          = prefs.getBool('notif_fajr')     ?? true;
-      _dhuhrEnabled         = prefs.getBool('notif_dhuhr')    ?? true;
-      _asrEnabled           = prefs.getBool('notif_asr')      ?? true;
-      _maghribEnabled       = prefs.getBool('notif_maghrib')  ?? true;
-      _ishaEnabled          = prefs.getBool('notif_isha')     ?? true;
+      _notificationsEnabled = prefs.getBool('notif_enabled') ?? true;
+      _fajrEnabled          = prefs.getBool('notif_fajr')    ?? true;
+      _dhuhrEnabled         = prefs.getBool('notif_dhuhr')   ?? true;
+      _asrEnabled           = prefs.getBool('notif_asr')     ?? true;
+      _maghribEnabled       = prefs.getBool('notif_maghrib') ?? true;
+      _ishaEnabled          = prefs.getBool('notif_isha')    ?? true;
       _isLoading            = false;
     });
   }
 
-  Future<void> _saveAndApply() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('notif_enabled', _notificationsEnabled);
-    await prefs.setBool('notif_fajr',    _fajrEnabled);
-    await prefs.setBool('notif_dhuhr',   _dhuhrEnabled);
-    await prefs.setBool('notif_asr',     _asrEnabled);
-    await prefs.setBool('notif_maghrib', _maghribEnabled);
-    await prefs.setBool('notif_isha',    _ishaEnabled);
+  Future<void> _saveSettings() async {
+    setState(() => _isSaving = true);
 
-    if (_notificationsEnabled) {
-      await NotificationService.schedulePrayerNotifications(
-        latitude:       3.1390,
-        longitude:      101.6869,
-        fajrEnabled:    _fajrEnabled,
-        dhuhrEnabled:   _dhuhrEnabled,
-        asrEnabled:     _asrEnabled,
-        maghribEnabled: _maghribEnabled,
-        ishaEnabled:    _ishaEnabled,
-      );
-    } else {
-      await NotificationService.cancelAll();
-    }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notif_enabled',  _notificationsEnabled);
+    await prefs.setBool('notif_fajr',     _fajrEnabled);
+    await prefs.setBool('notif_dhuhr',    _dhuhrEnabled);
+    await prefs.setBool('notif_asr',      _asrEnabled);
+    await prefs.setBool('notif_maghrib',  _maghribEnabled);
+    await prefs.setBool('notif_isha',     _ishaEnabled);
+
+    // ✅ FIXED: Re-schedule notifications so changes take effect immediately
+    await NotificationService.scheduleNotifications();
+
+    setState(() => _isSaving = false);
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Settings saved',
-            style: TextStyle(
-              color:      Colors.black,
-              fontSize:   14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          backgroundColor: Color(0xFFEDE5F8),
-          duration:        Duration(seconds: 2),
+        SnackBar(
+          content: const Text('Settings saved — notifications updated ✅'),
+          backgroundColor: const Color(0xFF9966CC),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
       );
+      Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FF), // Ghost White
-      body: SafeArea(
-        child: Column(
-          children: [
-
-            // --- Header ---
-            Container(
-              width:   double.infinity,
-              color:   const Color(0xFF9966CC),
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              child: Row(
+      backgroundColor: const Color(0xFFF8F5FB),
+      appBar: AppBar(
+        title: const Text(
+          'Notification Settings',
+          style: TextStyle(color: Color(0xFF2D1B4E), fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF2D1B4E)),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFF9966CC)))
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back_ios,
-                        color: Colors.white, size: 18),
-                  ),
-                  const SizedBox(width: 12),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Reminders',
-                            style: TextStyle(
-                                color: Colors.white70, fontSize: 12)),
-                        Text('Notification Settings',
-                            style: TextStyle(
-                                color:      Colors.white,
-                                fontSize:   18,
-                                fontWeight: FontWeight.w600)),
-                      ],
-                    ),
-                  ),
+                  // ── History Shortcut ──────────────────────────────────────
+                  _sectionLabel('HISTORY'),
+                  _historyShortcutCard(),
+                  const SizedBox(height: 25),
 
-                  // History button
-                  GestureDetector(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const NotificationHistoryScreen(),
-                      ),
+                  // ── Master Toggle ─────────────────────────────────────────
+                  _sectionLabel('GENERAL'),
+                  _sectionCard(
+                    child: _toggleRow(
+                      'Allow Notifications',
+                      _notificationsEnabled,
+                      (v) => setState(() => _notificationsEnabled = v),
                     ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color:        Colors.white.withOpacity(0.20),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                            color: Colors.white.withOpacity(0.40)),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.history_rounded,
-                              color: Colors.white, size: 16),
-                          SizedBox(width: 4),
-                          Text('History',
-                              style: TextStyle(
-                                  color:    Colors.white,
-                                  fontSize: 12)),
-                        ],
+                  ),
+                  const SizedBox(height: 25),
+
+                  // ── Per-Prayer Toggles ────────────────────────────────────
+                  _sectionLabel('PRAYER REMINDERS'),
+                  AnimatedOpacity(
+                    opacity: _notificationsEnabled ? 1.0 : 0.4,
+                    duration: const Duration(milliseconds: 200),
+                    child: IgnorePointer(
+                      ignoring: !_notificationsEnabled,
+                      child: _sectionCard(
+                        padding: EdgeInsets.zero,
+                        child: Column(
+                          children: [
+                            _toggleRow('Fajr',    _fajrEnabled,    (v) => setState(() => _fajrEnabled    = v)),
+                            const Divider(height: 1),
+                            _toggleRow('Dhuhr',   _dhuhrEnabled,   (v) => setState(() => _dhuhrEnabled   = v)),
+                            const Divider(height: 1),
+                            _toggleRow('Asr',     _asrEnabled,     (v) => setState(() => _asrEnabled     = v)),
+                            const Divider(height: 1),
+                            _toggleRow('Maghrib', _maghribEnabled, (v) => setState(() => _maghribEnabled = v)),
+                            const Divider(height: 1),
+                            _toggleRow('Isha',    _ishaEnabled,    (v) => setState(() => _ishaEnabled    = v)),
+                          ],
+                        ),
                       ),
                     ),
                   ),
+                  const SizedBox(height: 40),
+                  _saveButton(),
                 ],
               ),
             ),
+    );
+  }
 
-            // --- Body ---
-            _isLoading
-                ? const Expanded(
-                    child: Center(
-                      child: CircularProgressIndicator(
-                          color: Color(0xFF9966CC)),
-                    ),
-                  )
-                : Expanded(
-                    child: ListView(
-                      padding: const EdgeInsets.all(16),
-                      children: [
+  // ── Widgets ───────────────────────────────────────────────────────────────
 
-                        // Master toggle
-                        _SectionCard(
-                          child: _ToggleRow(
-                            icon:      Icons.notifications_rounded,
-                            label:     'Prayer Notifications',
-                            subtitle:  'Receive verse reminders before prayers',
-                            value:     _notificationsEnabled,
-                            isMain:    true,
-                            onChanged: (val) {
-                              setState(() => _notificationsEnabled = val);
-                              _saveAndApply();
-                            },
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // Individual prayer toggles
-                        if (_notificationsEnabled) ...[
-                          const Padding(
-                            padding: EdgeInsets.only(left: 4, bottom: 8),
-                            child: Text(
-                              'PRAYER TIMES',
-                              style: TextStyle(
-                                  fontSize:      11,
-                                  fontWeight:    FontWeight.w600,
-                                  color:         Colors.black,
-                                  letterSpacing: 0.8),
-                            ),
-                          ),
-                          _SectionCard(
-                            child: Column(
-                              children: [
-                                _ToggleRow(
-                                  icon:      Icons.wb_twilight_rounded,
-                                  label:     'Fajr',
-                                  subtitle:  '10 min before Fajr',
-                                  value:     _fajrEnabled,
-                                  onChanged: (val) {
-                                    setState(() => _fajrEnabled = val);
-                                    _saveAndApply();
-                                  },
-                                ),
-                                _Divider(),
-                                _ToggleRow(
-                                  icon:      Icons.wb_sunny_rounded,
-                                  label:     'Dhuhr',
-                                  subtitle:  '10 min before Dhuhr',
-                                  value:     _dhuhrEnabled,
-                                  onChanged: (val) {
-                                    setState(() => _dhuhrEnabled = val);
-                                    _saveAndApply();
-                                  },
-                                ),
-                                _Divider(),
-                                _ToggleRow(
-                                  icon:      Icons.light_mode_rounded,
-                                  label:     'Asr',
-                                  subtitle:  '10 min before Asr',
-                                  value:     _asrEnabled,
-                                  onChanged: (val) {
-                                    setState(() => _asrEnabled = val);
-                                    _saveAndApply();
-                                  },
-                                ),
-                                _Divider(),
-                                _ToggleRow(
-                                  icon:      Icons.wb_cloudy_rounded,
-                                  label:     'Maghrib',
-                                  subtitle:  '10 min before Maghrib',
-                                  value:     _maghribEnabled,
-                                  onChanged: (val) {
-                                    setState(() => _maghribEnabled = val);
-                                    _saveAndApply();
-                                  },
-                                ),
-                                _Divider(),
-                                _ToggleRow(
-                                  icon:      Icons.nightlight_round,
-                                  label:     'Isha',
-                                  subtitle:  '10 min before Isha',
-                                  value:     _ishaEnabled,
-                                  onChanged: (val) {
-                                    setState(() => _ishaEnabled = val);
-                                    _saveAndApply();
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Info card
-                          Container(
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEDE5F8),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                  color: const Color(0xFF9966CC).withOpacity(0.3)),
-                            ),
-                            child: const Row(
-                              children: [
-                                Icon(Icons.info_outline,
-                                    color: Color(0xFF9966CC), size: 18),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: Text(
-                                    'Notifications will show a Quran verse 10 minutes before each selected prayer time.',
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color:    Colors.black),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
+  Widget _historyShortcutCard() {
+    return GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const NotificationHistoryScreen()),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color:        Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border:       Border.all(color: const Color(0xFFD4B8E8)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color:        const Color(0xFFEDE5F8),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Icon(Icons.history_rounded, color: Color(0xFF9966CC)),
+            ),
+            const SizedBox(width: 15),
+            const Expanded(
+              child: Text(
+                'View Notification History',
+                style: TextStyle(
+                    fontWeight: FontWeight.w600, color: Color(0xFF2D1B4E)),
+              ),
+            ),
+            const Icon(Icons.chevron_right, color: Color(0xFFD4B8E8)),
           ],
         ),
       ),
     );
   }
-}
 
-// ─────────────────────────────────────────
-// Helper widgets
-// ─────────────────────────────────────────
-
-class _SectionCard extends StatelessWidget {
-  final Widget child;
-  const _SectionCard({required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color:        Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFD4B8E8)),
-        boxShadow: [
-          BoxShadow(
-            color:      Colors.black.withOpacity(0.04),
-            blurRadius: 6,
-            offset:     const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: child,
+  Widget _sectionLabel(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 8),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize:    12,
+          fontWeight:  FontWeight.bold,
+          color:       const Color(0xFF2D1B4E).withOpacity(0.5),
+          letterSpacing: 1.1,
+        ),
       ),
     );
   }
-}
 
-class _ToggleRow extends StatelessWidget {
-  final IconData icon;
-  final String   label;
-  final String   subtitle;
-  final bool     value;
-  final bool     isMain;
-  final ValueChanged<bool> onChanged;
+  Widget _sectionCard({required Widget child, EdgeInsets? padding}) {
+    return Container(
+      padding: padding ?? const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color:        Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border:       Border.all(color: const Color(0xFFD4B8E8)),
+      ),
+      child: child,
+    );
+  }
 
-  const _ToggleRow({
-    required this.icon,
-    required this.label,
-    required this.subtitle,
-    required this.value,
-    required this.onChanged,
-    this.isMain = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _toggleRow(String label, bool value, Function(bool) onChanged) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Row(
         children: [
-          Container(
-            width:  36,
-            height: 36,
-            decoration: BoxDecoration(
-              color:        const Color(0xFFEDE5F8),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon,
-                color: const Color(0xFF9966CC),
-                size: isMain ? 20 : 18),
-          ),
-          const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label,
-                    style: TextStyle(
-                        fontSize:   isMain ? 15 : 14,
-                        fontWeight: FontWeight.w500,
-                        color:      Colors.black)),
-                Text(subtitle,
-                    style: const TextStyle(
-                        fontSize: 11,
-                        color:    Colors.black54)),
-              ],
+            child: Text(
+              label,
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF2D1B4E)),
             ),
           ),
           Switch(
-            value:            value,
-            onChanged:        onChanged,
-            activeColor:      const Color(0xFF9966CC),
-            activeTrackColor: const Color(0xFF7B5EA7),
+            value:       value,
+            onChanged:   onChanged,
+            activeColor: const Color(0xFF9966CC),
           ),
         ],
       ),
     );
   }
-}
 
-class _Divider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Divider(height: 1, color: Color(0xFFD4B8E8));
+  Widget _saveButton() {
+    return SizedBox(
+      width:  double.infinity,
+      height: 55,
+      child: ElevatedButton(
+        onPressed: _isSaving ? null : _saveSettings,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF9966CC),
+          foregroundColor: Colors.white,
+          disabledBackgroundColor: const Color(0xFF9966CC).withOpacity(0.6),
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        child: _isSaving
+            ? const SizedBox(
+                width:  22,
+                height: 22,
+                child:  CircularProgressIndicator(
+                    color: Colors.white, strokeWidth: 2),
+              )
+            : const Text(
+                'Save Changes',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+      ),
+    );
   }
 }
