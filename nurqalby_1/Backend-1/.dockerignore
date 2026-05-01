@@ -1,0 +1,22 @@
+# Ignore these when building Docker image
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.env
+.env.*
+.venv/
+venv/
+env/
+*.log
+.git/
+.gitignore
+.DS_Store
+*.ipynb
+*.ipynb_checkpoints/
+test_*.py
+README.md

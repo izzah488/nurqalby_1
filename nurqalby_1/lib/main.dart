@@ -4,7 +4,7 @@ import 'services/notification_service.dart';
 import 'services/location_service.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/home_screen.dart';
-import 'screens/mood_history_screen.dart'; // ✅ FIXED: added import
+import 'screens/mood_history_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -14,13 +14,14 @@ void main() async {
   await NotificationService.init();
 
   // Get real location — fallback to Kuala Lumpur if fails
-  final position = await LocationService.getCurrentLocation();
+  final position  = await LocationService.getCurrentLocation();
   final latitude  = position?.latitude  ?? 3.1390;
   final longitude = position?.longitude ?? 101.6869;
 
-  await NotificationService.schedulePrayerNotifications(
-    latitude:  latitude,
-    longitude: longitude,
+  // ✅ FIXED: correct method name and parameter names
+  await NotificationService.scheduleNotifications(
+    lat: latitude,
+    lng: longitude,
   );
 
   final prefs       = await SharedPreferences.getInstance();
@@ -36,14 +37,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title:                     'NurQalby',
+      title:                      'NurQalby',
       debugShowCheckedModeBanner: false,
-      navigatorKey:              navigatorKey,
+      navigatorKey:               navigatorKey,
       theme: ThemeData(
-        fontFamily:              'sans-serif',
-        scaffoldBackgroundColor: const Color(0xFF0d2016),
+        fontFamily:               'sans-serif',
+        scaffoldBackgroundColor:  const Color(0xFF0d2016),
       ),
-      // ✅ FIXED: route moved inside MaterialApp where it belongs
       routes: {
         '/mood-history': (context) => const MoodHistoryScreen(),
       },

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "367528699502",
+    "project_id": "nurqalby-424cb",
+    "storage_bucket": "nurqalby-424cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367528699502:android:9d504a511d7a4039c3687f",
+        "android_client_info": {
+          "package_name": "com.example.nurqalby_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDul6HcWICehLspkCmu6SXBswLXsjxU4sw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
