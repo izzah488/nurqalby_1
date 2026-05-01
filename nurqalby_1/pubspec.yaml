@@ -45,6 +45,8 @@ dependencies:
   fl_chart: ^0.68.0
   flutter_timezone: ^3.0.0    # ✅ Keep only this one
   cupertino_icons: ^1.0.8
+  firebase_core: ^2.10.0
+  firebase_messaging: ^14.3.0
 
 dev_dependencies:
   flutter_test:

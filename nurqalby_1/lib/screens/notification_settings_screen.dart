@@ -1,6 +1,14 @@
+// lib/screens/notification_settings_screen.dart
+//
+// FIXED / ADDED:
+// 1. "Update Location" button — fetches current GPS and re-schedules
+//    notifications using that location.
+// 2. Shows current saved lat/lng so user knows what location is active.
+// 3. _saveSettings() still re-schedules after toggling prayers.
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../services/notification_service.dart'; // ✅ ADDED: to reschedule on save
+import '../services/notification_service.dart';
 import 'notification_history_screen.dart';
 
 class NotificationSettingsScreen extends StatefulWidget {
@@ -21,6 +29,11 @@ class _NotificationSettingsScreenState
   bool _ishaEnabled    = true;
   bool _isLoading      = true;
   bool _isSaving       = false;
+  bool _isUpdatingLocation = false;
+
+  // Current saved location shown to user
+  double? _savedLat;
+  double? _savedLng;
 
   @override
   void initState() {
@@ -37,6 +50,8 @@ class _NotificationSettingsScreenState
       _asrEnabled           = prefs.getBool('notif_asr')     ?? true;
       _maghribEnabled       = prefs.getBool('notif_maghrib') ?? true;
       _ishaEnabled          = prefs.getBool('notif_isha')    ?? true;
+      _savedLat             = prefs.getDouble('last_lat');
+      _savedLng             = prefs.getDouble('last_lng');
       _isLoading            = false;
     });
   }
@@ -52,7 +67,7 @@ class _NotificationSettingsScreenState
     await prefs.setBool('notif_maghrib',  _maghribEnabled);
     await prefs.setBool('notif_isha',     _ishaEnabled);
 
-    // ✅ FIXED: Re-schedule notifications so changes take effect immediately
+    // Re-schedule so changes take effect immediately
     await NotificationService.scheduleNotifications();
 
     setState(() => _isSaving = false);
@@ -67,6 +82,59 @@ class _NotificationSettingsScreenState
         ),
       );
       Navigator.pop(context);
+    }
+  }
+
+  // ADDED: Fetch GPS and re-schedule notifications for the new location
+  Future<void> _updateLocation() async {
+    setState(() => _isUpdatingLocation = true);
+
+    try {
+      final position = await NotificationService.getCurrentLocation();
+
+      if (position == null) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text(
+                  'Could not get location. Please enable GPS and try again.'),
+              backgroundColor: Colors.red.shade400,
+              behavior: SnackBarBehavior.floating,
+              shape:
+                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+          );
+        }
+        return;
+      }
+
+      // Save + reschedule with new coordinates
+      await NotificationService.scheduleNotifications(
+        lat: position.latitude,
+        lng: position.longitude,
+      );
+
+      setState(() {
+        _savedLat = position.latitude;
+        _savedLng = position.longitude;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Location updated ✅  (${position.latitude.toStringAsFixed(4)}, '
+              '${position.longitude.toStringAsFixed(4)})',
+            ),
+            backgroundColor: const Color(0xFF7FB883),
+            behavior: SnackBarBehavior.floating,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isUpdatingLocation = false);
     }
   }
 
@@ -87,15 +155,21 @@ class _NotificationSettingsScreenState
         ),
       ),
       body: _isLoading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF9966CC)))
+          ? const Center(
+              child: CircularProgressIndicator(color: Color(0xFF9966CC)))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── History Shortcut ──────────────────────────────────────
+                  // ── History Shortcut ─────────────────────────────────────
                   _sectionLabel('HISTORY'),
                   _historyShortcutCard(),
+                  const SizedBox(height: 25),
+
+                  // ── Location ─────────────────────────────────────────────
+                  _sectionLabel('PRAYER LOCATION'),
+                  _locationCard(),
                   const SizedBox(height: 25),
 
                   // ── Master Toggle ─────────────────────────────────────────
@@ -120,15 +194,20 @@ class _NotificationSettingsScreenState
                         padding: EdgeInsets.zero,
                         child: Column(
                           children: [
-                            _toggleRow('Fajr',    _fajrEnabled,    (v) => setState(() => _fajrEnabled    = v)),
+                            _toggleRow('Fajr', _fajrEnabled,
+                                (v) => setState(() => _fajrEnabled = v)),
                             const Divider(height: 1),
-                            _toggleRow('Dhuhr',   _dhuhrEnabled,   (v) => setState(() => _dhuhrEnabled   = v)),
+                            _toggleRow('Dhuhr', _dhuhrEnabled,
+                                (v) => setState(() => _dhuhrEnabled = v)),
                             const Divider(height: 1),
-                            _toggleRow('Asr',     _asrEnabled,     (v) => setState(() => _asrEnabled     = v)),
+                            _toggleRow('Asr', _asrEnabled,
+                                (v) => setState(() => _asrEnabled = v)),
                             const Divider(height: 1),
-                            _toggleRow('Maghrib', _maghribEnabled, (v) => setState(() => _maghribEnabled = v)),
+                            _toggleRow('Maghrib', _maghribEnabled,
+                                (v) => setState(() => _maghribEnabled = v)),
                             const Divider(height: 1),
-                            _toggleRow('Isha',    _ishaEnabled,    (v) => setState(() => _ishaEnabled    = v)),
+                            _toggleRow('Isha', _ishaEnabled,
+                                (v) => setState(() => _ishaEnabled = v)),
                           ],
                         ),
                       ),
@@ -136,19 +215,109 @@ class _NotificationSettingsScreenState
                   ),
                   const SizedBox(height: 40),
                   _saveButton(),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
     );
   }
 
-  // ── Widgets ───────────────────────────────────────────────────────────────
+  // ── Location card with Update button ─────────────────────────────────────
+  Widget _locationCard() {
+    final hasLocation = _savedLat != null && _savedLng != null;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color:        Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border:       Border.all(color: const Color(0xFFD4B8E8)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color:        const Color(0xFFEDE5F8),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.location_on_rounded,
+                    color: Color(0xFF9966CC)),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Current Prayer Location',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF2D1B4E)),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      hasLocation
+                          ? '${_savedLat!.toStringAsFixed(4)}, '
+                            '${_savedLng!.toStringAsFixed(4)}'
+                          : 'No location saved yet',
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: const Color(0xFF2D1B4E).withOpacity(0.5)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _isUpdatingLocation ? null : _updateLocation,
+              icon: _isUpdatingLocation
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white),
+                    )
+                  : const Icon(Icons.my_location_rounded, size: 18),
+              label: Text(_isUpdatingLocation
+                  ? 'Getting location…'
+                  : 'Update My Location'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF9966CC),
+                foregroundColor: Colors.white,
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Tap to use your current GPS location for accurate azan times.',
+            style: TextStyle(
+                fontSize: 11,
+                color: const Color(0xFF2D1B4E).withOpacity(0.4)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Reusable widgets ──────────────────────────────────────────────────────
 
   Widget _historyShortcutCard() {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => const NotificationHistoryScreen()),
+        MaterialPageRoute(
+            builder: (_) => const NotificationHistoryScreen()),
       ),
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -188,9 +357,9 @@ class _NotificationSettingsScreenState
       child: Text(
         text,
         style: TextStyle(
-          fontSize:    12,
-          fontWeight:  FontWeight.bold,
-          color:       const Color(0xFF2D1B4E).withOpacity(0.5),
+          fontSize:      12,
+          fontWeight:    FontWeight.bold,
+          color:         const Color(0xFF2D1B4E).withOpacity(0.5),
           letterSpacing: 1.1,
         ),
       ),
@@ -218,9 +387,9 @@ class _NotificationSettingsScreenState
             child: Text(
               label,
               style: const TextStyle(
-                  fontSize: 14,
+                  fontSize:   14,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF2D1B4E)),
+                  color:      Color(0xFF2D1B4E)),
             ),
           ),
           Switch(
@@ -240,8 +409,8 @@ class _NotificationSettingsScreenState
       child: ElevatedButton(
         onPressed: _isSaving ? null : _saveSettings,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF9966CC),
-          foregroundColor: Colors.white,
+          backgroundColor:         const Color(0xFF9966CC),
+          foregroundColor:         Colors.white,
           disabledBackgroundColor: const Color(0xFF9966CC).withOpacity(0.6),
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

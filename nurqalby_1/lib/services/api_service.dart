@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   // Use your PC's IP address, NOT localhost
   // Find it by running: ipconfig (Windows) → IPv4 Address
-  static const String baseUrl = 'http://10.186.181.134:8000';
+  static const String baseUrl = 'http://10.79.84.134:8000';
 
   static Future<List<Map<String, dynamic>>> recommend({
     required String text,

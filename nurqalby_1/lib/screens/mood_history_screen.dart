@@ -1,32 +1,48 @@
+// lib/screens/mood_history_screen.dart
+//
+// UPDATED to use MoodCubit instead of raw setState + async calls.
+// No login / no user ID needed — data is stored locally per device.
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../services/mood_database.dart';
+import '../cubit/mood_cubit.dart';
+import '../cubit/mood_state.dart';
 import '../services/weekly_summary_popup.dart';
 
-class MoodHistoryScreen extends StatefulWidget {
+class MoodHistoryScreen extends StatelessWidget {
   const MoodHistoryScreen({super.key});
 
   @override
-  State<MoodHistoryScreen> createState() => _MoodHistoryScreenState();
+  Widget build(BuildContext context) {
+    // Provide the cubit and immediately load "This Week" (period = 1)
+    return BlocProvider(
+      create: (_) => MoodCubit()..loadMoods(1),
+      child: const _MoodHistoryView(),
+    );
+  }
 }
 
-class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
-  // 0 = Today  |  1 = This Week
-  int _selectedPeriod = 1;
-  int _touchedIndex   = -1;
+// ─── Internal view ───────────────────────────────────────────────────────────
+class _MoodHistoryView extends StatefulWidget {
+  const _MoodHistoryView();
 
-  List<Map<String, dynamic>> _moods = [];
-  bool _loading = true;
+  @override
+  State<_MoodHistoryView> createState() => _MoodHistoryViewState();
+}
 
-  // ── Emotion colours (distinct from purple theme) ──────────────────────────
+class _MoodHistoryViewState extends State<_MoodHistoryView> {
+  int _touchedIndex = -1;
+
+  // ── Emotion colours ──────────────────────────────────────────────────────────
   static const _emotionColors = {
-    'joy':     Color(0xFFE8A020), // Amber
-    'sadness': Color(0xFF2979B8), // Blue
-    'anger':   Color(0xFFD32F2F), // Red
-    'fear':    Color(0xFF455A64), // Blue-grey
-    'disgust': Color(0xFF558B2F), // Dark green
-    'surprise':Color(0xFF00897B), // Teal
-    'neutral': Color(0xFF78909C), // Grey
+    'joy':      Color(0xFFE8A020),
+    'sadness':  Color(0xFF2979B8),
+    'anger':    Color(0xFFD32F2F),
+    'fear':     Color(0xFF455A64),
+    'disgust':  Color(0xFF558B2F),
+    'surprise': Color(0xFF00897B),
+    'neutral':  Color(0xFF78909C),
   };
 
   static const _emotionEmoji = {
@@ -39,50 +55,27 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
     'neutral':  '😐',
   };
 
-  // ── Theme constants ───────────────────────────────────────────────────────
-  static const _bgColor      = Color(0xFFF8F8FF);
-  static const _cardColor    = Color(0xFFEDE5F8);
-  static const _accentColor  = Color(0xFF9966CC);
-  static const _textDark     = Color(0xFF2D1B4E);
-  static const _textMedium   = Color(0xFF7B5EA7);
-  static const _borderColor  = Color(0xFFD4B8E8);
+  static const _bgColor     = Color(0xFFF8F8FF);
+  static const _cardColor   = Color(0xFFEDE5F8);
+  static const _accentColor = Color(0xFF9966CC);
+  static const _textDark    = Color(0xFF2D1B4E);
+  static const _textMedium  = Color(0xFF7B5EA7);
+  static const _borderColor = Color(0xFFD4B8E8);
 
   @override
   void initState() {
     super.initState();
-    _loadMoods();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       WeeklySummaryHelper.checkAndShowSundayPopup(context);
     });
   }
 
-  Future<void> _loadMoods() async {
-    setState(() => _loading = true);
-    final data = _selectedPeriod == 0
-        ? await MoodDatabase.instance.getDailyMoods()
-        : await MoodDatabase.instance.getWeeklyMoods();
-    setState(() {
-      _moods        = data;
-      _loading      = false;
-      _touchedIndex = -1;
-    });
-  }
-
-  Map<String, int> get _emotionCounts {
-    final map = <String, int>{};
-    for (final m in _moods) {
-      final e = m['emotion'] as String;
-      map[e] = (map[e] ?? 0) + 1;
-    }
-    return map;
-  }
-
-  String get _periodLabel {
+  String _periodLabel(int period) {
     final now    = DateTime.now();
     final months = ['Jan','Feb','Mar','Apr','May','Jun',
                     'Jul','Aug','Sep','Oct','Nov','Dec'];
     final days   = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-    if (_selectedPeriod == 0) {
+    if (period == 0) {
       return '${days[now.weekday - 1]}, ${now.day} ${months[now.month - 1]} ${now.year}';
     } else {
       final daysFromMonday = now.weekday - DateTime.monday;
@@ -97,95 +90,110 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bgColor,
-
-      // ── App Bar ─────────────────────────────────────────────────────────
       appBar: AppBar(
-        automaticallyImplyLeading: false,          // bottom nav handles routing
+        automaticallyImplyLeading: false,
         backgroundColor: _accentColor,
         elevation: 0,
         title: const Text(
           'Mood Journey',
           style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
       ),
+      body: BlocBuilder<MoodCubit, MoodState>(
+        builder: (context, state) {
+          // ── Determine selected period for the toggle display ────────────────
+          final selectedPeriod =
+              state is MoodLoaded ? state.selectedPeriod : 1;
 
-      body: Column(
-        children: [
-
-          // ── Period toggle pill ─────────────────────────────────────────
-          Container(
-            color: _accentColor,
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(30),
+          return Column(
+            children: [
+              // ── Period toggle ─────────────────────────────────────────────
+              Container(
+                color: _accentColor,
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: Row(
+                    children: [
+                      _buildToggleButton(context, 'Today',     0, selectedPeriod),
+                      _buildToggleButton(context, 'This Week', 1, selectedPeriod),
+                    ],
+                  ),
+                ),
               ),
-              padding: const EdgeInsets.all(4),
-              child: Row(
-                children: [
-                  _buildToggleButton('Today',     0),
-                  _buildToggleButton('This Week', 1),
-                ],
-              ),
-            ),
-          ),
 
-          // ── Period label ──────────────────────────────────────────────
-          Container(
-            width: double.infinity,
-            color: _cardColor,
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text(
-              _periodLabel,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: _textMedium,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+              // ── Period label ─────────────────────────────────────────────
+              Container(
+                width: double.infinity,
+                color: _cardColor,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Text(
+                  _periodLabel(selectedPeriod),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: _textMedium, fontSize: 12, fontWeight: FontWeight.w500),
+                ),
               ),
-            ),
-          ),
 
-          // ── Main content ──────────────────────────────────────────────
-          Expanded(
-            child: _loading
-                ? const Center(
-                    child: CircularProgressIndicator(color: _accentColor))
-                : _moods.isEmpty
-                    ? _buildEmpty()
-                    : SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
-                        child: Column(
-                          children: [
-                            _buildPieChart(),
-                            const SizedBox(height: 16),
-                            _buildLegend(),
-                            const SizedBox(height: 24),
-                            _buildSessionList(),
-                          ],
-                        ),
-                      ),
-          ),
-        ],
+              // ── Main content area ────────────────────────────────────────
+              Expanded(
+                child: _buildBody(state),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  // ─── Toggle button ──────────────────────────────────────────────────────────
-  Widget _buildToggleButton(String label, int index) {
-    final selected = _selectedPeriod == index;
+  // ─── Body depends on state ───────────────────────────────────────────────────
+  Widget _buildBody(MoodState state) {
+    if (state is MoodLoading || state is MoodInitial) {
+      return const Center(
+          child: CircularProgressIndicator(color: _accentColor));
+    }
+    if (state is MoodError) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(state.message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: _textMedium)),
+        ),
+      );
+    }
+    if (state is MoodLoaded) {
+      if (state.moods.isEmpty) return _buildEmpty(state.selectedPeriod);
+      return SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+        child: Column(
+          children: [
+            _buildPieChart(state.moods),
+            const SizedBox(height: 16),
+            _buildLegend(state.moods),
+            const SizedBox(height: 24),
+            _buildSessionList(state.moods),
+          ],
+        ),
+      );
+    }
+    return const SizedBox();
+  }
+
+  // ─── Toggle button ───────────────────────────────────────────────────────────
+  Widget _buildToggleButton(
+      BuildContext context, String label, int index, int selectedPeriod) {
+    final selected = selectedPeriod == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          setState(() => _selectedPeriod = index);
-          _loadMoods();
-        },
+        // All state logic goes through the cubit — no setState here!
+        onTap: () => context.read<MoodCubit>().loadMoods(index),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -207,10 +215,14 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
     );
   }
 
-  // ─── Pie chart ──────────────────────────────────────────────────────────────
-  Widget _buildPieChart() {
-    final counts = _emotionCounts;
-    final total  = _moods.length;
+  // ─── Pie Chart ───────────────────────────────────────────────────────────────
+  Widget _buildPieChart(List<Map<String, dynamic>> moods) {
+    final counts = <String, int>{};
+    for (final m in moods) {
+      final e = m['emotion'] as String;
+      counts[e] = (counts[e] ?? 0) + 1;
+    }
+    final total = moods.length;
 
     final sections = <PieChartSectionData>[];
     int i = 0;
@@ -233,7 +245,7 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
     }
 
     final dominantEntry =
-        counts.entries.reduce((a, b) => a.value > b.value ? a : b);
+        counts.entries.reduce((a, b) => a.value >= b.value ? a : b);
 
     return Container(
       decoration: BoxDecoration(
@@ -242,92 +254,52 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
         border: Border.all(color: _borderColor),
       ),
       padding: const EdgeInsets.all(20),
-      child: Column(
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-
-          // Card title
-          Text(
-            _selectedPeriod == 0 ? "Today's Mood" : "This Week's Mood",
-            style: const TextStyle(
-              color: _textDark,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 4),
-
-          // Dominant emotion chip
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: _bgColor,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: _borderColor),
-            ),
-            child: Text(
-              '${_emotionEmoji[dominantEntry.key] ?? '😶'} '
-              '${dominantEntry.key[0].toUpperCase()}${dominantEntry.key.substring(1)} is dominant',
-              style: const TextStyle(
-                color: _textMedium,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+          SizedBox(
+            height: 200,
+            child: PieChart(
+              PieChartData(
+                sections: sections,
+                centerSpaceRadius: 55,
+                sectionsSpace: 2,
+                pieTouchData: PieTouchData(
+                  touchCallback: (event, response) {
+                    setState(() {
+                      _touchedIndex = response?.touchedSection
+                              ?.touchedSectionIndex ??
+                          -1;
+                    });
+                  },
+                ),
               ),
             ),
           ),
-
-          const SizedBox(height: 16),
-
-          SizedBox(
-            height: 220,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                PieChart(
-                  PieChartData(
-                    sections: sections,
-                    centerSpaceRadius: 55,
-                    sectionsSpace: 3,
-                    pieTouchData: PieTouchData(
-                      touchCallback: (event, response) {
-                        setState(() {
-                          _touchedIndex =
-                              response?.touchedSection?.touchedSectionIndex ?? -1;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                // Centre label
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _emotionEmoji[dominantEntry.key] ?? '😶',
-                      style: const TextStyle(fontSize: 28),
-                    ),
-                    Text(
-                      '$total\nsessions',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: _textMedium,
-                        fontSize: 12,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(_emotionEmoji[dominantEntry.key] ?? '😶',
+                  style: const TextStyle(fontSize: 28)),
+              Text('$total\nsessions',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      color: _textMedium, fontSize: 12, height: 1.3)),
+            ],
           ),
         ],
       ),
     );
   }
 
-  // ─── Legend ─────────────────────────────────────────────────────────────────
-  Widget _buildLegend() {
-    final counts = _emotionCounts;
-    final total  = _moods.length;
+  // ─── Legend ──────────────────────────────────────────────────────────────────
+  Widget _buildLegend(List<Map<String, dynamic>> moods) {
+    final counts = <String, int>{};
+    for (final m in moods) {
+      final e = m['emotion'] as String;
+      counts[e] = (counts[e] ?? 0) + 1;
+    }
+    final total = moods.length;
 
     return Container(
       decoration: BoxDecoration(
@@ -344,10 +316,8 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(
               children: [
-                Text(
-                  _emotionEmoji[e.key] ?? '😶',
-                  style: const TextStyle(fontSize: 20),
-                ),
+                Text(_emotionEmoji[e.key] ?? '😶',
+                    style: const TextStyle(fontSize: 20)),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Column(
@@ -356,22 +326,16 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            e.key[0].toUpperCase() + e.key.substring(1),
-                            style: const TextStyle(
-                              color: _textDark,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            '$pct%  (${e.value} sessions)',
-                            style: TextStyle(
-                              color: color,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          Text(e.key[0].toUpperCase() + e.key.substring(1),
+                              style: const TextStyle(
+                                  color: _textDark,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600)),
+                          Text('$pct%  (${e.value} sessions)',
+                              style: TextStyle(
+                                  color: color,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold)),
                         ],
                       ),
                       const SizedBox(height: 5),
@@ -395,30 +359,24 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
     );
   }
 
-  // ─── Session list ────────────────────────────────────────────────────────────
-  Widget _buildSessionList() {
+  // ─── Session list ─────────────────────────────────────────────────────────────
+  Widget _buildSessionList(List<Map<String, dynamic>> moods) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Recent Sessions',
-          style: TextStyle(
-            color: _textDark,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        const Text('Recent Sessions',
+            style: TextStyle(
+                color: _textDark, fontSize: 15, fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
-        ..._moods.map((m) {
+        ...moods.map((m) {
           final emotion = m['emotion'] as String;
           final cause   = m['cause']   as String;
           final note    = m['note']    as String? ?? '';
           final ts      = DateTime.tryParse(m['timestamp'] as String) ?? DateTime.now();
           final color   = _emotionColors[emotion] ?? Colors.grey;
           final days    = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-          final dayName = days[ts.weekday - 1];
           final timeStr = '${ts.hour.toString().padLeft(2,'0')}:${ts.minute.toString().padLeft(2,'0')}';
-          final dateStr = '$dayName  ${ts.day}/${ts.month}/${ts.year}  $timeStr';
+          final dateStr = '${days[ts.weekday - 1]}  ${ts.day}/${ts.month}/${ts.year}  $timeStr';
 
           return Container(
             margin: const EdgeInsets.only(bottom: 10),
@@ -431,63 +389,44 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
-                // Emotion avatar
                 Container(
-                  width: 44,
-                  height: 44,
+                  width: 44, height: 44,
                   decoration: BoxDecoration(
                     color: color.withOpacity(0.15),
                     shape: BoxShape.circle,
                     border: Border.all(color: color.withOpacity(0.4)),
                   ),
                   child: Center(
-                    child: Text(
-                      _emotionEmoji[emotion] ?? '😶',
-                      style: const TextStyle(fontSize: 20),
-                    ),
+                    child: Text(_emotionEmoji[emotion] ?? '😶',
+                        style: const TextStyle(fontSize: 20)),
                   ),
                 ),
                 const SizedBox(width: 12),
-
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        emotion[0].toUpperCase() + emotion.substring(1),
-                        style: TextStyle(
-                          color: color,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
+                      Text(emotion[0].toUpperCase() + emotion.substring(1),
+                          style: TextStyle(
+                              color: color,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14)),
                       const SizedBox(height: 2),
-                      Text(
-                        cause,
-                        style: const TextStyle(
-                          color: _textMedium,
-                          fontSize: 12,
-                        ),
-                      ),
+                      Text(cause,
+                          style: const TextStyle(
+                              color: _textMedium, fontSize: 12)),
                       if (note.isNotEmpty) ...[
                         const SizedBox(height: 4),
-                        Text(
-                          '📝 $note',
-                          style: TextStyle(
-                            color: _textDark.withOpacity(0.45),
-                            fontSize: 11,
-                          ),
-                        ),
+                        Text('📝 $note',
+                            style: TextStyle(
+                                color: _textDark.withOpacity(0.45),
+                                fontSize: 11)),
                       ],
                       const SizedBox(height: 4),
-                      Text(
-                        dateStr,
-                        style: TextStyle(
-                          color: _textDark.withOpacity(0.35),
-                          fontSize: 11,
-                        ),
-                      ),
+                      Text(dateStr,
+                          style: TextStyle(
+                              color: _textDark.withOpacity(0.35),
+                              fontSize: 11)),
                     ],
                   ),
                 ),
@@ -499,31 +438,22 @@ class _MoodHistoryScreenState extends State<MoodHistoryScreen> {
     );
   }
 
-  // ─── Empty state ─────────────────────────────────────────────────────────────
-  Widget _buildEmpty() {
-    final label = _selectedPeriod == 0 ? 'today' : 'this week';
+  // ─── Empty state ──────────────────────────────────────────────────────────────
+  Widget _buildEmpty(int period) {
+    final label = period == 0 ? 'today' : 'this week';
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.insert_chart_outlined_rounded,
-            size: 72,
-            color: _textDark.withOpacity(0.15),
-          ),
+          Icon(Icons.insert_chart_outlined_rounded,
+              size: 72, color: _textDark.withOpacity(0.15)),
           const SizedBox(height: 16),
-          Text(
-            'No moods recorded $label',
-            style: const TextStyle(color: _textMedium, fontSize: 16),
-          ),
+          Text('No moods recorded $label',
+              style: const TextStyle(color: _textMedium, fontSize: 16)),
           const SizedBox(height: 8),
-          Text(
-            'Start a session to track your emotions.',
-            style: TextStyle(
-              color: _textDark.withOpacity(0.35),
-              fontSize: 13,
-            ),
-          ),
+          Text('Start a session to track your emotions.',
+              style: TextStyle(
+                  color: _textDark.withOpacity(0.35), fontSize: 13)),
         ],
       ),
     );
