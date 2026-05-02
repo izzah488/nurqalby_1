@@ -78,6 +78,15 @@ flutter:
     - assets/images/welcome1.jpg
     - assets/images/welcome2.jpg
     - assets/images/welcome3.jpg
+    - assets/images/uitm_logo.png
+    - assets/images/backgroundinput.jpg
+    - assets/images/backgroundanalysis.jpg
+    - assets/images/backgroundemotion.jpg
+    - assets/images/bgcause.jpg
+    - assets/images/people.png
+    - assets/images/life.png
+    - assets/images/faith.png
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

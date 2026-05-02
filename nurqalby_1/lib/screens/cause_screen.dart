@@ -22,22 +22,25 @@ class _CauseScreenState extends State<CauseScreen> {
 
   final List<Map<String, dynamic>> causes = [
     {
-      'label':    'Faith / Spiritual State',
+      'label': 'Faith / Spiritual State',
       'subtitle': 'Doubt, distance, or seeking purpose',
-      'icon':     Icons.mosque_rounded,
-      'value':    'Faith / Spiritual State',
+      'icon': Icons.mosque_rounded,
+      'value': 'Faith / Spiritual State',
+      'image': 'assets/images/faith.png',
     },
     {
-      'label':    'Life Trials / Hardship',
+      'label': 'Life Trials / Hardship',
       'subtitle': 'Difficulties, struggles, or hardship',
-      'icon':     Icons.waves_rounded,
-      'value':    'Life Trials / Hardship',
+      'icon': Icons.waves_rounded,
+      'value': 'Life Trials / Hardship',
+      'image': 'assets/images/life.png',
     },
     {
-      'label':    'Relationships / People',
+      'label': 'Relationships / People',
       'subtitle': 'Conflict, disconnect, or worry',
-      'icon':     Icons.people_rounded,
-      'value':    'Relationships / People',
+      'icon': Icons.people_rounded,
+      'value': 'Relationships / People',
+      'image': 'assets/images/people.png',
     },
   ];
 
@@ -55,20 +58,20 @@ class _CauseScreenState extends State<CauseScreen> {
       return;
     }
 
-    // Save mood log now that both emotion AND cause are known
     await MoodDatabase.instance.insertMood(
       widget.emotion,
       selectedCause!,
     );
 
     if (!mounted) return;
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ResultScreen(
           userText: widget.userText,
-          emotion:  widget.emotion,
-          cause:    selectedCause!,
+          emotion: widget.emotion,
+          cause: selectedCause!,
         ),
       ),
     );
@@ -76,244 +79,333 @@ class _CauseScreenState extends State<CauseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final selected = causes.firstWhere(
+      (c) => c['value'] == selectedCause,
+      orElse: () => causes[0],
+    );
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FF),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: Stack(
+        children: [
+          /// 🌄 BACKGROUND
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bgcause.jpg',
+              fit: BoxFit.cover,
+            ),
+          ),
 
-            // --- Header ---
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+          /// 🌫️ GRADIENT OVERLAY
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.85),
+                    Colors.white.withOpacity(0.6),
+                    Colors.transparent,
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ),
 
-                  // Back + notification row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                /// 🔝 HEADER (MATCHED WITH EMOTION SCREEN)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          width: 42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFEDE5F8),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFFD4B8E8)),
+
+                      /// Glass Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _glassButton(
+                            icon: Icons.arrow_back,
+                            onTap: () => Navigator.pop(context),
                           ),
-                          child: const Icon(Icons.arrow_back,
-                              color: Color(0xFF2D1B4E), size: 20),
+                          _glassButton(
+                            icon: Icons.notifications_outlined,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      const NotificationSettingsScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      /// Progress Bar
+                      Row(
+                        children: List.generate(
+                          3,
+                          (i) => Expanded(
+                            child: Container(
+                              height: 5,
+                              margin: EdgeInsets.only(right: i < 2 ? 8 : 0),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF8E6BBE),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
 
-                      // Notification button
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const NotificationSettingsScreen(),
-                          ),
+                      const SizedBox(height: 10),
+
+                      const Text(
+                        'Step 3 of 3  •  Select the cause',
+                        style: TextStyle(
+                          color: Color(0xFF7B5EA7),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
                         ),
-                        child: Container(
-                          width:  42,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color:        const Color(0xFFEDE5F8),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0xFFD4B8E8)),
-                          ),
-                          child: const Icon(
-                            Icons.notifications_outlined,
-                            color: Color(0xFF7B5EA7),
-                            size:  22,
-                          ),
+                      ),
+
+                      const SizedBox(height: 26),
+
+                      const Text(
+                        'Cause Selection',
+                        style: TextStyle(
+                          fontSize: 32,
+                          height: 1,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF2D1B4E),
+                        ),
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      const Text(
+                        'What is causing this feeling?',
+                        style: TextStyle(
+                          color: Color(0xFF2D1B4E),
+                          fontSize: 15,
+                        ),
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      /// Emotion Text
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Refining results for ',
+                              style: TextStyle(
+                                color: const Color(0xFF2D1B4E)
+                                    .withOpacity(0.5),
+                                fontSize: 13,
+                              ),
+                            ),
+                            TextSpan(
+                              text: widget.emotion[0].toUpperCase() +
+                                  widget.emotion.substring(1),
+                              style: const TextStyle(
+                                color: Color(0xFF9966CC),
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 18),
-
-                  // Step indicator
-                  Row(
-                    children: List.generate(3, (i) => Expanded(
-                      child: Container(
-                        height: 3,
-                        margin: EdgeInsets.only(right: i < 2 ? 6 : 0),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF9966CC),
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                    )),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Step 3 of 3  •  Select the cause',
-                    style: TextStyle(
-                        color: Color(0xFF7B5EA7),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500),
-                  ),
-
-                  const SizedBox(height: 16),
-                  const Text('Cause Selection',
-                      style: TextStyle(
-                          color:      Color(0xFF2D1B4E),
-                          fontSize:   22,
-                          fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'What is causing this feeling?',
-                    style: TextStyle(
-                        color: Color(0xFF2D1B4E),
-                        fontSize: 13),
-                  ),
-                  const SizedBox(height: 4),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'Refining results for ',
-                          style: TextStyle(
-                              color:    const Color(0xFF2D1B4E).withOpacity(0.5),
-                              fontSize: 12),
-                        ),
-                        TextSpan(
-                          text: widget.emotion[0].toUpperCase() +
-                              widget.emotion.substring(1),
-                          style: const TextStyle(
-                              color:      Color(0xFF9966CC),
-                              fontSize:   12,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // --- Cause list ---
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                itemCount: causes.length,
-                itemBuilder: (context, index) {
-                  final c          = causes[index];
-                  final isSelected = selectedCause == c['value'];
-                  return GestureDetector(
-                    onTap: () =>
-                        setState(() => selectedCause = c['value']),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      margin:   const EdgeInsets.only(bottom: 12),
-                      padding:  const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: isSelected
-                            ? const Color(0xFFEDE5F8)
-                            : const Color(0xFFEDE5F8),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isSelected
-                              ? const Color(0xFF9966CC)
-                              : const Color(0xFFD4B8E8),
-                          width: isSelected ? 2 : 1,
-                        ),
-                        boxShadow: isSelected ? [
-                          BoxShadow(
-                            color: const Color(0xFF9966CC).withOpacity(0.2),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ] : [],
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width:  48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? const Color(0xFF9966CC)
-                                  : const Color(0xFFEDE5F8),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(
-                              c['icon'] as IconData,
-                              color: isSelected
-                                  ? const Color(0xFF2D1B4E)
-                                  : const Color(0xFF7B5EA7),
-                              size: 22,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(c['label'],
-                                    style: TextStyle(
-                                        color: isSelected
-                                            ? const Color(0xFF2D1B4E)
-                                            : const Color(0xFF2D1B4E).withOpacity(0.85),
-                                        fontSize:   14,
-                                        fontWeight: FontWeight.w600)),
-                                const SizedBox(height: 3),
-                                Text(c['subtitle'],
-                                    style: TextStyle(
-                                        color: const Color(0xFF2D1B4E).withOpacity(0.45),
-                                        fontSize: 12)),
-                              ],
-                            ),
-                          ),
-                          Radio(
-                            value:      c['value'],
-                            groupValue: selectedCause,
-                            onChanged:  (val) =>
-                                setState(() => selectedCause = val),
-                            activeColor: const Color(0xFF9966CC),
-                            fillColor: WidgetStateProperty.resolveWith(
-                              (states) => states.contains(WidgetState.selected)
-                                  ? const Color(0xFF9966CC)
-                                  : const Color(0xFF2D1B4E).withOpacity(0.3),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            // --- Find Verses button ---
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _findVerses,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF9966CC),
-                    padding: const EdgeInsets.symmetric(vertical: 17),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                    elevation: 4,
-                    shadowColor: const Color(0xFF9966CC).withOpacity(0.4),
-                  ),
-                  child: const Text('Find Verses →',
-                      style: TextStyle(
-                          color:      Color(0xFF2D1B4E),
-                          fontSize:   16,
-                          fontWeight: FontWeight.w600)),
                 ),
-              ),
+
+                /// 🖼️ IMAGE
+                Expanded(
+                  child: Center(
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 400),
+                      child: Container(
+                        key: ValueKey(selected['image']),
+                        margin: const EdgeInsets.symmetric(horizontal: 30),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.08),
+                              blurRadius: 30,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(60),
+                          child: Image.asset(
+                            selected['image'],
+                            height: 240,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                /// 🔘 CAUSE CARDS
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: causes.map((c) {
+                      final isSelected = selectedCause == c['value'];
+
+                      return GestureDetector(
+                        onTap: () =>
+                            setState(() => selectedCause = c['value']),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFF9966CC)
+                                  : const Color(0xFFE0D6F5),
+                              width: isSelected ? 2 : 1,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 48,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? const Color(0xFF9966CC)
+                                      : const Color(0xFFEDE5F8),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  c['icon'],
+                                  color: isSelected
+                                      ? Colors.white
+                                      : const Color(0xFF7B5EA7),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      c['label'],
+                                      style: const TextStyle(
+                                        color: Color(0xFF2D1B4E),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      c['subtitle'],
+                                      style: TextStyle(
+                                        color: const Color(0xFF2D1B4E)
+                                            .withOpacity(0.5),
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+
+                /// 🔘 BUTTON
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _findVerses,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF9966CC),
+                        padding: const EdgeInsets.symmetric(vertical: 17),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 6,
+                        shadowColor:
+                            const Color(0xFF9966CC).withOpacity(0.4),
+                      ),
+                      child: const Text(
+                        'Find Verses →',
+                        style: TextStyle(
+                          color: Color(0xFF2D1B4E),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 🌟 Glass Button (same as EmotionScreen)
+  Widget _glassButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 46,
+        height: 46,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.72),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: const Color(0xFFDCCEF2),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
             ),
           ],
+        ),
+        child: Icon(
+          icon,
+          color: const Color(0xFF6E4B9E),
         ),
       ),
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart'; // ✅ ADD
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'services/notification_service.dart'; // local notification (KEEP)
