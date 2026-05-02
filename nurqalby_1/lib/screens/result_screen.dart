@@ -28,8 +28,9 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  int _selectedTab  = 0;
+  int _selectedTab = 0;
   int _currentIndex = 0;
+  bool _isSharing = false; 
   late PageController _pageController;
   final Map<int, GlobalKey> _cardKeys = {};
 
@@ -50,8 +51,7 @@ class _ResultScreenState extends State<ResultScreen> {
     return _cardKeys[index]!;
   }
 
-  void _showShareOptions(
-      BuildContext context, GlobalKey key, String textToShare) {
+  void _showShareOptions(BuildContext context, GlobalKey key, String textToShare) {
     showModalBottomSheet(
       context: context,
       backgroundColor: const Color(0xFFEDE5F8),
@@ -65,9 +65,10 @@ class _ResultScreenState extends State<ResultScreen> {
             children: [
               const SizedBox(height: 12),
               Container(
-                width: 40, height: 4,
+                width: 40,
+                height: 4,
                 decoration: BoxDecoration(
-                  color:        const Color(0xFF2D1B4E).withOpacity(0.2),
+                  color: const Color(0xFF2D1B4E).withOpacity(0.2),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -75,21 +76,16 @@ class _ResultScreenState extends State<ResultScreen> {
               ListTile(
                 leading: const Icon(Icons.image_rounded, color: Color(0xFF9966CC)),
                 title: const Text('Share as Image',
-                    style: TextStyle(
-                        color:      Color(0xFF2D1B4E),
-                        fontWeight: FontWeight.w500)),
+                    style: TextStyle(color: Color(0xFF2D1B4E), fontWeight: FontWeight.w500)),
                 onTap: () {
                   Navigator.pop(context);
                   _shareAsImage(key, textToShare);
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.text_fields_rounded,
-                    color: Color(0xFF9966CC)),
+                leading: const Icon(Icons.text_fields_rounded, color: Color(0xFF9966CC)),
                 title: const Text('Share as Text',
-                    style: TextStyle(
-                        color:      Color(0xFF2D1B4E),
-                        fontWeight: FontWeight.w500)),
+                    style: TextStyle(color: Color(0xFF2D1B4E), fontWeight: FontWeight.w500)),
                 onTap: () {
                   Navigator.pop(context);
                   Share.share(textToShare);
@@ -104,31 +100,41 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   Future<void> _shareAsImage(GlobalKey key, String fallbackText) async {
+    setState(() => _isSharing = true);
+    await Future.delayed(const Duration(milliseconds: 50));
+
     try {
-      final boundary =
-          key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
-      if (boundary == null) { Share.share(fallbackText); return; }
-      final image    = await boundary.toImage(pixelRatio: 3.0);
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      if (byteData == null) { Share.share(fallbackText); return; }
-      await Share.shareXFiles(
-        [
-          XFile.fromData(
-            byteData.buffer.asUint8List(),
-            mimeType: 'image/png',
-            name:     'nurqalby_verse.png',
-          )
-        ],
-        text: 'Shared via NurQalby 🌿',
-      );
+      final boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) {
+        Share.share(fallbackText);
+      } else {
+        final image = await boundary.toImage(pixelRatio: 3.0);
+        final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+        if (byteData == null) {
+          Share.share(fallbackText);
+        } else {
+          await Share.shareXFiles(
+            [
+              XFile.fromData(
+                byteData.buffer.asUint8List(),
+                mimeType: 'image/png',
+                name: 'nurqalby_verse.png',
+              )
+            ],
+            text: 'Shared via NurQalby 🌿',
+          );
+        }
+      }
     } catch (_) {
       Share.share(fallbackText);
+    } finally {
+      if (mounted) setState(() => _isSharing = false);
     }
   }
 
   void _switchTab(int tab) {
     setState(() {
-      _selectedTab  = tab;
+      _selectedTab = tab;
       _currentIndex = 0;
     });
     _pageController.jumpToPage(0);
@@ -137,288 +143,228 @@ class _ResultScreenState extends State<ResultScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => VerseCubit()..fetchVerses(
-        text:    widget.userText,
-        emotion: widget.emotion,
-        cause:   widget.cause,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF8F8FF),
-        body: SafeArea(
-          child: Column(
-            children: [
-              // ── Header ──────────────────────────────────────────────────
-              Container(
-                color:   const Color(0xFFEDE5F8),
-                padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.arrow_back_ios,
-                          color: Color(0xFF2D1B4E), size: 18),
-                    ),
-                    const SizedBox(width: 12),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Recommended for you',
-                              style: TextStyle(
-                                  color: Color(0xFF7B5EA7), fontSize: 12)),
-                          Text('Your Results',
-                              style: TextStyle(
-                                  color:      Color(0xFF2D1B4E),
-                                  fontSize:   18,
-                                  fontWeight: FontWeight.w600)),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const HomeScreen()),
-                        (_) => false,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color:        const Color(0xFF2D1B4E).withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(10),
+      create: (_) => VerseCubit()
+        ..fetchVerses(
+          text: widget.userText,
+          emotion: widget.emotion,
+          cause: widget.cause,
+        ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset('assets/images/bgresult.jpg', fit: BoxFit.cover),
+          ),
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(color: Colors.white.withOpacity(0.1)),
+            ),
+          ),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            body: SafeArea(
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.arrow_back_ios_new, color: Color(0xFF2D1B4E), size: 18),
+                          ),
                         ),
-                        child: const Icon(Icons.home_rounded,
-                            color: Color(0xFF2D1B4E), size: 20),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // ── Tabs ────────────────────────────────────────────────────
-              Container(
-                color:   const Color(0xFFEDE5F8),
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-                child: Row(
-                  children: [
-                    _TabButton(
-                      label:      '📖  Verses',
-                      isSelected: _selectedTab == 0,
-                      onTap:      () => _switchTab(0),
-                    ),
-                    const SizedBox(width: 8),
-                    _TabButton(
-                      label:      '🤲  Dua',
-                      isSelected: _selectedTab == 1,
-                      onTap:      () => _switchTab(1),
-                    ),
-                  ],
-                ),
-              ),
-
-              Expanded(
-                child: BlocBuilder<VerseCubit, VerseState>(
-                  builder: (context, state) {
-                    if (state is VerseLoading) {
-                      return const Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            CircularProgressIndicator(
-                                color: Color(0xFF9966CC)),
-                            SizedBox(height: 16),
-                            Text('Finding your results...',
-                                style: TextStyle(
-                                    color: Color(0xFF7B5EA7))),
-                          ],
-                        ),
-                      );
-                    }
-
-                    if (state is VerseError) {
-                      return Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24),
+                        const SizedBox(width: 12),
+                        const Expanded(
                           child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Icon(Icons.wifi_off,
-                                  size:  56,
-                                  color: const Color(0xFF2D1B4E).withOpacity(0.3)),
-                              const SizedBox(height: 16),
-                              Text(state.message,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: const Color(0xFF2D1B4E)
-                                          .withOpacity(0.5))),
-                              const SizedBox(height: 20),
-                              ElevatedButton(
-                                onPressed: () =>
-                                    context.read<VerseCubit>().fetchVerses(
-                                      text:    widget.userText,
-                                      emotion: widget.emotion,
-                                      cause:   widget.cause,
-                                    ),
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color(0xFF9966CC)),
-                                child: const Text('Retry',
-                                    style: TextStyle(
-                                        color: Color(0xFFF8F8FF))),
-                              ),
+                              Text('Recommended for you',
+                                  style: TextStyle(color: Color(0xFF7B5EA7), fontSize: 12, fontWeight: FontWeight.w500)),
+                              Text('Your Results',
+                                  style: TextStyle(color: Color(0xFF2D1B4E), fontSize: 20, fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
-                      );
-                    }
-
-                    if (state is VerseSuccess) {
-                      final duas  = DuaService.getDuasByEmotion(widget.emotion);
-                      final items = _selectedTab == 0 ? state.verses : duas;
-
-                      return Column(
-                        children: [
-                          const SizedBox(height: 20),
-
-                          // ── Swipe cards ──────────────────────────────────
-                          Expanded(
-                            child: PageView.builder(
-                              controller: _pageController,
-                              itemCount:  items.length,
-                              onPageChanged: (i) =>
-                                  setState(() => _currentIndex = i),
-                              itemBuilder: (context, index) {
-                                final item      = items[index] as Map<String, dynamic>;
-                                final isFocused = index == _currentIndex;
-                                final cardKey   = _keyFor(index);
-
-                                return AnimatedScale(
-                                  scale:    isFocused ? 1.0 : 0.88,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve:    Curves.easeOutCubic,
-                                  child: AnimatedOpacity(
-                                    opacity:  isFocused ? 1.0 : 0.55,
-                                    duration: const Duration(milliseconds: 300),
-                                    child: RepaintBoundary(
-                                      key: cardKey,
-                                      child: _selectedTab == 0
-                                          ? _VerseCard(
-                                              verse:     item,
-                                              isFocused: isFocused,
-                                              rank:      index + 1,
-                                              onShare:   () {
-                                                final text =
-                                                    '${item['arabic_text']}\n\n"${item['verse_text']}"\n\nSurah ${item['surah']} • Ayah ${item['ayah']}\n\nShared via NurQalby 🌿';
-                                                _showShareOptions(
-                                                    context, cardKey, text);
-                                              },
-                                            )
-                                          : _DuaCard(
-                                              dua:       item,
-                                              isFocused: isFocused,
-                                              rank:      index + 1,
-                                              onShare:   () {
-                                                final text =
-                                                    '${item['arabic'] ?? ''}\n\n"${item['translation'] ?? ''}"\n\n— ${item['reference'] ?? ''}\n\nShared via NurQalby 🌿';
-                                                _showShareOptions(
-                                                    context, cardKey, text);
-                                              },
-                                            ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                        GestureDetector(
+                          onTap: () => Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => const HomeScreen()),
+                            (_) => false,
                           ),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2D1B4E).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.home_rounded, color: Color(0xFF2D1B4E), size: 22),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white.withOpacity(0.2)),
+                      ),
+                      child: Row(
+                        children: [
+                          _TabButton(
+                            label: '📖  Verses',
+                            isSelected: _selectedTab == 0,
+                            onTap: () => _switchTab(0),
+                          ),
+                          const SizedBox(width: 4),
+                          _TabButton(
+                            label: '🤲  Dua',
+                            isSelected: _selectedTab == 1,
+                            onTap: () => _switchTab(1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: BlocBuilder<VerseCubit, VerseState>(
+                      builder: (context, state) {
+                        if (state is VerseLoading) {
+                          return const Center(child: CircularProgressIndicator(color: Color(0xFF9966CC)));
+                        }
+                        if (state is VerseError) return Center(child: Text(state.message));
+                        if (state is VerseSuccess) {
+                          final duas = DuaService.getDuasByEmotion(widget.emotion);
+                          final items = _selectedTab == 0 ? state.verses : duas;
 
-                          const SizedBox(height: 16),
+                          return Column(
+                            children: [
+                              const SizedBox(height: 10),
+                              Expanded(
+                                child: PageView.builder(
+                                  controller: _pageController,
+                                  itemCount: items.length,
+                                  onPageChanged: (i) => setState(() => _currentIndex = i),
+                                  itemBuilder: (context, index) {
+                                    final item = items[index] as Map<String, dynamic>;
+                                    final isFocused = index == _currentIndex;
+                                    final cardKey = _keyFor(index);
 
-                          // ── Page dots ────────────────────────────────────
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              items.length,
-                              (i) => AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 3),
-                                width:  i == _currentIndex ? 20 : 6,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  color: i == _currentIndex
-                                      ? const Color(0xFF9966CC)
-                                      : const Color(0xFF2D1B4E).withOpacity(0.2),
-                                  borderRadius: BorderRadius.circular(3),
+                                    return AnimatedScale(
+                                      scale: isFocused ? 1.0 : 0.88,
+                                      duration: const Duration(milliseconds: 300),
+                                      child: RepaintBoundary(
+                                        key: cardKey,
+                                        child: _selectedTab == 0
+                                            ? _VerseCard(
+                                                verse: item,
+                                                isFocused: isFocused,
+                                                isSharing: _isSharing,
+                                                rank: index + 1,
+                                                onShare: () {
+                                                  final text = '${item['arabic_text']}\n\n"${item['verse_text']}"\n\nSurah ${item['surah']} • Ayah ${item['ayah']}';
+                                                  _showShareOptions(context, cardKey, text);
+                                                },
+                                              )
+                                            : _DuaCard(
+                                                dua: item,
+                                                isFocused: isFocused,
+                                                isSharing: _isSharing,
+                                                rank: index + 1,
+                                                onShare: () {
+                                                  final text = '${item['arabic']}\n\n"${item['translation']}"\n\n— ${item['reference']}';
+                                                  _showShareOptions(context, cardKey, text);
+                                                },
+                                              ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-
-                          // ── Bottom actions ───────────────────────────────
-                          _BottomActions(
-                            verses:       state.verses,
-                            duas:         duas,
-                            currentIndex: _currentIndex,
-                            selectedTab:  _selectedTab,
-                            onSwitchTab:  _switchTab,
-                            onPlay: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => AudioScreen(
-                                    verses:       state.verses,
-                                    initialIndex: _currentIndex),
+                              const SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  items.length,
+                                  (i) => AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    margin: const EdgeInsets.symmetric(horizontal: 3),
+                                    width: i == _currentIndex ? 20 : 6,
+                                    height: 6,
+                                    decoration: BoxDecoration(
+                                      color: i == _currentIndex ? const Color(0xFF9966CC) : Colors.black26,
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                ),
+                              const SizedBox(height: 20),
+                              _BottomActions(
+                                verses: state.verses,
+                                duas: duas,
+                                currentIndex: _currentIndex,
+                                selectedTab: _selectedTab,
+                                onSwitchTab: _switchTab,
+                                onPlay: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => AudioScreen(verses: state.verses, initialIndex: _currentIndex),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                            ],
+                          );
+                        }
+                        return const SizedBox();
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
-// ── Tab button ────────────────────────────────────────────────────────────────
 class _TabButton extends StatelessWidget {
   final String label;
-  final bool   isSelected;
+  final bool isSelected;
   final VoidCallback onTap;
 
-  const _TabButton(
-      {required this.label, required this.isSelected, required this.onTap});
+  const _TabButton({required this.label, required this.isSelected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding:  const EdgeInsets.symmetric(vertical: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFF2D1B4E)
-                : const Color(0xFF2D1B4E).withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
+            color: isSelected ? const Color(0xFF2D1B4E) : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize:   13,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: isSelected
-                  ? const Color(0xFF9966CC)
-                  : const Color(0xFF2D1B4E).withOpacity(0.6),
+              color: isSelected ? Colors.white : const Color(0xFF2D1B4E).withOpacity(0.6),
             ),
           ),
         ),
@@ -427,84 +373,69 @@ class _TabButton extends StatelessWidget {
   }
 }
 
-// ── Verse card ────────────────────────────────────────────────────────────────
 class _VerseCard extends StatelessWidget {
   final Map<String, dynamic> verse;
   final bool isFocused;
-  final int  rank;
+  final bool isSharing;
+  final int rank;
   final VoidCallback onShare;
 
-  const _VerseCard({
-    required this.verse,
-    required this.isFocused,
-    required this.rank,
-    required this.onShare,
-  });
+  const _VerseCard({required this.verse, required this.isFocused, required this.isSharing, required this.rank, required this.onShare});
 
   @override
   Widget build(BuildContext context) {
     return _ContentCard(
-      isFocused:  isFocused,
-      chipLabel:  rank == 1 ? 'RANK 1 · BEST' : 'RANK $rank',
-      chipIcon:   null,
-      chipEmoji:  null,
-      score:      verse['score']?.toString(),
+      image: 'assets/images/verse1.jpg',
+      isFocused: isFocused,
+      isSharing: isSharing,
+      chipLabel: 'RANK $rank · BEST',
       arabicText: verse['arabic_text'] ?? '',
-      bodyText:   '"${verse['verse_text'] ?? ''}"',
-      refText:    'SURAH ${verse['surah']}  •  AYAH ${verse['ayah']}',
-      onShare:    onShare,
+      bodyText: '"${verse['verse_text'] ?? ''}"',
+      refText: 'SURAH ${verse['surah']} • AYAH ${verse['ayah']}',
+      onShare: onShare,
     );
   }
 }
 
-// ── Dua card ──────────────────────────────────────────────────────────────────
 class _DuaCard extends StatelessWidget {
   final Map<String, dynamic> dua;
   final bool isFocused;
-  final int  rank;
+  final bool isSharing;
+  final int rank;
   final VoidCallback onShare;
 
-  const _DuaCard({
-    required this.dua,
-    required this.isFocused,
-    required this.rank,
-    required this.onShare,
-  });
+  const _DuaCard({required this.dua, required this.isFocused, required this.isSharing, required this.rank, required this.onShare});
 
   @override
   Widget build(BuildContext context) {
     return _ContentCard(
-      isFocused:  isFocused,
-      chipLabel:  'DUA ${rank > 1 ? '· $rank' : ''}',
-      chipIcon:   null,
-      chipEmoji:  '🤲',
-      score:      null,
+      image: 'assets/images/dua1.jpg',
+      isFocused: isFocused,
+      isSharing: isSharing,
+      chipLabel: 'DUA · $rank',
       arabicText: dua['arabic'] ?? '',
-      bodyText:   '"${dua['translation'] ?? ''}"',
-      refText:    dua['reference'] ?? '',
-      onShare:    onShare,
+      bodyText: '"${dua['translation'] ?? ''}"',
+      refText: dua['reference'] ?? '',
+      onShare: onShare,
     );
   }
 }
 
-// ── Shared card widget (Verse & Dua look identical) ───────────────────────────
 class _ContentCard extends StatelessWidget {
-  final bool    isFocused;
-  final String  chipLabel;
-  final String? chipEmoji;
-  final IconData? chipIcon;
-  final String? score;
-  final String  arabicText;
-  final String  bodyText;
-  final String  refText;
+  final String image;
+  final bool isFocused;
+  final bool isSharing;
+  final String chipLabel;
+  final String arabicText;
+  final String bodyText;
+  final String refText;
   final VoidCallback onShare;
 
   const _ContentCard({
+    required this.image,
     required this.isFocused,
+    required this.isSharing,
     required this.chipLabel,
-    required this.chipEmoji,
-    required this.chipIcon,
-    required this.score,
     required this.arabicText,
     required this.bodyText,
     required this.refText,
@@ -514,134 +445,83 @@ class _ContentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color:        const Color(0xFFEDE5F8),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: isFocused
-              ? const Color(0xFF9966CC).withOpacity(0.7)
-              : const Color(0xFFD4B8E8),
-          width: isFocused ? 1.5 : 1,
-        ),
-        boxShadow: isFocused
-            ? [
-                BoxShadow(
-                  color:      const Color(0xFF9966CC).withOpacity(0.2),
-                  blurRadius: 30,
-                  offset:     const Offset(0, 10),
-                ),
-              ]
-            : [],
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, spreadRadius: 2)],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30),
+        child: Stack(
           children: [
-            // ── Chip row ─────────────────────────────────────────────────
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _Chip(label: chipLabel, emoji: chipEmoji),
-                if (score != null)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color:        const Color(0xFF9966CC).withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: const Color(0xFF9966CC).withOpacity(0.3)),
+            Positioned.fill(child: Image.asset(image, fit: BoxFit.cover)),
+            Positioned.fill(child: Container(color: Colors.white.withOpacity(0.35))),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF9966CC).withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(chipLabel, style: const TextStyle(color: Color(0xFF9966CC), fontSize: 10, fontWeight: FontWeight.bold)),
                     ),
-                    child: Text(score!,
-                        style: const TextStyle(
-                            color:      Color(0xFF9966CC),
-                            fontSize:   10,
-                            fontWeight: FontWeight.w600)),
                   ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // ── Arabic text ──────────────────────────────────────────────
-            Expanded(
-              child: Center(
-                child: SingleChildScrollView(
-                  child: Text(
-                    arabicText,
-                    textAlign:     TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style: const TextStyle(
-                        color:      Color(0xFF2D1B4E),
-                        fontSize:   20,
-                        fontWeight: FontWeight.w600,
-                        height:     1.9),
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-            const _GradientDivider(color: Color(0xFFD4B8E8)),
-            const SizedBox(height: 12),
-
-            // ── Translation / body ───────────────────────────────────────
-            Text(
-              bodyText,
-              textAlign: TextAlign.center,
-              maxLines:  4,
-              overflow:  TextOverflow.ellipsis,
-              style: TextStyle(
-                  color:     const Color(0xFF2D1B4E).withOpacity(0.8),
-                  fontSize:  13,
-                  height:    1.6,
-                  fontStyle: FontStyle.italic),
-            ),
-
-            const SizedBox(height: 14),
-
-            // ── Reference ────────────────────────────────────────────────
-            Text(
-              refText,
-              style: const TextStyle(
-                  color:         Color(0xFF9966CC),
-                  fontSize:      10,
-                  letterSpacing: 1.0,
-                  fontWeight:    FontWeight.w600),
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(height: 20),
-
-            // ── Share button ─────────────────────────────────────────────
-            GestureDetector(
-              onTap: onShare,
-              child: Container(
-                width:   double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color:        const Color(0xFF9966CC).withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: const Color(0xFF9966CC).withOpacity(0.25)),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.share_rounded,
-                        color: Color(0xFF9966CC), size: 18),
-                    SizedBox(width: 8),
-                    Text(
-                      'Share',
-                      style: TextStyle(
-                          color:      Color(0xFF9966CC),
-                          fontSize:   13,
-                          fontWeight: FontWeight.w600),
+                  const SizedBox(height: 10),
+                  // Centered and Scrollable Logic
+                  Expanded(
+                    child: Center(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              arabicText,
+                              textAlign: TextAlign.center,
+                              textDirection: TextDirection.rtl,
+                              style: const TextStyle(color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold, height: 1.8),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              bodyText,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(color: Colors.black87, fontSize: 14, fontStyle: FontStyle.italic, height: 1.5),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(refText, style: const TextStyle(color: Colors.black54, fontSize: 11, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 20),
+                  if (!isSharing)
+                    GestureDetector(
+                      onTap: onShare,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.ios_share_rounded, color: Colors.black, size: 18),
+                            SizedBox(width: 10),
+                            Text("Share Moment", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600)),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ],
@@ -651,7 +531,6 @@ class _ContentCard extends StatelessWidget {
   }
 }
 
-// ── Bottom actions ────────────────────────────────────────────────────────────
 class _BottomActions extends StatefulWidget {
   final List<Map<String, dynamic>> verses, duas;
   final int currentIndex, selectedTab;
@@ -674,28 +553,24 @@ class _BottomActions extends StatefulWidget {
 class _BottomActionsState extends State<_BottomActions> {
   final Set<String> _savedKeys = {};
 
-  String get _key {
-    final item = widget.selectedTab == 0
-        ? widget.verses[widget.currentIndex]
-        : widget.duas[widget.currentIndex];
-    return '${widget.selectedTab == 0 ? 'verse' : 'dua'}_${item['arabic_text'] ?? item['arabic'] ?? ''}';
+  String get _currentKey {
+    final item = widget.selectedTab == 0 ? widget.verses[widget.currentIndex] : widget.duas[widget.currentIndex];
+    return '${widget.selectedTab}_${item['arabic_text'] ?? item['arabic'] ?? ''}';
   }
-
-  bool get _isSaved => _savedKeys.contains(_key);
 
   @override
   void initState() {
     super.initState();
-    _load();
+    _loadSavedStatus();
   }
 
-  Future<void> _load() async {
+  Future<void> _loadSavedStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getStringList('saved_items') ?? [];
     if (!mounted) return;
     setState(() {
       _savedKeys.clear();
-      for (final s in saved) {
+      for (var s in saved) {
         final m = jsonDecode(s);
         if (m['key'] != null) _savedKeys.add(m['key']);
       }
@@ -703,38 +578,38 @@ class _BottomActionsState extends State<_BottomActions> {
   }
 
   Future<void> _toggleSave() async {
-    final prefs   = await SharedPreferences.getInstance();
-    final saved   = prefs.getStringList('saved_items') ?? [];
-    final key     = _key;
+    final prefs = await SharedPreferences.getInstance();
+    final saved = prefs.getStringList('saved_items') ?? [];
+    final key = _currentKey;
     final isVerse = widget.selectedTab == 0;
-    final item    = isVerse
-        ? widget.verses[widget.currentIndex]
-        : widget.duas[widget.currentIndex];
+    final item = isVerse ? widget.verses[widget.currentIndex] : widget.duas[widget.currentIndex];
 
-    if (_isSaved) {
+    bool nowSaved;
+    if (_savedKeys.contains(key)) {
       saved.removeWhere((s) => jsonDecode(s)['key'] == key);
-      setState(() => _savedKeys.remove(key));
+      _savedKeys.remove(key);
+      nowSaved = false;
     } else {
       saved.add(jsonEncode({
-        'key':       key,
-        'type':      isVerse ? 'verse' : 'dua',
-        'title':     isVerse
-            ? 'Surah ${item['surah']} Ayah ${item['ayah']}'
-            : (item['title'] ?? ''),
-        'arabic':    item['arabic_text'] ?? item['arabic'] ?? '',
-        'english':   item['verse_text']  ?? item['translation'] ?? '',
-        'reference': isVerse
-            ? 'Surah ${item['surah']}, Ayah ${item['ayah']}'
-            : (item['reference'] ?? ''),
+        'key': key,
+        'type': isVerse ? 'verse' : 'dua',
+        'title': isVerse ? 'Surah ${item['surah']} Ayah ${item['ayah']}' : (item['title'] ?? ''),
+        'arabic': item['arabic_text'] ?? item['arabic'] ?? '',
+        'english': item['verse_text'] ?? item['translation'] ?? '',
+        'reference': isVerse ? 'Surah ${item['surah']}, Ayah ${item['ayah']}' : (item['reference'] ?? ''),
       }));
-      setState(() => _savedKeys.add(key));
+      _savedKeys.add(key);
+      nowSaved = true;
     }
 
     await prefs.setStringList('saved_items', saved);
+    setState(() {});
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(_isSaved ? 'Saved ✓' : 'Removed'),
-        backgroundColor: const Color(0xFF9966CC),
+        content: Text(nowSaved ? 'Saved ✓' : 'Removed', 
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
+        backgroundColor: Colors.black.withOpacity(0.9),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         duration: const Duration(seconds: 2),
@@ -745,46 +620,30 @@ class _BottomActionsState extends State<_BottomActions> {
   @override
   Widget build(BuildContext context) {
     final isVerse = widget.selectedTab == 0;
+    final isSaved = _savedKeys.contains(_currentKey);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _Btn(
-            icon:    _isSaved
-                ? Icons.bookmark_rounded
-                : Icons.bookmark_outline_rounded,
-            label:   'SAVE',
-            color:   _isSaved
-                ? const Color(0xFF9966CC)
-                : const Color(0xFF2D1B4E).withOpacity(0.4),
-            bgColor: const Color(0xFFEDE5F8),
-            border:  _isSaved
-                ? const Color(0xFF9966CC)
-                : const Color(0xFFD4B8E8),
-            onTap:   _toggleSave,
+          _ImprovedBtn(
+            icon: isSaved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+            label: "Save",
+            isActive: isSaved,
+            onTap: _toggleSave,
           ),
-          _Btn(
-            icon:    Icons.play_arrow_rounded,
-            label:   isVerse ? 'PLAY' : '—',
-            color:   const Color(0xFFF8F8FF),
-            bgColor: isVerse
-                ? const Color(0xFF9966CC)
-                : const Color(0xFF9966CC).withOpacity(0.3),
-            border:  Colors.transparent,
-            size:    64,
-            isMain:  true,
-            onTap:   isVerse ? widget.onPlay : null,
+          _ImprovedBtn(
+            icon: Icons.play_arrow_rounded,
+            label: "Play",
+            isLarge: true,
+            isDisabled: !isVerse,
+            onTap: isVerse ? widget.onPlay : null,
           ),
-          _Btn(
-            icon:    isVerse
-                ? Icons.volunteer_activism_rounded
-                : Icons.menu_book_rounded,
-            label:   isVerse ? 'DUA' : 'VERSE',
-            color:   const Color(0xFF2D1B4E).withOpacity(0.5),
-            bgColor: const Color(0xFFEDE5F8),
-            border:  const Color(0xFFD4B8E8),
-            onTap:   () => widget.onSwitchTab(isVerse ? 1 : 0),
+          _ImprovedBtn(
+            icon: isVerse ? Icons.volunteer_activism_rounded : Icons.menu_book_rounded,
+            label: isVerse ? "Dua" : "Verse",
+            onTap: () => widget.onSwitchTab(isVerse ? 1 : 0),
           ),
         ],
       ),
@@ -792,104 +651,86 @@ class _BottomActionsState extends State<_BottomActions> {
   }
 }
 
-// ── Micro widgets ──────────────────────────────────────────────────────────────
-class _Chip extends StatelessWidget {
-  final String  label;
-  final String? emoji;
-
-  const _Chip({required this.label, required this.emoji});
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-    decoration: BoxDecoration(
-      color:        const Color(0xFF9966CC).withOpacity(0.12),
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: const Color(0xFF9966CC).withOpacity(0.3)),
-    ),
-    child: Row(mainAxisSize: MainAxisSize.min, children: [
-      if (emoji != null)
-        Text(emoji!, style: const TextStyle(fontSize: 10))
-      else
-        Container(
-          width:  6, height: 6,
-          decoration: const BoxDecoration(
-              color: Color(0xFF9966CC), shape: BoxShape.circle),
-        ),
-      const SizedBox(width: 6),
-      Text(label,
-          style: const TextStyle(
-              color:         Color(0xFF9966CC),
-              fontSize:      9,
-              fontWeight:    FontWeight.w700,
-              letterSpacing: 0.6)),
-    ]),
-  );
-}
-
-class _GradientDivider extends StatelessWidget {
-  final Color color;
-  const _GradientDivider({required this.color});
-
-  @override
-  Widget build(BuildContext context) => Container(
-    height: 1,
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-          colors: [Colors.transparent, color, Colors.transparent]),
-    ),
-  );
-}
-
-class _Btn extends StatelessWidget {
-  final IconData      icon;
-  final String        label;
-  final Color         color, bgColor, border;
-  final double        size;
+class _ImprovedBtn extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isLarge;
+  final bool isActive;
+  final bool isDisabled;
   final VoidCallback? onTap;
-  final bool          isMain;
 
-  const _Btn({
+  const _ImprovedBtn({
     required this.icon,
     required this.label,
-    required this.color,
-    required this.bgColor,
-    required this.border,
-    this.size   = 52,
+    this.isLarge = false,
+    this.isActive = false,
+    this.isDisabled = false,
     this.onTap,
-    this.isMain = false,
   });
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: Column(children: [
-      AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width:  size, height: size,
-        decoration: BoxDecoration(
-          color:        bgColor,
-          borderRadius: BorderRadius.circular(isMain ? 20 : 16),
-          border:       Border.all(color: border),
-          boxShadow: isMain
-              ? [
-                  BoxShadow(
-                    color:      const Color(0xFF9966CC).withOpacity(0.4),
-                    blurRadius: 20,
-                    offset:     const Offset(0, 6),
-                  ),
-                ]
-              : [],
-        ),
-        child: Icon(icon, color: color, size: isMain ? 28 : 22),
+  Widget build(BuildContext context) {
+    final primary = const Color.fromARGB(255, 93, 61, 125);
+    final secondary = const Color(0xFF2D1B4E);
+    final disabledColor = const Color.fromARGB(255, 50, 48, 48);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: isLarge ? 72 : 58,
+            height: isLarge ? 72 : 58,
+            decoration: BoxDecoration(
+              gradient: isLarge && !isDisabled
+                  ? LinearGradient(
+                      colors: [primary, primary.withOpacity(0.8)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
+              color: isDisabled 
+                  ? disabledColor.withOpacity(0.3) 
+                  : (isLarge ? null : Colors.white.withOpacity(0.4)),
+              borderRadius: BorderRadius.circular(isLarge ? 24 : 20),
+              border: Border.all(
+                color: isDisabled 
+                    ? disabledColor.withOpacity(0.5) 
+                    : (isActive ? primary : Colors.white.withOpacity(0.3)), 
+                width: 1.5,
+              ),
+              boxShadow: (isLarge && !isDisabled)
+                  ? [
+                      BoxShadow(
+                        color: primary.withOpacity(0.12),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
+                      )
+                    ]
+                  : [],
+            ),
+            child: Icon(
+              icon,
+              size: isLarge ? 32 : 24,
+              color: isDisabled 
+                  ? disabledColor 
+                  : (isLarge ? Colors.white : (isActive ? primary : secondary)),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: isDisabled ? disabledColor : secondary.withOpacity(0.6),
+              letterSpacing: 0.5,
+            ),
+          )
+        ],
       ),
-      const SizedBox(height: 6),
-      Text(label,
-          style: TextStyle(
-              color:         const Color(0xFF2D1B4E).withOpacity(0.4),
-              fontSize:      9,
-              letterSpacing: 0.6,
-              fontWeight:    FontWeight.w600)),
-    ]),
-  );
+    );
+  }
 }

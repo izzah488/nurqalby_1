@@ -1,459 +1,786 @@
+// lib/screens/saved_screen.dart
+//
+// CARD DECK UX
+// • Cards are stacked on top of each other
+// • Only the top card is interactive (gesture-enabled)
+// • Next 1–2 cards peek slightly behind (scaled + offset)
+// • Swipe RIGHT  → skip to next card
+// • Swipe LEFT   → delete with confirm dialog
+// • Tap          → open detail screen
+// • Filter tabs: All / Verse / Dua
+// • Uses SavedCubit — no manual setState for loading/deleting
+
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:ui' as ui;
+import 'dart:math' show min;
+import '../cubit/saved_cubit.dart';
+import '../cubit/saved_state.dart';
 import 'notification_detail_screen.dart';
 
-class SavedScreen extends StatefulWidget {
+class SavedScreen extends StatelessWidget {
   const SavedScreen({super.key});
 
   @override
-  State<SavedScreen> createState() => _SavedScreenState();
+  Widget build(BuildContext context) => const _SavedView();
 }
 
-class _SavedScreenState extends State<SavedScreen> {
-  List<Map<String, dynamic>> savedItems = [];
-  bool isLoading = true;
+// ─────────────────────────────────────────────────────────────────────────────
+class _SavedView extends StatefulWidget {
+  const _SavedView();
+
+  @override
+  State<_SavedView> createState() => _SavedViewState();
+}
+
+class _SavedViewState extends State<_SavedView> {
+  int _currentIndex = 0;
+
+  // Top-card drag values
+  double _dragX     = 0.0;
+  double _dragY     = 0.0;
+  bool   _isDragging = false;
+
+  static const double _swipeThreshold = 100.0;
+
+  static const _bg     = Color(0xFFF8F8FF);
+  static const _accent = Color(0xFF9966CC);
+  static const _dark   = Color(0xFF2D1B4E);
+  static const _medium = Color(0xFF7B5EA7);
+  static const _card   = Color(0xFFEDE5F8);
+  static const _border = Color(0xFFD4B8E8);
+
+  static const _verseImage = 'assets/images/verse1.jpg';
+  static const _duaImage   = 'assets/images/dua1.jpg';
+
+  static const _filters = ['All', 'Verse', 'Dua'];
+  String _filterKey(String label) => label.toLowerCase();
 
   @override
   void initState() {
     super.initState();
-    _loadSaved();
-  }
-
-  Future<void> _loadSaved() async {
-    final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getStringList('saved_items') ?? [];
-    setState(() {
-      savedItems = saved
-          .map((s) => Map<String, dynamic>.from(jsonDecode(s)))
-          .toList()
-          .reversed
-          .toList();
-      isLoading = false;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SavedCubit>().loadSaved();
     });
   }
 
-  Future<void> _removeItem(int index) async {
-    final prefs = await SharedPreferences.getInstance();
-    final saved = prefs.getStringList('saved_items') ?? [];
-    final key = savedItems[index]['key'];
-    saved.removeWhere((s) {
-      final map = jsonDecode(s);
-      return map['key'] == key;
-    });
-    await prefs.setStringList('saved_items', saved);
-    setState(() => savedItems.removeAt(index));
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Removed from saved',
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Color(0xFFEDE5F8),
-          duration: Duration(seconds: 2),
+  // ── Open detail ───────────────────────────────────────────────────────────
+  void _openDetail(BuildContext context, Map<String, dynamic> item) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => NotificationDetailScreen(
+          arabic:    item['arabic']    ?? '',
+          english:   item['english']   ?? item['translation'] ?? '',
+          title:     item['title']     ?? item['prayerName']  ?? '',
+          reference: item['reference'] ?? '',
+          type:      item['type']      ?? 'dua',
         ),
+      ),
+    ).then((_) => context.read<SavedCubit>().loadSaved());
+  }
+
+  // ── Snap card back to centre ──────────────────────────────────────────────
+  void _snapBack() =>
+      setState(() { _dragX = 0; _dragY = 0; _isDragging = false; });
+
+  // ── Skip to next (swipe right) ────────────────────────────────────────────
+  void _goNext(List<Map<String, dynamic>> items) {
+    setState(() {
+      if (_currentIndex < items.length - 1) _currentIndex++;
+      _dragX = 0; _dragY = 0; _isDragging = false;
+    });
+  }
+
+  // ── Delete with confirm dialog ────────────────────────────────────────────
+  Future<void> _confirmDelete(
+    BuildContext context,
+    Map<String, dynamic> item,
+    List<Map<String, dynamic>> items,
+  ) async {
+    _snapBack(); // snap card back while dialog is open
+
+    final cubit   = context.read<SavedCubit>();
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: _card,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Remove saved item?',
+            style: TextStyle(color: _dark, fontWeight: FontWeight.bold)),
+        content: Text(
+          item['title'] ?? 'This item will be removed from your saved list.',
+          style: TextStyle(color: _dark.withOpacity(0.6), fontSize: 13),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel', style: TextStyle(color: _medium)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade400,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text('Remove', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await cubit.toggleSaved(
+        type:      item['type']      ?? 'dua',
+        arabic:    item['arabic']    ?? '',
+        english:   item['english']   ?? item['translation'] ?? '',
+        title:     item['title']     ?? '',
+        reference: item['reference'] ?? '',
       );
+
+      if (context.mounted) {
+        // Stay in bounds after deletion
+        setState(() {
+          if (_currentIndex >= items.length - 1 && _currentIndex > 0) {
+            _currentIndex--;
+          }
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Removed from saved',
+                style: TextStyle(color: Colors.white)),
+            backgroundColor: Colors.red.shade400,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     }
   }
 
+  // ── Root build ────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FF),
+      backgroundColor: _bg,
       body: SafeArea(
         child: Column(
           children: [
-            // ── Header ──────────────────────────────────────────────────────
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-              color: const Color(0xFFEDE5F8),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Your Collection',
-                      style: TextStyle(color: Color(0xFF7B5EA7), fontSize: 12)),
-                  SizedBox(height: 2),
-                  Text('Saved Items',
-                      style: TextStyle(
-                          color: Color(0xFF2D1B4E),
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600)),
-                ],
-              ),
-            ),
-
-            // ── Body ────────────────────────────────────────────────────────
-            Expanded(
-              child: isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(color: Color(0xFF9966CC)))
-                  : savedItems.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.bookmark_outline_rounded,
-                                  size: 72,
-                                  color: const Color(0xFF2D1B4E)
-                                      .withOpacity(0.15)),
-                              const SizedBox(height: 16),
-                              Text('No saved items yet',
-                                  style: TextStyle(
-                                      color: const Color(0xFF2D1B4E)
-                                          .withOpacity(0.4),
-                                      fontSize: 16)),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Save verses and duas to find them here',
-                                style: TextStyle(
-                                    color: const Color(0xFF2D1B4E)
-                                        .withOpacity(0.28),
-                                    fontSize: 13),
-                              ),
-                            ],
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: savedItems.length,
-                          itemBuilder: (context, index) {
-                            final item = savedItems[index];
-                            final isVerse = item['type'] == 'verse';
-                            return _SavedCard(
-                              key: ValueKey(item['key']),
-                              item: item,
-                              isVerse: isVerse,
-                              onRemove: () => _removeItem(index),
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => NotificationDetailScreen(
-                                    arabic: item['arabic'] ?? '',
-                                    english: item['english'] ??
-                                        item['translation'] ??
-                                        '',
-                                    title: item['title'] ??
-                                        item['prayerName'] ??
-                                        '',
-                                    reference: item['reference'] ?? '',
-                                    type: item['type'] ?? 'dua',
-                                  ),
-                                ),
-                              ).then((_) => _loadSaved()),
-                            );
-                          },
-                        ),
-            ),
+            _buildHeader(),
+            _buildFilterBar(),
+            const SizedBox(height: 8),
+            Expanded(child: _buildBody()),
           ],
         ),
       ),
     );
   }
-}
 
-class _SavedCard extends StatefulWidget {
-  final Map<String, dynamic> item;
-  final bool isVerse;
-  final VoidCallback onRemove;
-  final VoidCallback onTap;
-
-  const _SavedCard({
-    super.key,
-    required this.item,
-    required this.isVerse,
-    required this.onRemove,
-    required this.onTap,
-  });
-
-  @override
-  State<_SavedCard> createState() => _SavedCardState();
-}
-
-class _SavedCardState extends State<_SavedCard> with TickerProviderStateMixin {
-  static const double _revealWidth = 80.0;
-  static const double _dragThreshold = 55.0;
-  static const double _flingThreshold = 300.0;
-
-  double _dragOffset = 0.0;
-  bool _isExiting = false;
-
-  late final AnimationController _snapController;
-  late Animation<double> _snapAnim;
-
-  late final AnimationController _exitController;
-  late final Animation<double> _exitSlide;
-  late final Animation<double> _exitOpacity;
-
-  late final AnimationController _collapseController;
-  late final Animation<double> _collapse;
-
-  late final AnimationController _tapController;
-  late final Animation<double> _tapScale;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _snapController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 420));
-    _snapAnim = _snapController.drive(Tween(begin: 0.0, end: 0.0));
-    _snapController.addListener(_onSnapTick);
-
-    _exitController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 380));
-    _exitSlide = Tween<double>(begin: 0.0, end: -420.0).animate(
-        CurvedAnimation(parent: _exitController, curve: Curves.easeInCubic));
-    _exitOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
-        CurvedAnimation(
-            parent: _exitController,
-            curve: const Interval(0.15, 1.0, curve: Curves.easeIn)));
-
-    _collapseController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 290));
-    _collapse = Tween<double>(begin: 1.0, end: 0.0).animate(
-        CurvedAnimation(
-            parent: _collapseController, curve: Curves.easeInOut));
-
-    _tapController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 110));
-    _tapScale = Tween<double>(begin: 1.0, end: 0.93).animate(
-        CurvedAnimation(parent: _tapController, curve: Curves.easeOut));
-  }
-
-  @override
-  void dispose() {
-    _snapController.dispose();
-    _exitController.dispose();
-    _collapseController.dispose();
-    _tapController.dispose();
-    super.dispose();
-  }
-
-  void _onSnapTick() {
-    if (mounted) setState(() => _dragOffset = _snapAnim.value);
-  }
-
-  void _onDragUpdate(DragUpdateDetails d) {
-    if (_isExiting) return;
-    if (_snapController.isAnimating) _snapController.stop();
-    final newOffset =
-        (_dragOffset + d.delta.dx).clamp(-_revealWidth * 1.2, 0.0);
-    setState(() => _dragOffset = newOffset);
-  }
-
-  void _onDragEnd(DragEndDetails d) {
-    if (_isExiting) return;
-    final velocity = d.primaryVelocity ?? 0.0;
-    if (_dragOffset.abs() >= _dragThreshold || velocity < -_flingThreshold) {
-      _snapToReveal();
-    } else {
-      _snapBack();
-    }
-  }
-
-  void _snapToReveal() {
-    final start = _dragOffset;
-    _snapController.reset();
-    _snapAnim = Tween<double>(begin: start, end: -_revealWidth).animate(
-        CurvedAnimation(parent: _snapController, curve: Curves.easeOut));
-    _snapController.forward();
-  }
-
-  void _snapBack() {
-    final start = _dragOffset;
-    _snapController.reset();
-    _snapAnim = Tween<double>(begin: start, end: 0.0).animate(
-        CurvedAnimation(
-            parent: _snapController, curve: Curves.elasticOut));
-    _snapController.forward();
-  }
-
-  Future<void> _onDeleteTap() async {
-    if (_isExiting) return;
-    setState(() => _isExiting = true);
-
-    await _tapController.forward();
-    if (!mounted) return;
-    await _tapController.reverse();
-    if (!mounted) return;
-
-    await _exitController.forward();
-    if (!mounted) return;
-
-    await _collapseController.forward();
-    if (!mounted) return;
-
-    widget.onRemove();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final swipeProgress = (_dragOffset.abs() / _revealWidth).clamp(0.0, 1.2);
-    final iconScale = 0.65 + 0.55 * swipeProgress;
-    final bgOpacity = swipeProgress.clamp(0.0, 1.0);
-
-    return SizeTransition(
-      sizeFactor: _collapse,
-      axisAlignment: -1.0,
-      child: AnimatedBuilder(
-        animation: Listenable.merge([_exitController, _tapController]),
-        builder: (context, child) {
-          return Opacity(
-            opacity: _exitOpacity.value,
-            child: Transform.translate(
-              offset: Offset(_exitSlide.value, 0),
-              child: Transform.scale(
-                scale: _tapScale.value,
-                child: child,
+  // ── Header ────────────────────────────────────────────────────────────────
+  Widget _buildHeader() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+      decoration: const BoxDecoration(
+        color: _card,
+        border: Border(bottom: BorderSide(color: _border, width: 0.5)),
+      ),
+      child: BlocBuilder<SavedCubit, SavedState>(
+        builder: (context, state) {
+          final count =
+              state is SavedLoaded ? state.filteredItems.length : 0;
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Your Collection',
+                      style: TextStyle(color: _medium, fontSize: 12)),
+                  SizedBox(height: 2),
+                  Text('Saved Items',
+                      style: TextStyle(
+                          color: _dark,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700)),
+                ],
               ),
-            ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 14, vertical: 7),
+                decoration: BoxDecoration(
+                  color: _accent.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: _accent.withOpacity(0.3)),
+                ),
+                child: Text(
+                  '$count saved',
+                  style: const TextStyle(
+                      color: _accent,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
           );
         },
-        child: GestureDetector(
-          onTap: widget.onTap,
-          onHorizontalDragUpdate: _onDragUpdate,
-          onHorizontalDragEnd: _onDragEnd,
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Opacity(
-                      opacity: bgOpacity,
-                      child: Container(
-                        color: Colors.red.shade400,
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 22),
-                        child: GestureDetector(
-                          onTap: _onDeleteTap,
-                          child: Transform.scale(
-                            scale: iconScale,
-                            child: const Icon(
-                              Icons.delete_rounded,
-                              color: Colors.white,
-                              size: 28,
-                            ),
-                          ),
-                        ),
+      ),
+    );
+  }
+
+  // ── Filter bar ────────────────────────────────────────────────────────────
+  Widget _buildFilterBar() {
+    return BlocBuilder<SavedCubit, SavedState>(
+      builder: (context, state) {
+        final currentFilter =
+            state is SavedLoaded ? state.filter : 'all';
+        return Container(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: Row(
+            children: _filters.map((label) {
+              final key      = _filterKey(label);
+              final selected = currentFilter == key;
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: GestureDetector(
+                  onTap: () {
+                    context.read<SavedCubit>().changeFilter(key);
+                    setState(() {
+                      _currentIndex = 0;
+                      _dragX = 0;
+                      _dragY = 0;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: selected ? _accent : _card,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                          color: selected ? _accent : _border),
+                    ),
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        color: selected ? Colors.white : _medium,
+                        fontSize: 13,
+                        fontWeight: selected
+                            ? FontWeight.w600
+                            : FontWeight.normal,
                       ),
                     ),
                   ),
-                  Transform.translate(
-                    offset: Offset(_dragOffset, 0),
-                    child: _buildCardContent(),
+                ),
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  // ── Body ──────────────────────────────────────────────────────────────────
+  Widget _buildBody() {
+    return BlocBuilder<SavedCubit, SavedState>(
+      builder: (context, state) {
+        if (state is SavedLoading || state is SavedInitial) {
+          return const Center(
+              child: CircularProgressIndicator(color: _accent));
+        }
+        if (state is SavedError) {
+          return Center(
+            child: Text(state.message,
+                style: TextStyle(color: _dark.withOpacity(0.4))),
+          );
+        }
+        if (state is SavedLoaded) {
+          final items = state.filteredItems;
+          if (items.isEmpty) return _buildEmpty();
+
+          // Keep _currentIndex in bounds
+          if (_currentIndex >= items.length) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                setState(() => _currentIndex = items.length - 1);
+              }
+            });
+          }
+          return _buildCardDeck(context, items);
+        }
+        return const SizedBox();
+      },
+    );
+  }
+
+  // ── Card Deck ─────────────────────────────────────────────────────────────
+  Widget _buildCardDeck(
+      BuildContext context, List<Map<String, dynamic>> items) {
+    final safeIdx      = _currentIndex.clamp(0, items.length - 1);
+    final remaining    = items.length - safeIdx;
+    final visibleCount = min(3, remaining);
+    final dragProgress = (_dragX.abs() / _swipeThreshold).clamp(0.0, 1.0);
+
+    return Column(
+      children: [
+        // ── Hint ─────────────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.swipe_rounded,
+                  size: 14, color: _dark.withOpacity(0.3)),
+              const SizedBox(width: 6),
+              Text(
+                'Swipe right to skip  •  Swipe left to remove',
+                style: TextStyle(
+                    color: _dark.withOpacity(0.3), fontSize: 11),
+              ),
+            ],
+          ),
+        ),
+
+        // ── Stacked cards area ────────────────────────────────────────────
+        Expanded(
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                // Render from back → front so the top card is on top
+                for (int i = visibleCount - 1; i > 0; i--)
+                  Positioned.fill(
+                    child: _buildBackCard(
+                      items[safeIdx + i], i, dragProgress),
                   ),
-                ],
+                Positioned.fill(
+                  child: _buildTopCard(
+                      context, items, items[safeIdx], safeIdx),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // ── Progress dots ─────────────────────────────────────────────────
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              items.length,
+              (i) => AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                margin: const EdgeInsets.symmetric(horizontal: 3),
+                width:  i == safeIdx ? 20 : 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: i == safeIdx
+                      ? _accent
+                      : _dark.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(3),
+                ),
               ),
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  // ── Back card (non-interactive, peeks behind top card) ────────────────────
+  Widget _buildBackCard(
+      Map<String, dynamic> item, int stackIndex, double dragProgress) {
+    // stackIndex 1 = directly behind top, 2 = further back
+    final baseScale   = 1.0 - stackIndex * 0.06;
+    final scale       = baseScale + (1.0 - baseScale) * dragProgress;
+    final baseOffsetY = stackIndex * 18.0;
+    final offsetY     = baseOffsetY * (1.0 - dragProgress);
+    final isVerse     = item['type'] == 'verse';
+
+    return Transform.translate(
+      offset: Offset(0, offsetY),
+      child: Transform.scale(
+        scale: scale,
+        child: _SavedCard(
+          item:      item,
+          isVerse:   isVerse,
+          bgImage:   isVerse ? _verseImage : _duaImage,
+          isFocused: false,
         ),
       ),
     );
   }
 
-  Widget _buildCardContent() {
-    final item = widget.item;
-    final isVerse = widget.isVerse;
+  // ── Top card (interactive) ────────────────────────────────────────────────
+  Widget _buildTopCard(
+    BuildContext context,
+    List<Map<String, dynamic>> items,
+    Map<String, dynamic> item,
+    int safeIdx,
+  ) {
+    final isVerse        = item['type'] == 'verse';
+    final angle          = _dragX * 0.0007; // subtle tilt
+    final leftProgress   = ((-_dragX) / _swipeThreshold).clamp(0.0, 1.0);
+    final rightProgress  = (_dragX / _swipeThreshold).clamp(0.0, 1.0);
+    final isSwipingLeft  = _dragX < -(_swipeThreshold * 0.35);
+    final isSwipingRight = _dragX > (_swipeThreshold * 0.35);
+
+    // Build the transform matrix
+    final cardTransform = Matrix4.identity()
+      ..translate(_dragX, _dragY)
+      ..rotateZ(angle);
+
+    return GestureDetector(
+      onTap: () => _openDetail(context, item),
+      onHorizontalDragStart: (_) =>
+          setState(() => _isDragging = true),
+      onHorizontalDragUpdate: (d) {
+        setState(() {
+          _dragX += d.delta.dx;
+          _dragY += d.delta.dy * 0.25;
+        });
+      },
+      onHorizontalDragEnd: (d) {
+        final vel = d.primaryVelocity ?? 0;
+        if (_dragX < -_swipeThreshold || vel < -600) {
+          _confirmDelete(context, item, items);
+        } else if (_dragX > _swipeThreshold || vel > 600) {
+          _goNext(items);
+        } else {
+          _snapBack();
+        }
+      },
+      child: AnimatedContainer(
+        // Instant while dragging, smooth spring-back on release
+        duration: _isDragging
+            ? Duration.zero
+            : const Duration(milliseconds: 350),
+        curve: Curves.easeOutCubic,
+        transform: cardTransform,
+        transformAlignment: Alignment.center,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // ── Base card ──────────────────────────────────────────────
+            _SavedCard(
+              item:      item,
+              isVerse:   isVerse,
+              bgImage:   isVerse ? _verseImage : _duaImage,
+              isFocused: true,
+            ),
+
+            // ── Delete overlay (swipe left) ────────────────────────────
+            if (isSwipingLeft)
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
+                        colors: [
+                          Colors.transparent,
+                          Colors.red.shade500
+                              .withOpacity(leftProgress * 0.75),
+                        ],
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Opacity(
+                      opacity: leftProgress,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            leftProgress > 0.85
+                                ? Icons.delete_rounded
+                                : Icons.delete_outline_rounded,
+                            color: Colors.white,
+                            size: 56,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            leftProgress > 0.85 ? 'RELEASE!' : 'REMOVE',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 20,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+            // ── Next overlay (swipe right) ─────────────────────────────
+            if (isSwipingRight)
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
+                          Colors.transparent,
+                          _accent.withOpacity(rightProgress * 0.65),
+                        ],
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Opacity(
+                      opacity: rightProgress,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            rightProgress > 0.85
+                                ? Icons.arrow_forward_rounded
+                                : Icons.arrow_forward_outlined,
+                            color: Colors.white,
+                            size: 56,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            rightProgress > 0.85 ? 'NEXT!' : 'SKIP',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 20,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Empty state ───────────────────────────────────────────────────────────
+  Widget _buildEmpty() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.bookmark_outline_rounded,
+              size: 72, color: _dark.withOpacity(0.12)),
+          const SizedBox(height: 16),
+          Text('Nothing saved yet',
+              style: TextStyle(
+                  color: _dark.withOpacity(0.4), fontSize: 17)),
+          const SizedBox(height: 8),
+          Text(
+            'Save verses and duas from Results\nto find them here.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: _dark.withOpacity(0.28),
+                fontSize: 13,
+                height: 1.5),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Individual saved card — same style as ResultScreen's _ContentCard
+// ─────────────────────────────────────────────────────────────────────────────
+class _SavedCard extends StatelessWidget {
+  final Map<String, dynamic> item;
+  final bool isVerse;
+  final String bgImage;
+  final bool isFocused;
+
+  const _SavedCard({
+    required this.item,
+    required this.isVerse,
+    required this.bgImage,
+    required this.isFocused,
+  });
+
+  static const _dark   = Color(0xFF2D1B4E);
+  static const _accent = Color(0xFF9966CC);
+
+  @override
+  Widget build(BuildContext context) {
+    final arabic  = item['arabic']               ?? '';
+    final english = item['english']
+        ?? item['translation']                   ?? '';
+    final title   = item['title']                ?? '';
+    final ref     = item['reference']            ?? '';
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFEDE5F8),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFD4B8E8)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: 4,
-            decoration: BoxDecoration(
-              color: isVerse
-                  ? const Color(0xFF9966CC)
-                  : const Color(0xFF7B5EA7),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(14)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8F8FF),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: const Color(0xFFD4B8E8)),
-                      ),
-                      child: Text(
-                        isVerse ? '📖 Verse' : '🤲 Dua',
-                        style: const TextStyle(
-                            color: Color(0xFF7B5EA7), fontSize: 11),
-                      ),
-                    ),
-                    // Bookmark icon removed as swipe handles deletion
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  item['title'] ?? '',
-                  style: const TextStyle(
-                      color: Color(0xFF7B5EA7),
-                      fontSize: 12,
-                      fontStyle: FontStyle.italic),
-                ),
-                const SizedBox(height: 8),
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: Text(
-                    item['arabic'] ?? '',
-                    style: const TextStyle(
-                        color: Color(0xFF2D1B4E),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        height: 1.6),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  item['english'] ?? item['translation'] ?? '',
-                  style: TextStyle(
-                      color: const Color(0xFF2D1B4E).withOpacity(0.6),
-                      fontSize: 12,
-                      height: 1.4),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      item['reference'] ?? '',
-                      style: const TextStyle(
-                          color: Color(0xFF9966CC), fontSize: 11),
-                    ),
-                    Text(
-                      item['time'] ?? '',
-                      style: TextStyle(
-                          color: const Color(0xFF2D1B4E).withOpacity(0.3),
-                          fontSize: 11),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black
+                .withOpacity(isFocused ? 0.18 : 0.07),
+            blurRadius:   isFocused ? 28 : 14,
+            spreadRadius: 1,
+            offset: const Offset(0, 8),
           ),
         ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(30),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // ── Background image ────────────────────────────────────────
+            Image.asset(bgImage, fit: BoxFit.cover),
+
+            // ── Frosted glass overlay ───────────────────────────────────
+            BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 2.5, sigmaY: 2.5),
+              child: Container(
+                  color: Colors.white.withOpacity(0.30)),
+            ),
+
+            // ── Content ─────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── Type chip + title ──────────────────────────────────
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color:  _accent.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                              color: _accent.withOpacity(0.35)),
+                        ),
+                        child: Text(
+                          isVerse ? '📖 Verse' : '🤲 Dua',
+                          style: const TextStyle(
+                              color: _accent,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                              color: _dark.withOpacity(0.5),
+                              fontSize: 11,
+                              fontStyle: FontStyle.italic),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // ── Arabic + translation ────────────────────────────────
+                  Expanded(
+                    child: Center(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(height: 16),
+                            Text(
+                              arabic,
+                              textAlign:     TextAlign.center,
+                              textDirection: TextDirection.rtl,
+                              style: const TextStyle(
+                                  color:      Colors.black,
+                                  fontSize:   22,
+                                  fontWeight: FontWeight.bold,
+                                  height:     1.85),
+                            ),
+                            const SizedBox(height: 18),
+                            // Gradient divider
+                            Container(
+                              height: 1,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 20),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(colors: [
+                                  Colors.transparent,
+                                  _accent.withOpacity(0.5),
+                                  Colors.transparent,
+                                ]),
+                              ),
+                            ),
+                            const SizedBox(height: 18),
+                            Text(
+                              '"$english"',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color:     Colors.black.withOpacity(0.75),
+                                  fontSize:  13,
+                                  fontStyle: FontStyle.italic,
+                                  height:    1.55),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // ── Reference + tap hint ───────────────────────────────
+                  Column(
+                    children: [
+                      if (ref.isNotEmpty)
+                        Text(
+                          ref,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color:      Colors.black.withOpacity(0.45),
+                              fontSize:   11,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.touch_app_rounded,
+                              size: 12,
+                              color: Colors.black.withOpacity(0.3)),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Tap to view details',
+                            style: TextStyle(
+                                color:    Colors.black.withOpacity(0.3),
+                                fontSize: 10),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
