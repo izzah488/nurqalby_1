@@ -16,6 +16,7 @@ import 'dart:ui' as ui;
 import 'dart:math' show min;
 import '../cubit/saved_cubit.dart';
 import '../cubit/saved_state.dart';
+import 'audio_screen.dart';
 import 'notification_detail_screen.dart';
 
 class SavedScreen extends StatelessWidget {
@@ -65,19 +66,79 @@ class _SavedViewState extends State<_SavedView> {
   }
 
   // ── Open detail ───────────────────────────────────────────────────────────
+  // VERSE → AudioScreen   (has audio player)
+  // DUA   → NotificationDetailScreen (read-only detail)
   void _openDetail(BuildContext context, Map<String, dynamic> item) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => NotificationDetailScreen(
-          arabic:    item['arabic']    ?? '',
-          english:   item['english']   ?? item['translation'] ?? '',
-          title:     item['title']     ?? item['prayerName']  ?? '',
-          reference: item['reference'] ?? '',
-          type:      item['type']      ?? 'dua',
+    final isVerse = item['type'] == 'verse';
+
+    if (isVerse) {
+      // Build a verse map that AudioScreen understands.
+      // AudioScreen needs: audio_url, arabic_text, verse_text, surah, ayah.
+      // We reconstruct surah & ayah from the reference string
+      // e.g. "Surah 2, Ayah 255"
+      final verseMap = _toAudioVerseMap(item);
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AudioScreen(
+            verses:       [verseMap], // single verse; user can re-save others
+            initialIndex: 0,
+          ),
         ),
-      ),
-    ).then((_) => context.read<SavedCubit>().loadSaved());
+      ).then((_) => context.read<SavedCubit>().loadSaved());
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => NotificationDetailScreen(
+            arabic:    item['arabic']    ?? '',
+            english:   item['english']   ?? item['translation'] ?? '',
+            title:     item['title']     ?? item['prayerName']  ?? '',
+            reference: item['reference'] ?? '',
+            type:      'dua',
+          ),
+        ),
+      ).then((_) => context.read<SavedCubit>().loadSaved());
+    }
+  }
+
+  // Converts a saved verse (from SharedPreferences) into the map shape
+  // that AudioScreen expects: arabic_text, verse_text, surah, ayah, audio_url.
+  Map<String, dynamic> _toAudioVerseMap(Map<String, dynamic> saved) {
+    // ── 1. Use the audio_url stored at save time if available ────────────────
+    // result_screen now stores audio_url directly — this is the correct path.
+    final storedUrl = saved['audio_url'] as String? ?? '';
+
+    // ── 2. Parse surah + ayah (stored as strings) ────────────────────────────
+    int surah = int.tryParse(saved['surah'] as String? ?? '') ?? 0;
+    int ayah  = int.tryParse(saved['ayah']  as String? ?? '') ?? 0;
+
+    // ── 3. If old save had no audio_url, parse from reference and rebuild ────
+    // Reference format: "Surah 2, Ayah 255"
+    if (surah == 0 || ayah == 0) {
+      final ref = saved['reference'] as String? ?? '';
+      final sm  = RegExp(r'Surah\s+(\d+)', caseSensitive: false).firstMatch(ref);
+      final am  = RegExp(r'Ayah\s+(\d+)',  caseSensitive: false).firstMatch(ref);
+      if (sm != null) surah = int.tryParse(sm.group(1)!) ?? 1;
+      if (am != null) ayah  = int.tryParse(am.group(1)!) ?? 1;
+    }
+
+    // ── 4. Build audio URL using the same format as main.py ─────────────────
+    // main.py: f"https://everyayah.com/data/Alafasy_64kbps/{surah:03d}{ayah:03d}.mp3"
+    final audioUrl = storedUrl.isNotEmpty
+        ? storedUrl
+        : 'https://everyayah.com/data/Alafasy_64kbps/'
+          '${surah.toString().padLeft(3, '0')}'
+          '${ayah.toString().padLeft(3, '0')}.mp3';
+
+    return {
+      'arabic_text': saved['arabic']  ?? '',
+      'verse_text':  saved['english'] ?? '',
+      'surah':       surah.toString(),
+      'ayah':        ayah.toString(),
+      'audio_url':   audioUrl,
+    };
   }
 
   // ── Snap card back to centre ──────────────────────────────────────────────
@@ -657,55 +718,55 @@ class _SavedCard extends StatelessWidget {
             ),
 
             // ── Content ─────────────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // ── Type chip + title ──────────────────────────────────
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color:  _accent.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: _accent.withOpacity(0.35)),
+            Positioned.fill(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // ── Type chip + title ────────────────────────────────
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color:  _accent.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                                color: _accent.withOpacity(0.35)),
+                          ),
+                          child: Text(
+                            isVerse ? '📖 Verse' : '🤲 Dua',
+                            style: const TextStyle(
+                                color: _accent,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        child: Text(
-                          isVerse ? '📖 Verse' : '🤲 Dua',
-                          style: const TextStyle(
-                              color: _accent,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: TextStyle(
+                                color: _dark.withOpacity(0.5),
+                                fontSize: 11,
+                                fontStyle: FontStyle.italic),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                              color: _dark.withOpacity(0.5),
-                              fontSize: 11,
-                              fontStyle: FontStyle.italic),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
 
-                  // ── Arabic + translation ────────────────────────────────
-                  Expanded(
-                    child: Center(
+                    // ── Arabic + translation — scrollable middle ──────────
+                    Expanded(
                       child: SingleChildScrollView(
                         physics: const BouncingScrollPhysics(),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 14),
                             Text(
                               arabic,
                               textAlign:     TextAlign.center,
@@ -716,8 +777,7 @@ class _SavedCard extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   height:     1.85),
                             ),
-                            const SizedBox(height: 18),
-                            // Gradient divider
+                            const SizedBox(height: 14),
                             Container(
                               height: 1,
                               margin: const EdgeInsets.symmetric(
@@ -730,7 +790,7 @@ class _SavedCard extends StatelessWidget {
                                 ]),
                               ),
                             ),
-                            const SizedBox(height: 18),
+                            const SizedBox(height: 14),
                             Text(
                               '"$english"',
                               textAlign: TextAlign.center,
@@ -744,39 +804,40 @@ class _SavedCard extends StatelessWidget {
                         ),
                       ),
                     ),
-                  ),
 
-                  // ── Reference + tap hint ───────────────────────────────
-                  Column(
-                    children: [
-                      if (ref.isNotEmpty)
-                        Text(
-                          ref,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color:      Colors.black.withOpacity(0.45),
-                              fontSize:   11,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.touch_app_rounded,
-                              size: 12,
-                              color: Colors.black.withOpacity(0.3)),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Tap to view details',
-                            style: TextStyle(
-                                color:    Colors.black.withOpacity(0.3),
-                                fontSize: 10),
-                          ),
-                        ],
+                    // ── Reference + hint — fixed at bottom ────────────────
+                    if (ref.isNotEmpty)
+                      Text(
+                        ref,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color:      Colors.black.withOpacity(0.45),
+                            fontSize:   11,
+                            fontWeight: FontWeight.w600),
                       ),
-                    ],
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          isVerse
+                              ? Icons.play_circle_outline_rounded
+                              : Icons.menu_book_rounded,
+                          size: 12,
+                          color: Colors.black.withOpacity(0.3)),
+                        const SizedBox(width: 4),
+                        Text(
+                          isVerse ? 'Tap to listen' : 'Tap to view details',
+                          style: TextStyle(
+                              color:    Colors.black.withOpacity(0.3),
+                              fontSize: 10),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

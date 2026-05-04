@@ -591,12 +591,16 @@ class _BottomActionsState extends State<_BottomActions> {
       nowSaved = false;
     } else {
       saved.add(jsonEncode({
-        'key': key,
-        'type': isVerse ? 'verse' : 'dua',
-        'title': isVerse ? 'Surah ${item['surah']} Ayah ${item['ayah']}' : (item['title'] ?? ''),
-        'arabic': item['arabic_text'] ?? item['arabic'] ?? '',
-        'english': item['verse_text'] ?? item['translation'] ?? '',
+        'key':       key,
+        'type':      isVerse ? 'verse' : 'dua',
+        'title':     isVerse ? 'Surah ${item['surah']} Ayah ${item['ayah']}' : (item['title'] ?? ''),
+        'arabic':    item['arabic_text'] ?? item['arabic'] ?? '',
+        'english':   item['verse_text']  ?? item['translation'] ?? '',
         'reference': isVerse ? 'Surah ${item['surah']}, Ayah ${item['ayah']}' : (item['reference'] ?? ''),
+        // ── ADDED: store audio_url, surah, ayah so AudioScreen works from SavedScreen ──
+        'audio_url': isVerse ? (item['audio_url'] ?? '') : '',
+        'surah':     isVerse ? '${item['surah']}' : '',
+        'ayah':      isVerse ? '${item['ayah']}'  : '',
       }));
       _savedKeys.add(key);
       nowSaved = true;

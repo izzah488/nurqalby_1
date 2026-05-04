@@ -15,23 +15,62 @@ class AudioScreen extends StatefulWidget {
   State<AudioScreen> createState() => _AudioScreenState();
 }
 
-class _AudioScreenState extends State<AudioScreen> {
+class _AudioScreenState extends State<AudioScreen>
+    with TickerProviderStateMixin {
   late AudioPlayer _player;
   late int currentIndex;
   bool isPlaying = false;
-  bool isLooping  = false;
+  bool isLooping = false;
   Duration position = Duration.zero;
   Duration duration = Duration.zero;
+
+  late AnimationController _pulseController;
+  late AnimationController _cardController;
+  late Animation<double> _cardFade;
+  late Animation<Offset> _cardSlide;
+
+  // ── colours ──────────────────────────────────────────────────────────────
+  static const Color _bg1 = Color(0xFF12022A);
+  static const Color _bg2 = Color(0xFF2D1B4E);
+  static const Color _purple = Color(0xFF9966CC);
+  static const Color _lavender = Color(0xFFBB86FC);
+  static const Color _green = Color(0xFF7FB883);
 
   @override
   void initState() {
     super.initState();
     currentIndex = widget.initialIndex;
-    _player      = AudioPlayer();
+    _player = AudioPlayer();
+
+    // pulsing glow for play button
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..repeat(reverse: true);
+
+    // card entrance / transition
+    _cardController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _cardFade = CurvedAnimation(
+      parent: _cardController,
+      curve: Curves.easeOutCubic,
+    );
+    _cardSlide = Tween<Offset>(
+      begin: const Offset(0, 0.06),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _cardController,
+      curve: Curves.easeOutCubic,
+    ));
+    _cardController.forward();
+
     _setupListeners();
     _loadAudio();
   }
 
+  // ── audio listeners ───────────────────────────────────────────────────────
   void _setupListeners() {
     _player.positionStream.listen((pos) {
       if (mounted) setState(() => position = pos);
@@ -68,36 +107,44 @@ class _AudioScreenState extends State<AudioScreen> {
     }
   }
 
-  void _togglePlay() {
-    if (isPlaying) { _player.pause(); } else { _player.play(); }
-  }
+  // ── controls ──────────────────────────────────────────────────────────────
+  void _togglePlay() =>
+      isPlaying ? _player.pause() : _player.play();
 
   void _toggleLoop() {
     setState(() => isLooping = !isLooping);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content:         Text(isLooping ? 'Repeat ON' : 'Repeat OFF'),
-        backgroundColor: const Color(0xFFEDE5F8),
-        duration:        const Duration(seconds: 1),
-      ),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(isLooping ? '🔁  Repeat ON' : 'Repeat OFF'),
+      backgroundColor: _bg2,
+      duration: const Duration(seconds: 1),
+    ));
   }
 
   void _nextVerse() {
     if (currentIndex < widget.verses.length - 1) {
-      setState(() => currentIndex++);
-      _loadAudio();
+      _cardController.reverse().then((_) {
+        if (mounted) {
+          setState(() => currentIndex++);
+          _cardController.forward();
+          _loadAudio();
+        }
+      });
     }
   }
 
   void _prevVerse() {
     if (currentIndex > 0) {
-      setState(() => currentIndex--);
-      _loadAudio();
+      _cardController.reverse().then((_) {
+        if (mounted) {
+          setState(() => currentIndex--);
+          _cardController.forward();
+          _loadAudio();
+        }
+      });
     }
   }
 
-  String _formatDuration(Duration d) {
+  String _fmt(Duration d) {
     final m = d.inMinutes.remainder(60).toString().padLeft(1, '0');
     final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
     return '$m:$s';
@@ -106,298 +153,411 @@ class _AudioScreenState extends State<AudioScreen> {
   @override
   void dispose() {
     _player.dispose();
+    _pulseController.dispose();
+    _cardController.dispose();
     super.dispose();
   }
 
+  // ── BUILD ─────────────────────────────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     final verse = widget.verses[currentIndex];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FF),
-      body: SafeArea(
-        child: Column(
-          children: [
+      backgroundColor: _bg1,
+      body: Stack(
+        children: [
+          // ── BACKGROUND IMAGE (asset) ────────────────────────────────────
+          // Replace 'assets/images/bgaudio.jpg' with your actual asset path.
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/bgaudio.jpg', // <-- your background image here
+              fit: BoxFit.cover,
+            ),
+          ),
 
-            // ── Fixed top bar ─────────────────────────────────
-            Container(
-              color:   const Color(0xFFEDE5F8),
-              padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back_ios,
-                        color: Color(0xFF7B5EA7), size: 18),
+          // ── Light dark tint so text stays readable ─────────────────────
+          Positioned.fill(
+            child: Container(color: Colors.black.withOpacity(0.22)),
+          ),
+
+          // ── content ───────────────────────────────────────────────────
+          SafeArea(
+            child: Column(
+              children: [
+                // top bar
+                _buildTopBar(),
+
+                // verse card (the "album art")
+                Expanded(
+                  flex: 52,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(22, 10, 22, 6),
+                    child: FadeTransition(
+                      opacity: _cardFade,
+                      child: SlideTransition(
+                        position: _cardSlide,
+                        child: _buildVerseCard(verse),
+                      ),
+                    ),
                   ),
-                  const SizedBox(width: 12),
-                  const Text('Now playing',
-                      style: TextStyle(
-                          color:      Color(0xFF7B5EA7),
-                          fontSize:   13,
-                          fontWeight: FontWeight.w500)),
-                ],
+                ),
+
+                // player section
+                Expanded(
+                  flex: 48,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(22, 0, 22, 16),
+                    child: _buildPlayer(verse),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── top bar ───────────────────────────────────────────────────────────────
+  Widget _buildTopBar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
+      child: Row(
+        children: [
+          _glassButton(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white, size: 16),
+          ),
+          const Expanded(
+            child: Center(
+              child: Text(
+                'Now Playing',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.6,
+                ),
               ),
             ),
+          ),
+          // placeholder to keep title centred
+          const SizedBox(width: 38),
+        ],
+      ),
+    );
+  }
 
-            // ── Scrollable content ─────────────────────────────
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-                child: Column(
-                  children: [
-
-                    // Verse info card
-                    Container(
-                      width:   double.infinity,
-                      padding: const EdgeInsets.all(22),
-                      decoration: BoxDecoration(
-                        color:        const Color(0xFFEDE5F8),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFD4B8E8)),
+  // ── verse card ────────────────────────────────────────────────────────────
+  Widget _buildVerseCard(Map<String, dynamic> verse) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          color: Colors.white.withOpacity(0.10),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.22),
+            width: 1.4,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: _purple.withOpacity(0.35),
+              blurRadius: 40,
+              spreadRadius: -4,
+              offset: const Offset(0, 14),
+            ),
+          ],
+        ),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(24, 26, 24, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // surah badge
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16, vertical: 7),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFBB86FC), Color(0xFF7B2FBE)],
+                    ),
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: _purple.withOpacity(0.55),
+                        blurRadius: 14,
+                        offset: const Offset(0, 5),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                    ],
+                  ),
+                  child: Text(
+                    'Surah ${verse['surah']}  ·  Ayah ${verse['ayah']}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.9,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 22),
 
-                          // English verse
-                          Text(
-                            verse['verse_text'] ?? '',
-                            style: const TextStyle(
-                                color:      Color(0xFF2D1B4E),
-                                fontSize:   15,
-                                fontWeight: FontWeight.w600,
-                                height:     1.6),
-                          ),
-                          const SizedBox(height: 16),
+                // Arabic text
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Text(
+                    verse['arabic_text'] ?? '',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 21,
+                      height: 2.1,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
 
-                          Container(height: 1,
-                            decoration: const BoxDecoration(
-                              gradient: LinearGradient(colors: [
-                                Colors.transparent,
-                                Color(0xFF9966CC),
-                                Colors.transparent,
-                              ]),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Arabic verse
-                          Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: Text(
-                              verse['arabic_text'] ?? '',
-                              style: const TextStyle(
-                                  color:    Color(0xFF7B5EA7),
-                                  fontSize: 18,
-                                  height:   1.9),
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-
-                          // Surah info
-                          Text(
-                            'Surah ${verse['surah']}  •  Ayah ${verse['ayah']}',
-                            style: const TextStyle(
-                                color:      Color(0xFF7FB883),
-                                fontSize:   12,
-                                fontWeight: FontWeight.w600),
-                          ),
+                // shimmer divider
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  child: Container(
+                    height: 1,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          _lavender.withOpacity(0.5),
+                          Colors.transparent,
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                  ),
+                ),
 
-                    // ── Player controls card ───────────────────
-                    Container(
-                      width:   double.infinity,
-                      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-                      decoration: BoxDecoration(
-                        color:        const Color(0xFFEDE5F8),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFD4B8E8)),
-                      ),
-                      child: Column(
-                        children: [
+                // English text
+                Text(
+                  verse['verse_text'] ?? '',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.82),
+                    fontSize: 13,
+                    height: 1.75,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    
+  }
 
-                          // Progress slider
-                          SliderTheme(
-                            data: SliderTheme.of(context).copyWith(
-                              activeTrackColor:   const Color(0xFF9966CC),
-                              inactiveTrackColor: const Color(0xFFD4B8E8),
-                              thumbColor:         const Color(0xFF9966CC),
-                              trackHeight: 4,
-                              thumbShape: const RoundSliderThumbShape(
-                                  enabledThumbRadius: 6),
-                              overlayShape: const RoundSliderOverlayShape(
-                                  overlayRadius: 14),
-                            ),
-                            child: Slider(
-                              value: duration.inSeconds > 0
-                                  ? position.inSeconds
-                                      .toDouble()
-                                      .clamp(0, duration.inSeconds.toDouble())
-                                  : 0,
-                              min: 0,
-                              max: duration.inSeconds > 0
-                                  ? duration.inSeconds.toDouble()
-                                  : 1,
-                              onChanged: (val) =>
-                                  _player.seek(Duration(seconds: val.toInt())),
-                            ),
-                          ),
+// ── player ────────────────────────────────────────────────────────────────
+  Widget _buildPlayer(Map<String, dynamic> verse) {
+    final progress = duration.inSeconds > 0
+        ? position.inSeconds
+            .toDouble()
+            .clamp(0.0, duration.inSeconds.toDouble())
+        : 0.0;
+    final maxVal =
+        duration.inSeconds > 0 ? duration.inSeconds.toDouble() : 1.0;
 
-                          // Time labels
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(_formatDuration(position),
-                                    style: const TextStyle(
-                                        fontSize: 12, color: Color(0xFF7B5EA7))),
-                                Text(_formatDuration(duration),
-                                    style: const TextStyle(
-                                        fontSize: 12, color: Color(0xFF7B5EA7))),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 16),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        // Verse Counter
+        Text(
+          'Verse ${currentIndex + 1} of ${widget.verses.length}',
+          style: TextStyle(
+              color: Colors.black.withOpacity(0.4), 
+              fontSize: 12, 
+              fontWeight: FontWeight.w500
+          ),
+        ),
+        const SizedBox(height: 14),
 
-                          // Playback controls
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              IconButton(
-                                onPressed: currentIndex > 0 ? _prevVerse : null,
-                                icon: Icon(Icons.skip_previous_rounded,
-                                  size:  36,
-                                  color: currentIndex > 0
-                                      ? const Color(0xFF2D1B4E)
-                                      : const Color(0xFF2D1B4E).withOpacity(0.2)),
-                              ),
-                              const SizedBox(width: 12),
-                              GestureDetector(
-                                onTap: _togglePlay,
-                                child: Container(
-                                  width: 68, height: 68,
-                                  decoration: BoxDecoration(
-                                    color:  const Color(0xFF9966CC),
-                                    shape:  BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:      const Color(0xFF9966CC).withOpacity(0.45),
-                                        blurRadius: 20,
-                                        offset:     const Offset(0, 6),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    isPlaying
-                                        ? Icons.pause_rounded
-                                        : Icons.play_arrow_rounded,
-                                    color: const Color(0xFF2D1B4E), size: 36,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              IconButton(
-                                onPressed: currentIndex < widget.verses.length - 1
-                                    ? _nextVerse
-                                    : null,
-                                icon: Icon(Icons.skip_next_rounded,
-                                  size:  36,
-                                  color: currentIndex < widget.verses.length - 1
-                                      ? const Color(0xFF2D1B4E)
-                                      : const Color(0xFF2D1B4E).withOpacity(0.2)),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
+        // Progress Slider
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: const Color(0xFF7B2FBE),
+            inactiveTrackColor: Colors.black.withOpacity(0.05),
+            thumbColor: Colors.white,
+            trackHeight: 4.0,
+            thumbShape: const RoundSliderThumbShape(
+                enabledThumbRadius: 8, elevation: 3),
+            overlayColor: const Color(0xFF7B2FBE).withOpacity(0.1),
+          ),
+          child: Slider(
+            value: progress,
+            min: 0,
+            max: maxVal,
+            onChanged: (val) =>
+                _player.seek(Duration(seconds: val.toInt())),
+          ),
+        ),
 
-                          // Verse counter + Repeat button
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Verse ${currentIndex + 1} of ${widget.verses.length}',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color:    const Color(0xFF2D1B4E).withOpacity(0.4)),
-                              ),
-                              GestureDetector(
-                                onTap: _toggleLoop,
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: isLooping
-                                        ? const Color(0xFF9966CC).withOpacity(0.2)
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: isLooping
-                                          ? const Color(0xFF9966CC)
-                                          : const Color(0xFF2D1B4E).withOpacity(0.2),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.repeat_rounded,
-                                        size:  16,
-                                        color: isLooping
-                                            ? const Color(0xFF7FB883)
-                                            : const Color(0xFF2D1B4E).withOpacity(0.4)),
-                                      const SizedBox(width: 5),
-                                      Text(
-                                        isLooping ? 'Repeat ON' : 'Repeat',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: isLooping
-                                              ? FontWeight.w600
-                                              : FontWeight.normal,
-                                          color: isLooping
-                                              ? const Color(0xFF7FB883)
-                                              : const Color(0xFF2D1B4E).withOpacity(0.4),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+        // Time Labels
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(_fmt(position),
+                  style: TextStyle(fontSize: 11, color: Colors.black54)),
+              Text(_fmt(duration),
+                  style: TextStyle(fontSize: 11, color: Colors.black54)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Main Controls Row
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Left Spacer: Balances the Repeat button width (40) + its margin (18)
+            const SizedBox(width: 58),
+
+            // Previous Button
+            IconButton(
+              iconSize: 44,
+              onPressed: currentIndex > 0 ? _prevVerse : null,
+              icon: Icon(
+                Icons.skip_previous_rounded,
+                color: currentIndex > 0 ? Colors.black : Colors.black12,
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            // Play / Pause (The Centerpiece)
+            GestureDetector(
+              onTap: _togglePlay,
+              child: AnimatedBuilder(
+                animation: _pulseController,
+                builder: (context, child) => Container(
+                  width: 76,
+                  height: 76,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFCB9FFF), Color(0xFF7B2FBE)],
                     ),
-                    const SizedBox(height: 16),
-
-                    // Back button
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        onPressed: () =>
-                            Navigator.popUntil(context, (r) => r.isFirst),
-                        style: OutlinedButton.styleFrom(
-                          side:    const BorderSide(color: Color(0xFF9966CC)),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape:   RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: const Text('← Try another feeling',
-                            style: TextStyle(
-                                color: Color(0xFF7FB883), fontSize: 14)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF7B2FBE).withOpacity(
+                            0.3 + 0.2 * _pulseController.value),
+                        blurRadius: 20 + 10 * _pulseController.value,
+                        spreadRadius: isPlaying ? 4 * _pulseController.value : 0,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  child: child,
+                ),
+                child: Icon(
+                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                  color: Colors.white, // Changed to white for better contrast on purple
+                  size: 42,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+
+            // Next Button
+            IconButton(
+              iconSize: 44,
+              onPressed: currentIndex < widget.verses.length - 1 ? _nextVerse : null,
+              icon: Icon(
+                Icons.skip_next_rounded,
+                color: currentIndex < widget.verses.length - 1 ? Colors.black : Colors.black12,
+              ),
+            ),
+            const SizedBox(width: 18),
+
+            // Repeat Button (Right Side)
+            GestureDetector(
+              onTap: _toggleLoop,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isLooping ? const Color(0xFF7B2FBE).withOpacity(0.1) : Colors.transparent,
+                  border: Border.all(
+                    color: isLooping ? const Color(0xFF7B2FBE) : Colors.black12,
+                    width: 1.5,
+                  ),
+                ),
+                child: Icon(
+                  Icons.repeat_rounded,
+                  size: 20,
+                  color: isLooping ? const Color(0xFF7B2FBE) : Colors.black38,
                 ),
               ),
             ),
           ],
         ),
-      ),
+
+        const SizedBox(height: 32),
+
+        // Secondary Action: Try another feeling
+        TextButton(
+          onPressed: () => Navigator.popUntil(context, (r) => r.isFirst),
+          style: TextButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(100),
+              side: BorderSide(color: Colors.black.withOpacity(0.1)),
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.refresh_rounded, size: 18, color: Color(0xFF7B2FBE)),
+              const SizedBox(width: 8),
+              Text(
+                'Try another feeling',
+                style: TextStyle(
+                  color: Colors.black.withOpacity(0.7),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
+  }
+  // ── helpers ───────────────────────────────────────────────────────────────
+  Widget _glassButton(
+      {required VoidCallback onTap, required Widget child}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(11),
+       
+          child: Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 12, 9, 9).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(11),
+              border: Border.all(
+                  color: const Color.fromARGB(255, 7, 6, 6).withOpacity(0.15), width: 1),
+            ),
+            child: child,
+          ),
+        ),
+      );
+    
   }
 }
