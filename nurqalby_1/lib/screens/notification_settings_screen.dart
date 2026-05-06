@@ -9,7 +9,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/notification_service.dart';
+import '../services/location_service.dart';
 import 'notification_history_screen.dart';
+
 
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
@@ -90,7 +92,7 @@ class _NotificationSettingsScreenState
     setState(() => _isUpdatingLocation = true);
 
     try {
-      final position = await NotificationService.getCurrentLocation();
+      final position = await LocationService.getCurrentLocation();
 
       if (position == null) {
         if (mounted) {

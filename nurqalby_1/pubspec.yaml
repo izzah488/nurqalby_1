@@ -90,6 +90,7 @@ flutter:
     - assets/images/dua1.jpg
     - assets/images/bgresult.jpg
     - assets/images/bgaudio.jpg
+    - assets/images/bgdetail.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

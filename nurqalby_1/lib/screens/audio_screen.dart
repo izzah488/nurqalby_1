@@ -4,11 +4,13 @@ import 'package:just_audio/just_audio.dart';
 class AudioScreen extends StatefulWidget {
   final List<Map<String, dynamic>> verses;
   final int initialIndex;
+  final bool fromSaved;
 
   const AudioScreen({
     super.key,
     required this.verses,
     required this.initialIndex,
+    this.fromSaved = false,
   });
 
   @override
@@ -168,10 +170,9 @@ class _AudioScreenState extends State<AudioScreen>
       body: Stack(
         children: [
           // ── BACKGROUND IMAGE (asset) ────────────────────────────────────
-          // Replace 'assets/images/bgaudio.jpg' with your actual asset path.
           Positioned.fill(
             child: Image.asset(
-              'assets/images/bgaudio.jpg', // <-- your background image here
+              'assets/images/bgaudio.jpg',
               fit: BoxFit.cover,
             ),
           ),
@@ -250,29 +251,59 @@ class _AudioScreenState extends State<AudioScreen>
     );
   }
 
-  // ── verse card ────────────────────────────────────────────────────────────
+  // ── verse card (NOW FULL PICTURE BACKGROUND) ─────────────────────────────
   Widget _buildVerseCard(Map<String, dynamic> verse) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(30),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          color: Colors.white.withOpacity(0.10),
-          border: Border.all(
-            color: Colors.white.withOpacity(0.22),
-            width: 1.4,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: _purple.withOpacity(0.35),
-              blurRadius: 40,
-              spreadRadius: -4,
-              offset: const Offset(0, 14),
+      child: Stack(
+        children: [
+          // FULL BACKGROUND IMAGE covering entire card
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/verse1.jpg',
+              fit: BoxFit.cover,
             ),
-          ],
-        ),
-          child: SingleChildScrollView(
+          ),
+          
+          // Dark overlay for text readability
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.1),
+                    Colors.black.withOpacity(0.1),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // Glass overlay with border and shadow (keeps original design)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.22),
+                  width: 1.4,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: _purple.withOpacity(0.0),
+                    blurRadius: 40,
+                    spreadRadius: -4,
+                    offset: const Offset(0, 14),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Content overlay (text, badges, etc.)
+          SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.fromLTRB(24, 26, 24, 24),
             child: Column(
@@ -298,7 +329,7 @@ class _AudioScreenState extends State<AudioScreen>
                   child: Text(
                     'Surah ${verse['surah']}  ·  Ayah ${verse['ayah']}',
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 0, 0, 0),
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.9,
@@ -314,7 +345,7 @@ class _AudioScreenState extends State<AudioScreen>
                     verse['arabic_text'] ?? '',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 0, 0, 0),
                       fontSize: 21,
                       height: 2.1,
                       fontWeight: FontWeight.w500,
@@ -344,7 +375,7 @@ class _AudioScreenState extends State<AudioScreen>
                   verse['verse_text'] ?? '',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.82),
+                    color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.82),
                     fontSize: 13,
                     height: 1.75,
                     fontStyle: FontStyle.italic,
@@ -353,12 +384,12 @@ class _AudioScreenState extends State<AudioScreen>
               ],
             ),
           ),
-        ),
-      );
-    
+        ],
+      ),
+    );
   }
 
-// ── player ────────────────────────────────────────────────────────────────
+  // ── player ────────────────────────────────────────────────────────────────
   Widget _buildPlayer(Map<String, dynamic> verse) {
     final progress = duration.inSeconds > 0
         ? position.inSeconds
@@ -463,7 +494,7 @@ class _AudioScreenState extends State<AudioScreen>
                 ),
                 child: Icon(
                   isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                  color: Colors.white, // Changed to white for better contrast on purple
+                  color: Colors.white,
                   size: 42,
                 ),
               ),
@@ -506,58 +537,62 @@ class _AudioScreenState extends State<AudioScreen>
           ],
         ),
 
-        const SizedBox(height: 32),
-
-        // Secondary Action: Try another feeling
-        TextButton(
-          onPressed: () => Navigator.popUntil(context, (r) => r.isFirst),
-          style: TextButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
-              side: BorderSide(color: Colors.black.withOpacity(0.1)),
+        // Secondary Action: Try another feeling (ONLY if NOT from saved)
+        if (!widget.fromSaved) ...[
+          const SizedBox(height: 32),
+          TextButton(
+            onPressed: () => Navigator.popUntil(context, (r) => r.isFirst),
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(100),
+                side: BorderSide(color: Colors.black.withOpacity(0.1)),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.refresh_rounded, size: 18, color: Color(0xFF7B2FBE)),
+                const SizedBox(width: 8),
+                Text(
+                  'Try another feeling',
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(0.7),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.refresh_rounded, size: 18, color: Color(0xFF7B2FBE)),
-              const SizedBox(width: 8),
-              Text(
-                'Try another feeling',
-                style: TextStyle(
-                  color: Colors.black.withOpacity(0.7),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
+        ],
       ],
     );
   }
+
   // ── helpers ───────────────────────────────────────────────────────────────
-  Widget _glassButton(
-      {required VoidCallback onTap, required Widget child}) {
+  Widget _glassButton({
+    required VoidCallback onTap,
+    required Widget child,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(11),
-       
-          child: Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 12, 9, 9).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(11),
-              border: Border.all(
-                  color: const Color.fromARGB(255, 7, 6, 6).withOpacity(0.15), width: 1),
+        child: Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 12, 9, 9).withOpacity(0.1),
+            borderRadius: BorderRadius.circular(11),
+            border: Border.all(
+              color: const Color.fromARGB(255, 7, 6, 6).withOpacity(0.15),
+              width: 1,
             ),
-            child: child,
           ),
+          child: child,
         ),
-      );
-    
+      ),
+    );
   }
 }

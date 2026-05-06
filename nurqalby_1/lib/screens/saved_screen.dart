@@ -19,6 +19,7 @@ import '../cubit/saved_state.dart';
 import 'audio_screen.dart';
 import 'notification_detail_screen.dart';
 
+
 class SavedScreen extends StatelessWidget {
   const SavedScreen({super.key});
 
@@ -69,39 +70,37 @@ class _SavedViewState extends State<_SavedView> {
   // VERSE → AudioScreen   (has audio player)
   // DUA   → NotificationDetailScreen (read-only detail)
   void _openDetail(BuildContext context, Map<String, dynamic> item) {
-    final isVerse = item['type'] == 'verse';
+  final isVerse = item['type'] == 'verse';
 
-    if (isVerse) {
-      // Build a verse map that AudioScreen understands.
-      // AudioScreen needs: audio_url, arabic_text, verse_text, surah, ayah.
-      // We reconstruct surah & ayah from the reference string
-      // e.g. "Surah 2, Ayah 255"
-      final verseMap = _toAudioVerseMap(item);
+  if (isVerse) {
+    final verseMap = _toAudioVerseMap(item);
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => AudioScreen(
-            verses:       [verseMap], // single verse; user can re-save others
-            initialIndex: 0,
-          ),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AudioScreen(
+          verses:       [verseMap],
+          initialIndex: 0,
+          fromSaved:    true,  // ← ADD THIS
         ),
-      ).then((_) => context.read<SavedCubit>().loadSaved());
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => NotificationDetailScreen(
-            arabic:    item['arabic']    ?? '',
-            english:   item['english']   ?? item['translation'] ?? '',
-            title:     item['title']     ?? item['prayerName']  ?? '',
-            reference: item['reference'] ?? '',
-            type:      'dua',
-          ),
+      ),
+    ).then((_) => context.read<SavedCubit>().loadSaved());
+  } else {
+    // Dua detail screen (unchanged)
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => NotificationDetailScreen(
+          arabic:    item['arabic']    ?? '',
+          english:   item['english']   ?? item['translation'] ?? '',
+          title:     item['title']     ?? item['prayerName']  ?? '',
+          reference: item['reference'] ?? '',
+          type:      'dua',
         ),
-      ).then((_) => context.read<SavedCubit>().loadSaved());
-    }
+      ),
+    ).then((_) => context.read<SavedCubit>().loadSaved());
   }
+}
 
   // Converts a saved verse (from SharedPreferences) into the map shape
   // that AudioScreen expects: arabic_text, verse_text, surah, ayah, audio_url.
